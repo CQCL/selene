@@ -105,25 +105,25 @@ class ResultStream:
                         res.append(val)
                     case (self.UINT_TAG, sz):
                         vals = unpack(f"{sz}Q", self.get_chunk(sz * 8))
-                        res.append(vals)
+                        res.append(list(vals))
                     case (self.INT_TAG, 0):
                         (val,) = unpack("q", self.get_chunk(8))
                         res.append(val)
                     case (self.INT_TAG, sz):
                         vals = unpack(f"{sz}q", self.get_chunk(sz * 8))
-                        res.append(vals)
+                        res.append(list(vals))
                     case (self.FLT_TAG, 0):
                         (val,) = unpack("d", self.get_chunk(8))
                         res.append(val)
                     case (self.FLT_TAG, sz):
                         vals = unpack(f"{sz}d", self.get_chunk(sz * 8))
-                        res.append(vals)
+                        res.append(list(vals))
                     case (self.BIT_TAG, 0):
                         (val,) = unpack("B", self.get_chunk(1))
                         res.append(val)
                     case (self.BIT_TAG, sz):
                         vals = unpack(f"{sz}B", self.get_chunk(sz))
-                        res.append(vals)
+                        res.append(list(vals))
                     case (self.STR_TAG, sz):
                         val = self.get_chunk(sz).decode("utf-8")
                         res.append(val)
