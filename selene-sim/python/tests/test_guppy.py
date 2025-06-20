@@ -105,9 +105,9 @@ def test_print_array():
 
     runner = build(guppy.compile(main), "flip_n4_arr")
     expected = {
-        "cs": (1, 0, 1, 1, 0, 0, 0, 0, 0, 1),
-        "is": tuple(range(100)),
-        "fs": tuple(i * 0.0625 for i in range(100)),
+        "cs": [1, 0, 1, 1, 0, 0, 0, 0, 0, 1],
+        "is": list(range(100)),
+        "fs": list(i * 0.0625 for i in range(100)),
     }
 
     # run the simulation on Quest and Stim
