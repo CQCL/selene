@@ -1,0 +1,23 @@
+[package]
+name = "selene-simulator-quest"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "selene_quest_plugin"
+path = "rust/lib.rs"
+doctest = false
+crate-type = ["cdylib"]
+
+[build-dependencies]
+cc = { version="1.0" }
+
+[dependencies]
+anyhow = { workspace = true }
+quest-sys = {version = "0.16"}
+selene-core = { path = "../../../selene-core" }
+sysinfo = { version = "0.35" }
+bytesize = { version = "2.0" }
+
+[lints]
+workspace = true

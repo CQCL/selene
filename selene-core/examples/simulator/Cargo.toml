@@ -1,0 +1,19 @@
+[workspace]
+
+[package]
+name = "selene-example-simulator"
+version = "0.2.0"
+edition = "2024"
+
+[lib]
+name = "selene_example_simulator"
+path = "rust/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+rand = "0.9"
+anyhow = "1.0"
+approx = "0.5"
+rand_pcg = "0.9"
+selene-core = { path = "../../" }

@@ -1,0 +1,17 @@
+[package]
+name = "selene-error-model-ideal"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "selene_ideal_plugin"
+path = "rust/lib.rs"
+doctest = false
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = { workspace = true }
+selene-core = { path = "../../../selene-core" }
+
+[lints]
+workspace = true

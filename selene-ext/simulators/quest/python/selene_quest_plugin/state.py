@@ -1,0 +1,185 @@
+from pathlib import Path
+import struct
+
+import numpy as np
+
+
+class SeleneQuestState:
+    def __init__(
+        self, state: np.ndarray, total_qubits: int, specified_qubits: list[int]
+    ):
+        self.state = state  # complex vector of size 2^total_qubits
+        self.total_qubits = total_qubits  # total number of qubits in the state, i.e. n_qubits param to run_shots
+        self.specified_qubits = (
+            specified_qubits  # user-specified qubits, in order of their specification
+        )
+
+    def get_density_matrix(self, zero_threshold: float = 1e-12):
+        """
+        Get the reduced density matrix of the state, tracing out unspecified qubits.
+
+        Parameters:
+        ----------
+        zero_threshold: float
+            The threshold for setting small values to zero. This is used to remove numerical noise.
+            Any component that is less than max_magnitude * zero_threshold will be reset to zero.
+            Default is 1e-12.
+
+        """
+        state_tensor = self.state.reshape([2] * self.total_qubits)
+
+        # move all specified qubits to the end, in the user-specified order
+        n_specified = len(self.specified_qubits)
+        n_unspecified = self.total_qubits - n_specified
+        permutation_lhs = []
+        permutation_rhs = []
+        # Note: QuEST uses the convention that qubit 0 is the least significant bit.
+        # Thus to iterate over qubits and corresponding statevector indices, we need
+        # to iterate from left to right in one, right to left in the other.
+        for qubit_id, bit_index in enumerate(reversed(range(self.total_qubits))):
+            if qubit_id in self.specified_qubits:
+                permutation_rhs.append(bit_index)
+            else:
+                permutation_lhs.append(bit_index)
+        permutation = permutation_lhs + permutation_rhs
+        permuted = np.transpose(state_tensor, permutation)
+        # state_tensor is now in the shape ([2]*n_unspecified + [2]*n_specified).
+        # reshape to a matrix
+        reshaped = permuted.reshape((2**n_unspecified, 2**n_specified))
+        # and trace out the unspecified qubits
+        result = np.einsum("ai,aj->ij", reshaped, np.conj(reshaped))
+        # the shape is now (2**n_unspecified, 2**n_specified)
+        assert result.shape == (2**n_specified, 2**n_specified)
+
+        if zero_threshold > 0:
+            # set small (relative) values to zero for a cleaner output
+            max_magnitude = np.max(np.abs(result))
+            zero_threshold = max_magnitude * zero_threshold
+            im = result.imag
+            re = result.real
+            im[np.abs(im) < zero_threshold] = 0
+            re[np.abs(re) < zero_threshold] = 0
+            result = re + 1j * im
+        return result
+
+    def get_state_vector_distribution(self, zero_threshold=1e-12):
+        """
+        The reduced density matrix may be written as
+        :math:`\\rho = \\sum_i p_i |i\\rangle \\langle i|`,
+        where |i\\rangle are state vectors in the Hilbert space of the specified qubits,
+        and p_i is the classical probability of the specified qubits being in the respective
+        state after others have been measured.
+
+        This is not a unique representation (by the Schrodinger-HJW theorem), but we here use
+        a canonical decomposition.
+        """
+        density_matrix = self.get_density_matrix()
+        result = []
+        eigenvalues, eigenstates = np.linalg.eig(density_matrix)
+        if zero_threshold > 0:
+            # set small (relative) values to zero for a cleaner output
+            max_magnitude = np.max(np.abs(eigenstates))
+            zero_threshold = max_magnitude * zero_threshold
+            im = eigenstates.imag
+            re = eigenstates.real
+            im[np.abs(im) < zero_threshold] = 0
+            re[np.abs(re) < zero_threshold] = 0
+            eigenstates = re + 1j * im
+            # apply a global phase shift to make the first
+            # non-zero component real and positive
+            for state_idx in range(eigenstates.shape[1]):
+                # find phase of the first non-zero component
+                phase = 1
+                for component in eigenstates[:, state_idx]:
+                    if np.abs(component) > 0:
+                        phase = component / np.abs(component)
+                        break
+                # shift the whole state by its conjugate to
+                # make the first component real and positive
+                eigenstates[:, state_idx] *= np.conj(phase)
+
+        for i, eigenvalue in enumerate(eigenvalues):
+            if abs(eigenvalue) < zero_threshold:
+                continue
+            result.append(
+                {
+                    "probability": abs(eigenvalue),
+                    "state": eigenstates[:, i],
+                }
+            )
+        return result
+
+    def get_dirac_notation(self, zero_threshold=1e-12):
+        try:
+            from sympy import nsimplify
+            from sympy.physics.quantum.state import Ket
+
+            width = len(self.specified_qubits)
+
+            def simplify_state(probability, coefficients):
+                result = None
+                probability = nsimplify(probability)
+                for i, amplitude in enumerate(state):
+                    if abs(amplitude) < zero_threshold:
+                        continue
+                    coefficient = nsimplify(amplitude)
+                    basis_str = f"{i:0{width}b}"
+                    ket = Ket(basis_str)
+                    if result is None:
+                        result = coefficient * ket
+                    else:
+                        result += coefficient * ket
+                return probability, result
+        except ImportError:
+            import sys
+
+            print(
+                "Note: Install sympy to see prettier dirac notation output.",
+                file=sys.stderr,
+            )
+
+            def simplify_state(probability, coefficients):
+                result = None
+                for i, amplitude in enumerate(state):
+                    if abs(amplitude) < zero_threshold:
+                        continue
+                    ket = f"{amplitude}|{bin(i)[2:]}>"
+                    if result is None:
+                        result = ket
+                    else:
+                        result += " + " + ket
+                return probability, result
+
+        state_vector = self.get_state_vector_distribution(zero_threshold=zero_threshold)
+        result = []
+        for entry in state_vector:
+            probability = entry["probability"]
+            state = entry["state"]
+            probability, state = simplify_state(probability, state)
+            # Convert the state to Dirac notation
+            result.append(
+                {
+                    "probability": probability,
+                    "state": state,
+                }
+            )
+        return result
+
+    @staticmethod
+    def parse_from_file(filename: Path) -> "SeleneQuestState":
+        with open(filename, "rb") as f:
+            magic = f.read(12)
+            if magic != b"selene-quest":
+                raise ValueError("Invalid state file format")
+            header_head = f.read(16)
+            total_qubits, n_specified_qubits = struct.unpack("<QQ", header_head)
+            specified_qubits = []
+            for i in range(n_specified_qubits):
+                specified_qubits.append(struct.unpack("<Q", f.read(8))[0])
+            state_size = 2**total_qubits
+            state = np.fromfile(
+                f,
+                dtype=np.complex128,
+                count=state_size,
+            )
+            return SeleneQuestState(state, total_qubits, specified_qubits)

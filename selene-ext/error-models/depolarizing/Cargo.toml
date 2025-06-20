@@ -1,0 +1,20 @@
+[package]
+name = "selene-error-model-depolarizing"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "selene_depolarizing_plugin"
+path = "rust/lib.rs"
+doctest = false
+crate-type = ["cdylib"]
+
+[dependencies]
+clap = { workspace = true }
+rand = { workspace = true }
+anyhow = { workspace = true }
+rand_pcg = "0.9"
+selene-core = { path = "../../../selene-core" }
+
+[lints]
+workspace = true

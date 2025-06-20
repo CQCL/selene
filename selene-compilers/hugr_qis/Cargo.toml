@@ -1,0 +1,44 @@
+[workspace]
+
+[package]
+name = "selene-hugr-qis-compiler"
+authors = ["Seyon Sivarajah <seyon.sivarajah@quantinuum.com>"]
+description = "Compiler for HUGR to LLVM targeting the Helios QIS"
+version = "0.2.0-a.1"
+readme = "README.md"
+repository = "https://github.com/CQCL/selene/selene-compilers/hugr_qis"
+license = "Apache-2.0"
+edition = "2024"
+
+[lib]
+name = "selene_hugr_qis_compiler"
+path = "rust/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1.0"
+tket2 = "0.12.1"
+tket2-hseries = { version = "0.15.1", features = ["llvm"] }
+pyo3 = { version = "0.24", features = ["abi3-py310", "anyhow"] }
+tracing = "0.1"
+
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]
+
+[build-dependencies]
+cbindgen = "0.28"
+pyo3-build-config = "0.24"
+
+[dev-dependencies]
+rstest = "0.25"
+serde = "1.0"
+typetag = "0.2"
+
+[package.metadata.cargo-machete]
+ignored = ["cbindgen", "pyo3-build-config"]
+
+[patch.crates-io]
+# Uncomment to use unreleased versions of tket2
+# tket2 = {git = "https://github.com/CQCL/tket2.git", branch = "main" }
+# tket2-hseries = {git = "https://github.com/CQCL/tket2.git", branch = "main" }

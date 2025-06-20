@@ -1,0 +1,16 @@
+[package]
+name = "selene-soft-rz-runtime"
+rust-version.workspace = true
+authors.workspace = true
+edition.workspace = true
+version.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "selene_soft_rz_runtime"
+path = "rust/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow.workspace = true
+selene-core = { path = "../../../selene-core" }

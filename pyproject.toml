@@ -1,0 +1,225 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "selene-sim"
+description = "Quantinuum's open source emulator for hybrid quantum computation"
+version = "0.2.0a1"
+requires-python = ">=3.10"
+dependencies = [
+    "selene-core==0.2.0a1",
+    "selene-hugr-qis-compiler==0.2.0a1",
+    "ziglang~=0.13",
+    "pyyaml>=6.0.2",
+    "lief>=0.16.5",
+    "numpy>=2.1",
+    "tqdm>=4.66",
+    "pydot>=4.0.0",
+    "hugr>=0.12.2",
+]
+authors = [
+    { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
+    { name = "TKET development team", email = "tket-support@quantinuum.com" },
+]
+maintainers = [
+    { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
+    { name = "TKET development team", email = "tket-support@quantinuum.com" },
+]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+
+    "Topic :: Scientific/Engineering :: Quantum Computing",
+    "Topic :: System :: Emulators",
+
+    "License :: OSI Approved :: Apache Software License",
+
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[project.urls]
+repository = "https://github.com/CQCL/selene"
+
+[dependency-groups]
+dev = [
+    "cibuildwheel>=2.23.3",
+    "guppylang~=0.20.0",
+    "pip>=24.2",
+    "pytest>=8.3.5",
+    "pytest-snapshot~=0.9.0",
+    "pytket>=2.0.1",
+    "auditwheel>=6.3.0",
+    "mypy>=1.14.1",
+    "ruff>=0.8.0",
+    "types-pyyaml>=6.0.12.20250402",
+    "tket2~=0.11.0",
+]
+
+[tool.uv.sources]
+selene-sim = { workspace = true }
+selene-core = { workspace = true }
+selene-hugr-qis-compiler = { workspace = true }
+# guppylang = {git = "https://github.com/CQCL/guppylang.git", rev = "0c390ff"}
+
+[tool.uv.workspace]
+members = [
+    "selene-core",
+    "selene-compilers/hugr_qis",
+]
+
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "selene-sim/python/selene_sim",
+    "selene-ext/error-models/depolarizing/python/selene_depolarizing_error_model_plugin",
+    "selene-ext/error-models/ideal/python/selene_ideal_error_model_plugin",
+    "selene-ext/interfaces/helios_qis/python/selene_helios_qis_plugin",
+    "selene-ext/runtimes/simple/python/selene_simple_runtime_plugin",
+    "selene-ext/runtimes/soft_rz/python/selene_soft_rz_runtime_plugin",
+    "selene-ext/simulators/classical-replay/python/selene_classical_replay_plugin",
+    "selene-ext/simulators/coinflip/python/selene_coinflip_plugin",
+    "selene-ext/simulators/quantum-replay/python/selene_quantum_replay_plugin",
+    "selene-ext/simulators/quest/python/selene_quest_plugin",
+    "selene-ext/simulators/stim/python/selene_stim_plugin",
+]
+
+[tool.uv]
+cache-keys = [
+    { file = "selene-sim/**/*.c" },
+    { file = "selene-sim/**/*.rs" },
+    { file = "selene-sim/**/CMakeLists.txt" },
+    { file = "selene-sim/**/Cargo.toml" },
+    { file = "selene-sim/**/Cargo.lock" },
+    { file = "selene-ext/**/*.c" },
+    { file = "selene-ext/**/*.rs" },
+    { file = "selene-ext/**/CMakeLists.txt" },
+    { file = "selene-ext/**/Cargo.toml" },
+    { file = "selene-ext/**/Cargo.lock" },
+]
+
+[tool.ruff] 
+# exclude upstream code
+extend-exclude = [
+    "selene-ext/simulators/stim/upstream",
+#    "selene-ext/*/*/python/tests"
+]
+[tool.ruff.lint.per-file-ignores]
+"**/python/tests/*.py" = ["F821", "F841"] #  ^
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = [
+    "test_.*.py$",
+    "selene-compilers/.*/python/tests/test_.*.py$",
+    ".*upstream.*$",
+    "^selene-core/.*$",
+    "^scratch/.*$"
+]
+
+
+[tool.pytest.ini_options]
+# exclude external repos (e.g. stim)
+norecursedirs = ["selene-remove", "upstream", '*.egg', '.*', 'build', 'target', 'dist', 'venv']
+
+[tool.cibuildwheel]
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64"
+build = "cp310-*"
+skip = "*-win32 *-manylinux_i686 *-musllinux*"
+build-frontend = { name = "build[uv]", args = ["-C--profile=release"] }
+environment-pass = ["UV_EXTRA_INDEX_URL", "PIP_EXTRA_INDEX_URL", "CACHE_CARGO", "SELENE_HUGR_QIS_WHL"]
+test-requires = ["pytest", "pytest-snapshot", "guppylang~=0.20.0"]
+test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
+[tool.cibuildwheel.linux]
+environment = { PATH = "$PATH:$HOME/.cargo/bin" }
+before-all = '''
+    git clean -dfX;
+    if ${CACHE_CARGO}; then
+        if [ -d /host/tmp/ci-cache/selene/.cargo ]; then
+            cp -r /host/tmp/ci-cache/selene/.cargo $HOME;
+        fi;
+        if [ -d /host/tmp/ci-cache/selene/target ]; then
+            cp -r /host/tmp/ci-cache/selene/target {project};
+        fi;
+    fi;
+    curl -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y && cargo install cbindgen
+'''
+before-test = '''
+    # if we have caching enabled and it exists, copy caches to the
+    # host so that it can be reused in the next build.
+    if ${CACHE_CARGO}; then
+        mkdir -p /host/tmp/ci-cache/selene;
+
+        if [ -d $HOME/.cargo ]; then
+            rm -rf /host/tmp/ci-cache/selene/.cargo;
+            cp -r $HOME/.cargo /host/tmp/ci-cache/selene/;
+        fi;
+
+        if [ -d {project}/target ]; then
+            rm -rf /host/tmp/ci-cache/selene/target;
+            cp -r {project}/target /host/tmp/ci-cache/selene;
+        fi;
+
+        # make sure the cache is readable by the host
+        chmod -R a+rX /host/tmp/ci-cache/selene
+    fi;
+
+    # install selene-core. This is quick so no need to pass in a wheel for now.
+    uv pip install ./selene-core;
+
+    # test if SELENE_HUGR_QIS_WHL is set and points to a wheel. If so pip install it. Otherwise uv install the dir.
+    if [ -n "${SELENE_HUGR_QIS_WHL}" ]; then
+        if [ -f "/host/${SELENE_HUGR_QIS_WHL}" ]; then
+            uv pip install "/host/${SELENE_HUGR_QIS_WHL}";
+        else
+            echo "SELENE_HUGR_QIS_WHL is set but does not point to an";
+            echo "existing file: ${SELENE_HUGR_QIS_WHL}";
+            exit 1;
+        fi;
+    else
+        uv pip install ./selene-compilers/hugr_qis;
+    fi;
+'''
+[tool.cibuildwheel.macos]
+environment = { PATH = "$PATH:$HOME/.cargo/bin", MACOSX_DEPLOYMENT_TARGET = "11.0" }
+before-all = [
+    # make sure we strip out non-version-controlled files,
+    # e.g. when building locally.
+    'curl -sSf https://sh.rustup.rs | sh -s -- -y',
+    'cargo install cbindgen',
+]
+before-test = '''
+    # install selene-core. This is quick so no need to pass in a wheel for now.
+    uv pip install ./selene-core
+
+    # test if SELENE_HUGR_QIS_WHL is set and points to a wheel. If so pip
+    # install it (fast). Otherwise uv install the dir (slow).
+    if [ -n "${SELENE_HUGR_QIS_WHL}" ]; then
+        if [ -f "${SELENE_HUGR_QIS_WHL}" ]; then
+            uv pip install "${SELENE_HUGR_QIS_WHL}";
+        else
+            echo "SELENE_HUGR_QIS_WHL is set but does not point to an existing file: ${SELENE_HUGR_QIS_WHL}";
+            exit 1;
+        fi;
+    else
+        uv pip install ./selene-compilers/hugr_qis;
+    fi;
+'''
+[tool.cibuildwheel.windows]
+before-all = [
+    'curl -sSf https://sh.rustup.rs | sh -s -- -y',
+    'cargo install cbindgen',
+]
+before-test = [
+    # install selene-core. This is quick so no need to pass in a wheel for now.
+    'uv pip install ./selene-core',
+    # test if SELENE_HUGR_QIS_WHL is set and points to a wheel. If so pip install it (fast). Otherwise uv install the dir (slow)
+    'IF DEFINED SELENE_HUGR_QIS_WHL (uv pip install "%SELENE_HUGR_QIS_WHL%") ELSE (uv pip install ./selene-compilers/hugr_qis)',
+]

@@ -1,0 +1,16 @@
+? !!python/tuple
+- false
+- false
+: 975
+? !!python/tuple
+- false
+- true
+: 12
+? !!python/tuple
+- true
+- false
+: 13
+? !!python/tuple
+- true
+- true
+: 0

@@ -1,0 +1,21 @@
+[package]
+name = "selene-simulator-coinflip"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "selene_coinflip_plugin"
+path = "rust/lib.rs"
+doctest = false
+crate-type = ["cdylib"]
+
+[dependencies]
+clap = { workspace = true }
+rand = { workspace = true }
+anyhow = { workspace = true }
+approx = { workspace = true }
+rand_pcg = "0.9"
+selene-core = { path = "../../../selene-core" }
+
+[lints]
+workspace = true

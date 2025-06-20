@@ -1,0 +1,3 @@
+[submodule "selene-ext/simulators/stim/upstream"]
+	path = selene-ext/simulators/stim/upstream
+	url = https://github.com/quantumlib/Stim

@@ -1,0 +1,18 @@
+[workspace]
+
+[package]
+name = "selene-error-model-example"
+version = "0.2.0"
+edition = "2024"
+
+[lib]
+name = "selene_error_model_example"
+path = "rust/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1.0"
+rand = "0.9"
+rand_pcg = "0.9"
+selene-core = { path = "../../" }
+clap = { version = "4.5", features = ["derive"] }

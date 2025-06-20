@@ -1,0 +1,15 @@
+[workspace]
+
+[package]
+name = "selene-example-runtime"
+edition = "2024"
+version = "0.2.0"
+
+[lib]
+name = "selene_example_runtime"
+path = "rust/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1.0"
+selene-core = { path = "../../" }

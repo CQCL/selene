@@ -1,0 +1,57 @@
+name: Rust CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  RUSTFLAGS: "--cfg=ci_run"
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install LLVM
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "14.0"
+      - name: Set LLVM_SYS_140_PREFIX
+        run: echo "LLVM_SYS_140_PREFIX=${{ env.LLVM_PATH }}" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/
+            target/
+          key: selene-rust-tests--${{ runner.os }}--${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            selene-rust-tests--${{ runner.os }}--
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run rust tests
+        run: cargo test --all-features
+      - name: Install cbindgen
+        run: "cargo install --locked cbindgen"
+      - name: Check cbindgen
+        run: |
+          cd selene-sim
+          cbindgen -o c/include/selene/selene.h --verify
+          if [ $? -ne 0 ]; then
+            echo "selene.h is not up to date"
+            echo "Please run 'just generate-selene-bindings' and commit the changes"
+            exit 1
+          fi
+

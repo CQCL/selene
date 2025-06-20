@@ -1,0 +1,22 @@
+[package]
+name = "selene-core"
+version = "0.2.0-alpha.1"
+edition = "2024"
+
+[lib]
+name = "selene_core"
+path = "rust/lib.rs"
+crate-type = ["lib"]
+
+[dependencies]
+anyhow = "1.0"
+thiserror = "2.0"
+ouroboros = "0.18"
+libloading = "0.8.5"
+delegate = "0.13.2"
+derive_more = { version = "2.0.1", features = ["from", "into", "add", "add_assign"] }
+
+[lints.clippy]
+undocumented_unsafe_blocks = "allow" # TODO: add safety docs
+missing_safety_doc = "allow"         # TODO: add safety docs
+too_many_arguments = "allow"         # ouroborous violates this

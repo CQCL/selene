@@ -1,0 +1,5 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/SeleneTargets.cmake")
+
+set(Selene_INCLUDE_DIRS "${PACKAGE_PREFIX_DIR}/include")

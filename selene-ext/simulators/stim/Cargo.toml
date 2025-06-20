@@ -1,0 +1,21 @@
+[package]
+name = "selene-simulator-stim"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "selene_stim_plugin"
+path = "rust/lib.rs"
+doctest = false
+crate-type = ["cdylib"]
+
+[build-dependencies]
+cc = { version="1.0" , features = ["parallel"]}
+
+[dependencies]
+clap = { workspace = true }
+selene-core = { path = "../../../selene-core" }
+anyhow = { workspace = true }
+
+[lints]
+workspace = true

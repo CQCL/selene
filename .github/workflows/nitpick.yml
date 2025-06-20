@@ -1,0 +1,77 @@
+name: Nitpicks
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  merge_group:
+    types:
+      - checks_requested
+  push:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_GIT_FETCH_WITH_CLI: true
+  RUSTFLAGS: "--cfg=ci_run"
+  UV_FROZEN: 1
+
+jobs:
+  format-and-lint-checks:
+    name: 
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/
+            target/
+          key: nitpick--${{ runner.os }}--${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            nitpick--${{ runner.os }}--
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Install cbindgen
+        run: "cargo install --locked cbindgen"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+            enable-cache: true
+            version: "0.6.6"
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "14.0"
+          directory: /tmp/llvm
+      - name: Set LLVM_SYS_140_PREFIX
+        run: echo "LLVM_SYS_140_PREFIX=${{ env.LLVM_PATH }}" >> $GITHUB_ENV
+      - name: Rust format check
+        run: cargo fmt --all -- --check
+      - name: Rust lint
+        run: cargo clippy --all --all-features -- -D warnings
+      - name: Build docs
+        run: cargo doc --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: "-Dwarnings"
+      - name: UV sync
+        run: uv sync --no-install-workspace
+      - name: Type check selene-core with mypy
+        run: |
+          cd selene-core
+          uv run --no-sync mypy .
+      - name: Type check selene with mypy
+        run: |
+          uv run --no-sync mypy .
+      - name: Ruff check with ruff
+        run: uv run --no-sync ruff format --check --config=pyproject.toml
+      - name: Lint with ruff
+        run: uv run --no-sync ruff check --config=pyproject.toml

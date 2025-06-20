@@ -1,0 +1,19 @@
+[package]
+name = "selene-simulator-classical-replay"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "selene_classical_replay"
+path = "rust/lib.rs"
+doctest = false
+crate-type = ["cdylib"]
+
+[dependencies]
+clap = { workspace = true }
+selene-core = { path = "../../../selene-core" }
+base64 = "0.22.1"
+anyhow = { workspace = true }
+
+[lints]
+workspace = true

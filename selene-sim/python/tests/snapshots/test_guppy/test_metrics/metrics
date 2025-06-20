@@ -1,0 +1,31 @@
+emulator:
+  shot_number: 0
+post_runtime:
+  custom_op_batch_count: 0
+  custom_op_individual_count: 0
+  measure_batch_count: 3
+  measure_individual_count: 3
+  reset_batch_count: 3
+  reset_individual_count: 3
+  rxy_batch_count: 8
+  rxy_individual_count: 8
+  rz_batch_count: 4
+  rz_individual_count: 4
+  rzz_batch_count: 5
+  rzz_individual_count: 5
+  total_duration_ns: 0
+simulator:
+  cumulative_postselect_probability: 1.0
+user_program:
+  currently_allocated: 0
+  global_barrier_count: 0
+  local_barrier_count: 0
+  max_allocated: 3
+  measure_read_count: 3
+  measure_request_count: 3
+  qalloc_count: 3
+  qfree_count: 3
+  reset_count: 3
+  rxy_count: 8
+  rz_count: 4
+  rzz_count: 5

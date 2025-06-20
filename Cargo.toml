@@ -1,0 +1,36 @@
+[workspace]
+resolver = "2"
+members = [
+    "selene-core",
+    "selene-sim",
+    "selene-ext/simulators/stim",
+    "selene-ext/simulators/quest",
+    "selene-ext/simulators/coinflip",
+    "selene-ext/simulators/classical-replay",
+    "selene-ext/simulators/quantum-replay",
+    "selene-ext/runtimes/simple",
+    "selene-ext/runtimes/soft_rz",
+    "selene-ext/error-models/depolarizing",
+    "selene-ext/error-models/ideal",
+]
+
+[workspace.package]
+rust-version = "1.85"
+authors = ["Jake Arkinstall <jake.arkinstall@quantinuum.com>"]
+edition = "2024"
+version = "0.2.0-alpha.0"
+repository = "https://github.com/CQCL/selene"
+license = "Apache-2.0"
+
+[workspace.dependencies]
+anyhow = "1.0"
+rand = "0.9"
+approx = { version = "0.5.1" }
+clap = { version = "4.5.4", features = ["derive"] }
+chrono = "0.4.38"
+thiserror = "2"
+
+[workspace.lints.clippy]
+undocumented_unsafe_blocks = "allow" # TODO: add safety docs
+missing_safety_doc = "allow"         # TODO: add safety docs
+too_many_arguments = "allow"         # ouroborous violates this

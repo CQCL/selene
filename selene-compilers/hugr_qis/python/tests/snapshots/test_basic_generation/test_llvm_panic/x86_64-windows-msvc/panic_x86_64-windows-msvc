@@ -1,0 +1,123 @@
+; ModuleID = 'hugr'
+source_filename = "hugr"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-windows-msvc"
+
+@e_Postselect.558881BF.0 = private constant [30 x i8] c"\1DEXIT:INT:Postselection failed"
+@res_c.1C9EF4D1.0 = private constant [12 x i8] c"\0BUSER:BOOL:c"
+@"e_No more qu.3B2EEBF0.0" = private constant [47 x i8] c".EXIT:INT:No more qubits available to allocate."
+
+define void @__hugr__.main.1() local_unnamed_addr {
+alloca_block:
+  %qalloc.i = tail call i64 @___qalloc()
+  %not_max.not.i = icmp eq i64 %qalloc.i, -1
+  br i1 %not_max.not.i, label %id_bb.i, label %reset_bb.i
+
+reset_bb.i:                                       ; preds = %alloca_block
+  tail call void @___reset(i64 %qalloc.i)
+  br label %id_bb.i
+
+id_bb.i:                                          ; preds = %reset_bb.i, %alloca_block
+  %0 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc.i, 1
+  %1 = select i1 %not_max.not.i, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %0
+  %.fca.0.extract.i = extractvalue { i1, i64 } %1, 0
+  br i1 %.fca.0.extract.i, label %__hugr__.__tk2_qalloc.35.exit, label %cond_39_case_0.i
+
+cond_39_case_0.i:                                 ; preds = %id_bb.i
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
+  unreachable
+
+__hugr__.__tk2_qalloc.35.exit:                    ; preds = %id_bb.i
+  %.fca.1.extract.i = extractvalue { i1, i64 } %1, 1
+  tail call void @___rxy(i64 %.fca.1.extract.i, double 0x3FF921FB54442D18, double 0xBFF921FB54442D18)
+  tail call void @___rz(i64 %.fca.1.extract.i, double 0x400921FB54442D18)
+  %lazy_measure = tail call i64 @___lazy_measure(i64 %.fca.1.extract.i)
+  tail call void @___qfree(i64 %.fca.1.extract.i)
+  tail call void @___inc_future_refcount(i64 %lazy_measure)
+  %read_bool = tail call i1 @___read_future_bool(i64 %lazy_measure)
+  tail call void @___dec_future_refcount(i64 %lazy_measure)
+  br i1 %read_bool, label %2, label %cond_92_case_1
+
+cond_92_case_1:                                   ; preds = %__hugr__.__tk2_qalloc.35.exit
+  %read_bool63 = tail call i1 @___read_future_bool(i64 %lazy_measure)
+  tail call void @___dec_future_refcount(i64 %lazy_measure)
+  tail call void @print_bool(i8* getelementptr inbounds ([12 x i8], [12 x i8]* @res_c.1C9EF4D1.0, i64 0, i64 0), i64 11, i1 %read_bool63)
+  ret void
+
+2:                                                ; preds = %__hugr__.__tk2_qalloc.35.exit
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([30 x i8], [30 x i8]* @e_Postselect.558881BF.0, i64 0, i64 0))
+  unreachable
+}
+
+define i64 @__hugr__.__tk2_qalloc.35() local_unnamed_addr {
+alloca_block:
+  %qalloc = tail call i64 @___qalloc()
+  %not_max.not = icmp eq i64 %qalloc, -1
+  br i1 %not_max.not, label %id_bb, label %reset_bb
+
+reset_bb:                                         ; preds = %alloca_block
+  tail call void @___reset(i64 %qalloc)
+  br label %id_bb
+
+id_bb:                                            ; preds = %alloca_block, %reset_bb
+  %0 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc, 1
+  %1 = select i1 %not_max.not, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %0
+  %.fca.0.extract = extractvalue { i1, i64 } %1, 0
+  br i1 %.fca.0.extract, label %cond_39_case_1, label %cond_39_case_0
+
+cond_39_case_1:                                   ; preds = %id_bb
+  %.fca.1.extract = extractvalue { i1, i64 } %1, 1
+  ret i64 %.fca.1.extract
+
+cond_39_case_0:                                   ; preds = %id_bb
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
+  unreachable
+}
+
+define i64 @__hugr__.__tk2_h.49(i64 returned %0) local_unnamed_addr {
+alloca_block:
+  tail call void @___rxy(i64 %0, double 0x3FF921FB54442D18, double 0xBFF921FB54442D18)
+  tail call void @___rz(i64 %0, double 0x400921FB54442D18)
+  ret i64 %0
+}
+
+declare i64 @___lazy_measure(i64) local_unnamed_addr
+
+declare void @___qfree(i64) local_unnamed_addr
+
+declare void @___inc_future_refcount(i64) local_unnamed_addr
+
+declare i1 @___read_future_bool(i64) local_unnamed_addr
+
+declare void @___dec_future_refcount(i64) local_unnamed_addr
+
+; Function Attrs: noreturn
+declare void @panic(i32, i8*) local_unnamed_addr #0
+
+declare void @print_bool(i8*, i64, i1) local_unnamed_addr
+
+declare i64 @___qalloc() local_unnamed_addr
+
+declare void @___reset(i64) local_unnamed_addr
+
+declare void @___rxy(i64, double, double) local_unnamed_addr
+
+declare void @___rz(i64, double) local_unnamed_addr
+
+define i64 @qmain(i64 %0) local_unnamed_addr {
+entry:
+  tail call void @setup(i64 %0)
+  tail call void @__hugr__.main.1()
+  %1 = tail call i64 @teardown()
+  ret i64 %1
+}
+
+declare void @setup(i64) local_unnamed_addr
+
+declare i64 @teardown() local_unnamed_addr
+
+attributes #0 = { noreturn }
+
+!name = !{!0}
+
+!0 = !{!"mainlib"}
