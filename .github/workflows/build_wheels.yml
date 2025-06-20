@@ -241,6 +241,6 @@ jobs:
           python-version: 3.12
       - name: Install twine
         run: python -m pip install twine
-      - name: Upload to artifactory
+      - name: Upload to pypi
         run: |
-          twine upload --verbose --non-interactive target/wheels/*.whl
+          twine upload --verbose --non-interactive wheelhouse/*.whl
