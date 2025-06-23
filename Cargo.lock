@@ -607,7 +607,7 @@ checksum = "28d3b2b1366ec20994f1fd18c3c594f05c5dd4bc44d8bb0c1c632c8d6829481f"
 
 [[package]]
 name = "selene-core"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "delegate",
@@ -619,7 +619,7 @@ dependencies = [
 
 [[package]]
 name = "selene-error-model-depolarizing"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -630,7 +630,7 @@ dependencies = [
 
 [[package]]
 name = "selene-error-model-ideal"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "selene-core",
@@ -638,7 +638,7 @@ dependencies = [
 
 [[package]]
 name = "selene-sim"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "rand",
@@ -651,7 +651,7 @@ dependencies = [
 
 [[package]]
 name = "selene-simple-runtime"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "selene-core",
@@ -659,7 +659,7 @@ dependencies = [
 
 [[package]]
 name = "selene-simulator-classical-replay"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "base64",
@@ -669,7 +669,7 @@ dependencies = [
 
 [[package]]
 name = "selene-simulator-coinflip"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "approx",
@@ -681,7 +681,7 @@ dependencies = [
 
 [[package]]
 name = "selene-simulator-quantum-replay"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "base64",
@@ -691,7 +691,7 @@ dependencies = [
 
 [[package]]
 name = "selene-simulator-quest"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "bytesize",
@@ -703,7 +703,7 @@ dependencies = [
 
 [[package]]
 name = "selene-simulator-stim"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "cc",
@@ -713,7 +713,7 @@ dependencies = [
 
 [[package]]
 name = "selene-soft-rz-runtime"
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 dependencies = [
  "anyhow",
  "selene-core",

@@ -5,11 +5,11 @@ build-backend = "hatchling.build"
 [project]
 name = "selene-sim"
 description = "Quantinuum's open source emulator for hybrid quantum computation"
-version = "0.2.0a2"
+version = "0.2.0a3"
 requires-python = ">=3.10"
 dependencies = [
-    "selene-core~=0.2.0a2",
-    "selene-hugr-qis-compiler~=0.2.0a2",
+    "selene-core~=0.2.0a3",
+    "selene-hugr-qis-compiler~=0.2.0a3",
     "ziglang~=0.13",
     "pyyaml>=6.0.2",
     "lief>=0.16.5",
