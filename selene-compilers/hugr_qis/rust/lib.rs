@@ -150,7 +150,7 @@ fn codegen_extensions() -> CodegenExtsMap<'static, Hugr> {
         .add_extension(QSystemCodegenExtension::from(pcg.clone()))
         .add_extension(RandomCodegenExtension)
         .add_extension(ResultsCodegenExtension)
-        .add_extension(RotationCodegenExtension::new(pcg.clone()))
+        .add_extension(RotationCodegenExtension::new(pcg))
         .add_extension(UtilsCodegenExtension)
         .add_extension(DebugCodegenExtension)
         .finish()
