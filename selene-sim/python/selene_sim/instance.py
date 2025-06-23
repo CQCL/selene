@@ -85,17 +85,19 @@ class SeleneProcess:
         Get the environment variables for the process.
         """
         env = os.environ.copy()
+        additional_dirs = os.pathsep.join(str(p) for p in self.library_search_dirs)
+        path_name = ""
         match platform.system():
             case "Linux":
-                env["LD_LIBRARY_PATH"] = os.pathsep.join(
-                    str(p) for p in self.library_search_dirs
-                )
+                path_name = "LD_LIBRARY_PATH"
             case "Darwin":
-                env["DYLD_LIBRARY_PATH"] = os.pathsep.join(
-                    str(p) for p in self.library_search_dirs
-                )
+                path_name = "DYLD_LIBRARY_PATH"
             case "Windows":
-                env["PATH"] = os.pathsep.join(str(p) for p in self.library_search_dirs)
+                path_name = "PATH"
+        if path_name in env:
+            env[path_name] += os.pathsep + additional_dirs
+        else:
+            env[path_name] = additional_dirs
         return env
 
     def spawn(self):
