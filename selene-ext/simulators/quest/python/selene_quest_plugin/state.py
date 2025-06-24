@@ -1,6 +1,6 @@
 from pathlib import Path
 import struct
-from typing import Generic, TypeVar
+from typing import Callable, Generic, Iterable, TypeVar
 
 import numpy as np
 from dataclasses import dataclass
@@ -127,6 +127,30 @@ class SeleneQuestState:
                 )
             )
         return result
+    def get_single_state(self, zero_threshold=1e-12) -> np.ndarray:
+        """
+        Assume that the state is a pure state, i.e. it has only one non-zero component,
+        and return it.
+        
+        Raises ValueError if the state is not a pure state.
+        
+        """
+
+        return self._get_single(
+            all_getter=self.get_state_vector_distribution,
+            zero_threshold=zero_threshold,
+        )
+
+    def _get_single(self, all_getter: Callable[[float], Iterable[TracedState[T]]], zero_threshold: float) -> T:
+        """
+        Get the single state of the specified qubits, assuming that the state is a pure state.
+        This is a helper method for get_single_state.
+        """
+        all_states = list(all_getter(zero_threshold))
+
+        if len(all_states) != 1:
+            raise ValueError("The state is not a pure state.")
+        return all_states[0].state
 
     def get_dirac_notation(self, zero_threshold=1e-12) -> list[TracedState]:
         try:
@@ -175,6 +199,18 @@ class SeleneQuestState:
         state_vector = self.get_state_vector_distribution(zero_threshold=zero_threshold)
         result = [simplify_state(tr_st) for tr_st in state_vector]
         return result
+
+    def get_single_dirac_notation(
+        self, zero_threshold=1e-12
+    ) -> TracedState:
+        """
+        Get the single state of the specified qubits in Dirac notation,
+        assuming that the state is a pure state.
+        """
+        return self._get_single(
+            all_getter=self.get_dirac_notation,
+            zero_threshold=zero_threshold,
+        )
 
     @staticmethod
     def parse_from_file(filename: Path) -> "SeleneQuestState":

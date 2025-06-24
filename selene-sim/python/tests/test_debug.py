@@ -42,7 +42,7 @@ def test_array_state():
     for shot in shots.results:
         state = Quest.extract_states_dict(shot.entries)["array_state"]
         assert state.get_density_matrix()[3][3] == 1
-        assert state.get_state_vector_distribution()[0].probability == 1
+        assert len(state.get_single_state()) == 4
 
 
 def test_array_subscript_state():
