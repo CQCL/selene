@@ -1,20 +1,37 @@
 from pathlib import Path
 import struct
+from typing import Generic, TypeVar
 
 import numpy as np
+from dataclasses import dataclass
 
 
+T = TypeVar("T")
+
+
+@dataclass(frozen=True)
+class TracedState(Generic[T]):
+    """The result of tracing out qubits from a SeleneQuestState, leaving a probabilistic
+    mix of states. This class represents a single state in the mix."""
+
+    #: The probability of this state in the mix
+    probability: float
+    #: The state vector of remaining qubits after tracing out.
+    state: T
+
+
+@dataclass
 class SeleneQuestState:
-    def __init__(
-        self, state: np.ndarray, total_qubits: int, specified_qubits: list[int]
-    ):
-        self.state = state  # complex vector of size 2^total_qubits
-        self.total_qubits = total_qubits  # total number of qubits in the state, i.e. n_qubits param to run_shots
-        self.specified_qubits = (
-            specified_qubits  # user-specified qubits, in order of their specification
-        )
+    """A quantum state in the Selene Quest simulator, as reported by `state_result` calls."""
 
-    def get_density_matrix(self, zero_threshold: float = 1e-12):
+    #: Complex vector of size 2^total_qubits
+    state: np.ndarray
+    #: Total number of qubits in the state, i.e. n_qubits param to run_shots
+    total_qubits: int
+    #: User-specified qubits, in order of their specification
+    specified_qubits: list[int]
+
+    def get_density_matrix(self, zero_threshold: float = 1e-12) -> np.ndarray:
         """
         Get the reduced density matrix of the state, tracing out unspecified qubits.
 
@@ -62,7 +79,9 @@ class SeleneQuestState:
             result = re + 1j * im
         return result
 
-    def get_state_vector_distribution(self, zero_threshold=1e-12):
+    def get_state_vector_distribution(
+        self, zero_threshold=1e-12
+    ) -> list[TracedState[np.ndarray]]:
         """
         The reduced density matrix may be written as
         :math:`\\rho = \\sum_i p_i |i\\rangle \\langle i|`,
@@ -102,24 +121,24 @@ class SeleneQuestState:
             if abs(eigenvalue) < zero_threshold:
                 continue
             result.append(
-                {
-                    "probability": abs(eigenvalue),
-                    "state": eigenstates[:, i],
-                }
+                TracedState(
+                    probability=abs(eigenvalue),
+                    state=eigenstates[:, i],
+                )
             )
         return result
 
-    def get_dirac_notation(self, zero_threshold=1e-12):
+    def get_dirac_notation(self, zero_threshold=1e-12) -> list[TracedState]:
         try:
             from sympy import nsimplify
             from sympy.physics.quantum.state import Ket
 
             width = len(self.specified_qubits)
 
-            def simplify_state(probability, coefficients):
+            def simplify_state(tr_st: TracedState[np.ndarray]) -> TracedState:
                 result = None
-                probability = nsimplify(probability)
-                for i, amplitude in enumerate(state):
+                probability = nsimplify(tr_st.probability)
+                for i, amplitude in enumerate(tr_st.state):
                     if abs(amplitude) < zero_threshold:
                         continue
                     coefficient = nsimplify(amplitude)
@@ -129,7 +148,7 @@ class SeleneQuestState:
                         result = coefficient * ket
                     else:
                         result += coefficient * ket
-                return probability, result
+                return TracedState(probability=probability, state=result)
         except ImportError:
             import sys
 
@@ -138,9 +157,11 @@ class SeleneQuestState:
                 file=sys.stderr,
             )
 
-            def simplify_state(probability, coefficients):
+            def simplify_state(
+                tr_st: TracedState[np.ndarray],
+            ) -> TracedState:
                 result = None
-                for i, amplitude in enumerate(state):
+                for i, amplitude in enumerate(tr_st.state):
                     if abs(amplitude) < zero_threshold:
                         continue
                     ket = f"{amplitude}|{bin(i)[2:]}>"
@@ -148,21 +169,11 @@ class SeleneQuestState:
                         result = ket
                     else:
                         result += " + " + ket
-                return probability, result
+                result = result or ""
+                return TracedState(probability=tr_st.probability, state=result)
 
         state_vector = self.get_state_vector_distribution(zero_threshold=zero_threshold)
-        result = []
-        for entry in state_vector:
-            probability = entry["probability"]
-            state = entry["state"]
-            probability, state = simplify_state(probability, state)
-            # Convert the state to Dirac notation
-            result.append(
-                {
-                    "probability": probability,
-                    "state": state,
-                }
-            )
+        result = [simplify_state(tr_st) for tr_st in state_vector]
         return result
 
     @staticmethod

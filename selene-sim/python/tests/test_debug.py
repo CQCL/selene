@@ -18,7 +18,7 @@ def test_initial_state():
     runner = build(guppy.compile(main), "initial_state")
     got = runner.run(Quest(), n_qubits=1)
     state = Quest.extract_states_dict(got)["initial_state"]
-    assert state.get_dirac_notation()[0]["probability"] == 1
+    assert state.get_dirac_notation()[0].probability == 1
 
 
 def test_array_state():
@@ -42,7 +42,7 @@ def test_array_state():
     for shot in shots.results:
         state = Quest.extract_states_dict(shot.entries)["array_state"]
         assert state.get_density_matrix()[3][3] == 1
-        assert state.get_state_vector_distribution()[0]["probability"] == 1
+        assert state.get_state_vector_distribution()[0].probability == 1
 
 
 def test_array_subscript_state():
@@ -66,4 +66,4 @@ def test_array_subscript_state():
     for shot in shots.results:
         state = Quest.extract_states_dict(shot.entries)["array_state"]
         assert state.get_density_matrix()[1][1] == 1
-        assert state.get_state_vector_distribution()[0]["probability"] == 1
+        assert state.get_state_vector_distribution()[0].probability == 1
