@@ -127,13 +127,14 @@ class SeleneQuestState:
                 )
             )
         return result
+
     def get_single_state(self, zero_threshold=1e-12) -> np.ndarray:
         """
         Assume that the state is a pure state, i.e. it has only one non-zero component,
         and return it.
-        
+
         Raises ValueError if the state is not a pure state.
-        
+
         """
 
         return self._get_single(
@@ -141,7 +142,11 @@ class SeleneQuestState:
             zero_threshold=zero_threshold,
         )
 
-    def _get_single(self, all_getter: Callable[[float], Iterable[TracedState[T]]], zero_threshold: float) -> T:
+    def _get_single(
+        self,
+        all_getter: Callable[[float], Iterable[TracedState[T]]],
+        zero_threshold: float,
+    ) -> T:
         """
         Get the single state of the specified qubits, assuming that the state is a pure state.
         This is a helper method for get_single_state.
@@ -200,9 +205,7 @@ class SeleneQuestState:
         result = [simplify_state(tr_st) for tr_st in state_vector]
         return result
 
-    def get_single_dirac_notation(
-        self, zero_threshold=1e-12
-    ) -> TracedState:
+    def get_single_dirac_notation(self, zero_threshold=1e-12) -> TracedState:
         """
         Get the single state of the specified qubits in Dirac notation,
         assuming that the state is a pure state.
