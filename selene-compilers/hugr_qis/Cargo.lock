@@ -868,9 +868,9 @@ dependencies = [
 
 [[package]]
 name = "hugr"
-version = "0.20.1"
+version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be90c2e1f9aba85bab9d5a0e7979a53fda07005fb7ace398df07be786d58e6ef"
+checksum = "462367504afb43961a4afe3a2fff746fef80f9f2f1ec2faecf245a562ab1d7ab"
 dependencies = [
  "hugr-core",
  "hugr-llvm",
@@ -894,9 +894,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-core"
-version = "0.20.1"
+version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ed7f33e2c45ebccb95496ec609143f8d6a25ecfb6da60535df1d55eb88ecbf9"
+checksum = "545209fd52be8f4af29b08595f6a065565aa16dd26b1e83f8af1058688353e5f"
 dependencies = [
  "cgmath",
  "delegate",
@@ -928,9 +928,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-llvm"
-version = "0.20.1"
+version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "424a3d73d558377f4cee0ce3320334d10b265c5357997730253e53b888620e7f"
+checksum = "94eb49c2cc4ae3f7d54c8c6f2c0a331465325eb89745385663538dccfca54d59"
 dependencies = [
  "anyhow",
  "delegate",
@@ -948,9 +948,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-model"
-version = "0.20.1"
+version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97d27208d4076ea6f437c3dcf9d1466a9d6a1d7938a1296c4ebc3ccb76482bf1"
+checksum = "e13917825a242ef816337ce1a7939dd95589122b154f3c3e5f6b15e6025c109a"
 dependencies = [
  "base64",
  "bumpalo",
@@ -969,9 +969,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-passes"
-version = "0.20.1"
+version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9d141482c92df56834938b7e2bdd0b4a1bc48019e71a430ca6a65339775d5c4"
+checksum = "812103e60642aeabbd37b1e1fcf4c5cb595e9a0a2123a7d03c02b48e3216a848"
 dependencies = [
  "ascent",
  "derive_more 1.0.0",
@@ -1605,6 +1605,7 @@ dependencies = [
  "fxhash",
  "itertools 0.13.0",
  "petgraph 0.8.2",
+ "serde",
  "thiserror 1.0.69",
 ]
 
