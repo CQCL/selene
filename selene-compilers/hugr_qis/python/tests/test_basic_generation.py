@@ -16,7 +16,7 @@ from guppylang.std.quantum import (
     x,
     z,
 )
-from selene_hugr_qis_compiler import compile_to_llvm_ir
+from selene_hugr_qis_compiler import HugrReadError, check_hugr, compile_to_llvm_ir
 
 triples = [
     "x86_64-unknown-linux-gnu",
@@ -24,6 +24,27 @@ triples = [
     "aarch64-apple-darwin",
     "x86_64-windows-msvc",
 ]
+
+
+def test_check() -> None:
+    """Test the check_hugr function to ensure it can load a HUGR envelope."""
+
+    @guppy
+    def main() -> None:
+        q = qubit()
+        discard(q)
+
+    hugr_envelope = guppy.compile(main).package.to_bytes()
+
+    check_hugr(hugr_envelope)  # guppy produces a valid HUGR envelope!
+
+    bad_number = hugr_envelope[1:]
+    with pytest.raises(HugrReadError, match="Bad magic number"):
+        check_hugr(bad_number)
+
+    bad_end = hugr_envelope[:-1]
+    with pytest.raises(HugrReadError, match="EOF while parsing an object"):
+        check_hugr(bad_end)
 
 
 @pytest.mark.parametrize("target_triple", triples)

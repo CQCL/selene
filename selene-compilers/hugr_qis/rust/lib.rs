@@ -3,9 +3,8 @@
 #![deny(missing_docs)]
 #![warn(rust_2021_compatibility, future_incompatible, unused)]
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use hugr::envelope::EnvelopeConfig;
-use hugr::llvm::CodegenExtsBuilder;
 use hugr::llvm::custom::CodegenExtsMap;
 use hugr::llvm::emit::{EmitHugr, Namer};
 #[allow(deprecated)]
@@ -13,22 +12,26 @@ use hugr::llvm::extension::collections::stack_array::{ArrayCodegenExtension, Def
 use hugr::llvm::extension::int::IntCodegenExtension;
 use hugr::llvm::utils::fat::FatExt as _;
 use hugr::llvm::utils::inline_constant_functions;
-use inkwell::OptimizationLevel;
+use hugr::llvm::CodegenExtsBuilder;
 use inkwell::context::Context;
 use inkwell::module::Module;
 use inkwell::passes::PassBuilderOptions;
 use inkwell::support::LLVMString;
-use inkwell::targets::{CodeModel, InitializationConfig, RelocMode, Target, TargetTriple, TargetMachine};
+use inkwell::targets::{
+    CodeModel, InitializationConfig, RelocMode, Target, TargetMachine, TargetTriple,
+};
+use inkwell::OptimizationLevel;
 use pyo3::prelude::*;
+
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 use std::path::PathBuf;
 use std::rc::Rc;
 use std::vec::Vec;
 use std::{fs, str, vec};
-use tket2::extension::TKET2_EXTENSION;
 use tket2::extension::rotation::ROTATION_EXTENSION;
-use tket2::hugr::extension::{ExtensionRegistry, prelude};
+use tket2::extension::TKET2_EXTENSION;
+use tket2::hugr::extension::{prelude, ExtensionRegistry};
 use tket2::hugr::std_extensions::arithmetic::{
     conversions, float_ops, float_types, int_ops, int_types,
 };
@@ -36,14 +39,14 @@ use tket2::hugr::std_extensions::{collections, logic, ptr};
 use tket2::hugr::{self, llvm::inkwell};
 use tket2::hugr::{Hugr, HugrView, Node};
 use tket2::llvm::rotation::RotationCodegenExtension;
-use tket2_hseries::QSystemPass;
 use tket2_hseries::extension::{futures as qsystem_futures, qsystem, result as qsystem_result};
 pub use tket2_hseries::llvm::futures::FuturesCodegenExtension;
 use tket2_hseries::llvm::{
-    prelude::QISPreludeCodegen, qsystem::QSystemCodegenExtension, random::RandomCodegenExtension,
-    result::ResultsCodegenExtension, utils::UtilsCodegenExtension, debug::DebugCodegenExtension,
+    debug::DebugCodegenExtension, prelude::QISPreludeCodegen, qsystem::QSystemCodegenExtension,
+    random::RandomCodegenExtension, result::ResultsCodegenExtension, utils::UtilsCodegenExtension,
 };
-use tracing::{Level, event, instrument};
+use tket2_hseries::QSystemPass;
+use tracing::{event, instrument, Level};
 use utils::read_hugr_envelope;
 
 mod utils;
@@ -346,7 +349,10 @@ pub fn get_native_target_machine(opt_level: OptimizationLevel) -> Result<TargetM
 
 /// Get the Inkwell TargetMachine for the current platform, given
 /// the provided optimization level.
-pub fn get_target_machine_from_triple(target_triple: &str, opt_level: OptimizationLevel) -> Result<TargetMachine> {
+pub fn get_target_machine_from_triple(
+    target_triple: &str,
+    opt_level: OptimizationLevel,
+) -> Result<TargetMachine> {
     let reloc_mode = RelocMode::PIC;
     let code_model = CodeModel::Default;
     Target::initialize_all(&InitializationConfig::default());
@@ -356,17 +362,9 @@ pub fn get_target_machine_from_triple(target_triple: &str, opt_level: Optimizati
     eprintln!("Using target: {:?}", target.get_name());
     let cpu: String = target.get_name().to_string_lossy().to_string();
     target
-        .create_target_machine(
-            &triple,
-            &cpu,
-            "",
-            opt_level,
-            reloc_mode,
-            code_model,
-        )
+        .create_target_machine(&triple, &cpu, "", opt_level, reloc_mode, code_model)
         .ok_or_else(|| anyhow!("Failed to create target machine"))
 }
-
 
 /// Get the optimization level for the given integer value.
 pub fn get_opt_level(opt_level: u32) -> Result<OptimizationLevel> {
@@ -380,25 +378,47 @@ pub fn get_opt_level(opt_level: u32) -> Result<OptimizationLevel> {
 }
 
 // -------------------- Python bindings -----------------------
+#[allow(missing_docs)]
+mod exceptions {
+    use pyo3::exceptions::PyException;
 
+    pyo3::create_exception!(selene_hugr_qis_compiler, HugrReadError, PyException);
+}
 #[pymodule]
 mod selene_hugr_qis_compiler {
     use super::{
-        CompileArgs, Context, PyResult, pyfunction, compile, get_opt_level, get_native_target_machine, get_target_machine_from_triple,
-        read_hugr_envelope,
+        compile, get_native_target_machine, get_opt_level, get_target_machine_from_triple,
+        pyfunction, read_hugr_envelope, CompileArgs, Context, Hugr, PyResult,
     };
+
+    #[pymodule_export]
+    use super::exceptions::HugrReadError;
+
+    fn py_read_envelope(pkg_bytes: &[u8]) -> PyResult<Hugr> {
+        read_hugr_envelope(pkg_bytes).map_err(|e| HugrReadError::new_err(e.to_string()))
+    }
+
+    /// Load serialized HUGR and validate it
+    #[pyfunction]
+    pub fn check_hugr(pkg_bytes: &[u8]) -> PyResult<()> {
+        py_read_envelope(pkg_bytes).map(|_| ())
+    }
 
     /// Compile HUGR package to LLVM IR string
     #[pyfunction]
     #[pyo3(signature = (pkg_bytes, opt_level=2, target_triple="native"))]
-    pub fn compile_to_llvm_ir(pkg_bytes: &[u8], opt_level: u32, target_triple: &str) -> PyResult<String> {
+    pub fn compile_to_llvm_ir(
+        pkg_bytes: &[u8],
+        opt_level: u32,
+        target_triple: &str,
+    ) -> PyResult<String> {
         let opt = get_opt_level(opt_level)?;
         let target_machine = if target_triple == "native" {
             get_native_target_machine(opt)
         } else {
             get_target_machine_from_triple(target_triple, opt)
         }?;
-        let mut hugr = read_hugr_envelope(pkg_bytes)?;
+        let mut hugr = py_read_envelope(pkg_bytes)?;
         let ctx = Context::create();
         let llvm_module = compile(
             &CompileArgs::new(&"hugr", &target_machine, opt),
@@ -411,14 +431,18 @@ mod selene_hugr_qis_compiler {
     /// Compile HUGR package to LLVM bitcode
     #[pyfunction]
     #[pyo3(signature = (pkg_bytes, opt_level=2, target_triple="native"))]
-    pub fn compile_to_bitcode(pkg_bytes: &[u8], opt_level: u32, target_triple: &str) -> PyResult<Vec<u8>> {
+    pub fn compile_to_bitcode(
+        pkg_bytes: &[u8],
+        opt_level: u32,
+        target_triple: &str,
+    ) -> PyResult<Vec<u8>> {
         let opt = get_opt_level(opt_level)?;
         let target_machine = if target_triple == "native" {
             get_native_target_machine(opt)
         } else {
             get_target_machine_from_triple(target_triple, opt)
         }?;
-        let mut hugr = read_hugr_envelope(pkg_bytes)?;
+        let mut hugr = py_read_envelope(pkg_bytes)?;
         let ctx = Context::create();
         let llvm_module = compile(
             &CompileArgs::new(&"hugr", &target_machine, opt),
