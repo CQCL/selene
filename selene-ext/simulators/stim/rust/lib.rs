@@ -123,9 +123,9 @@ impl SimulatorInterface for StimSimulator {
 
         match approx {
             ApproxAngle::Zero => (),
-            ApproxAngle::FracPi2 => self.simulator.sqrt_z_dag(q0_u32),
+            ApproxAngle::FracPi2 => self.simulator.sqrt_z(q0_u32),
             ApproxAngle::Pi => self.simulator.z(q0_u32),
-            ApproxAngle::Frac3Pi2 => self.simulator.sqrt_z(q0_u32),
+            ApproxAngle::Frac3Pi2 => self.simulator.sqrt_z_dag(q0_u32),
             ApproxAngle::NoSuitableApproximation => {
                 return Err(anyhow!(
                     "RZGate(q0={q0}, theta={theta}) is not representable in stabiliser form. Angles must be (approximate) multiples of pi/2 in order to use Stim."
