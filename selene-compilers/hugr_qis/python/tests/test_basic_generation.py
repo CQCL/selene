@@ -30,11 +30,11 @@ def test_check() -> None:
     """Test the check_hugr function to ensure it can load a HUGR envelope."""
 
     @guppy
-    def main() -> None:
+    def foo() -> None:
         q = qubit()
         discard(q)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = guppy.compile(foo).package.to_bytes()
 
     check_hugr(hugr_envelope)  # guppy produces a valid HUGR envelope!
 
@@ -50,12 +50,12 @@ def test_check() -> None:
 @pytest.mark.parametrize("target_triple", triples)
 def test_llvm_no_results(snapshot, target_triple):
     @guppy
-    def main() -> None:
+    def bar() -> None:
         q0: qubit = qubit()
         h(q0)
         m = measure(q0)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = guppy.compile(bar).package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"no_results_{target_triple}")
 

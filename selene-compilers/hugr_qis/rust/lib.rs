@@ -9,7 +9,6 @@ use hugr::llvm::CodegenExtsBuilder;
 use hugr::llvm::custom::CodegenExtsMap;
 use hugr::llvm::emit::{EmitHugr, Namer};
 #[allow(deprecated)]
-use hugr::llvm::extension::collections::stack_array::{ArrayCodegenExtension, DefaultArrayCodegen};
 use hugr::llvm::extension::int::IntCodegenExtension;
 use hugr::llvm::utils::fat::FatExt as _;
 use hugr::llvm::utils::inline_constant_functions;
@@ -41,6 +40,7 @@ use tket2::hugr::{Hugr, HugrView, Node};
 use tket2::llvm::rotation::RotationCodegenExtension;
 use tket2_hseries::QSystemPass;
 use tket2_hseries::extension::{futures as qsystem_futures, qsystem, result as qsystem_result};
+use tket2_hseries::llvm::array_utils::{ArrayLowering, DEFAULT_STACK_ARRAY_LOWERING};
 pub use tket2_hseries::llvm::futures::FuturesCodegenExtension;
 use tket2_hseries::llvm::{
     debug::DebugCodegenExtension, prelude::QISPreludeCodegen, qsystem::QSystemCodegenExtension,
@@ -51,7 +51,6 @@ use utils::read_hugr_envelope;
 
 mod utils;
 
-const HUGR_MAIN: &str = "main";
 const LLVM_MAIN: &str = "qmain";
 const METADATA: &[(&str, &[&str])] = &[("name", &["mainlib"])];
 
@@ -128,11 +127,16 @@ fn get_hugr_llvm_module<'c, 'hugr, 'a: 'c>(
 ) -> Result<Module<'c>> {
     let module = context.create_module(module_name.as_ref());
     let emit = EmitHugr::new(context, module, namer, exts);
-    Ok(emit.emit_module(hugr.fat_root().unwrap())?.finish())
+    Ok(emit
+        .emit_module(hugr.try_fat(hugr.module_root()).unwrap())?
+        .finish())
 }
 
 fn process_hugr(hugr: &mut Hugr) -> Result<()> {
     QSystemPass::default().run(hugr)?;
+    // with_entrypoint(hugr, hugr.module_root(), |hugr| {
+    //     // `with_entrypoint` returns Rerooted, which the pass expects a bare Hugr.
+    // })?;
     inline_constant_functions(hugr)?;
     Ok(())
 }
@@ -147,15 +151,15 @@ fn codegen_extensions() -> CodegenExtsMap<'static, Hugr> {
         .add_conversion_extensions()
         .add_logic_extensions()
         // TODO: Replace with heap array lowering
-        .add_extension(ArrayCodegenExtension::new(DefaultArrayCodegen))
+        .add_extension(DEFAULT_STACK_ARRAY_LOWERING.codegen_extension())
         .add_default_static_array_extensions()
         .add_extension(FuturesCodegenExtension)
         .add_extension(QSystemCodegenExtension::from(pcg.clone()))
         .add_extension(RandomCodegenExtension)
-        .add_extension(ResultsCodegenExtension)
+        .add_extension(ResultsCodegenExtension::new(DEFAULT_STACK_ARRAY_LOWERING))
         .add_extension(RotationCodegenExtension::new(pcg))
         .add_extension(UtilsCodegenExtension)
-        .add_extension(DebugCodegenExtension)
+        .add_extension(DebugCodegenExtension::new(DEFAULT_STACK_ARRAY_LOWERING))
         .finish()
 }
 
@@ -196,22 +200,14 @@ fn optimize_module(module: &Module, args: &CompileArgs) -> Result<()> {
 }
 
 fn find_entry_point(namer: &Namer, hugr: &impl HugrView<Node = Node>) -> Result<String> {
-    let entry_point_node = {
-        let mains: Vec<_> = hugr
-            .nodes()
-            .filter(|&n| {
-                hugr.get_optype(n)
-                    .as_func_defn()
-                    .is_some_and(|f| f.func_name() == HUGR_MAIN)
-            })
-            .collect();
-        match mains.as_slice() {
-            [] => Err(anyhow!("{HUGR_MAIN} function not found in HUGR"))?,
-            [x] => *x,
-            xs => Err(anyhow!("found {} {HUGR_MAIN} functions in HUGR", xs.len()))?,
-        }
+    let entry_point_node = hugr.entrypoint();
+    let name = {
+        hugr.entrypoint_optype()
+            .as_func_defn()
+            .ok_or_else(|| anyhow!("Entry point node is not a function definition"))?
+            .func_name()
     };
-    Ok(namer.name_func(HUGR_MAIN, entry_point_node))
+    Ok(namer.name_func(name, entry_point_node))
 }
 
 fn wrap_main<'c>(
@@ -233,7 +229,7 @@ fn wrap_main<'c>(
     let initial_tc = entry_fun.get_nth_param(0).unwrap().into_int_value();
     let hugr_main = module
         .get_function(hugr_entry)
-        .ok_or_else(|| anyhow!("{HUGR_MAIN} function '{hugr_entry}' not found in Module"))?;
+        .ok_or_else(|| anyhow!("Entrypoint function '{hugr_entry}' not found in Module"))?;
 
     let _ = builder.build_call(setup, &[initial_tc.into()], "")?;
     let _ = builder.build_call(hugr_main, &[], "")?;

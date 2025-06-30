@@ -179,7 +179,7 @@ wheels = [
 [[package]]
 name = "guppylang"
 version = "0.20.0"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/CQCL/guppylang.git?rev=090f920#090f920646703a40ece6cc5305d1011f2a220ff5" }
 dependencies = [
     { name = "graphviz" },
     { name = "hugr" },
@@ -188,10 +188,6 @@ dependencies = [
     { name = "pydantic" },
     { name = "tket2-exts" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/65/5a/d28872bf79ec26de8e33e89fa4f8c0c54cadfa3dc9c45a3154c1a617894b/guppylang-0.20.0.tar.gz", hash = "sha256:56d7f307a83ddf49f6eb209735fa95ca204b3aa3edb6ba0e2b9e422113898337", size = 425571, upload-time = "2025-06-19T14:23:17.57Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b6/5b/9c8d0acb5916cea6c879cdbdce0c69e5d0930eeb2f69703d2fa718a2ce52/guppylang-0.20.0-py3-none-any.whl", hash = "sha256:c0f19e23e9dec3cd756ad54a5a33a3b7f1349eb307e15a07beb105ddb0b77775", size = 234382, upload-time = "2025-06-19T14:23:15.236Z" },
 ]
 
 [[package]]
@@ -1146,7 +1142,7 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "cibuildwheel", specifier = ">=2.23.2" },
-    { name = "guppylang", specifier = "~=0.20.0" },
+    { name = "guppylang", git = "https://github.com/CQCL/guppylang.git?rev=090f920" },
     { name = "maturin", specifier = ">=1.7.4,<2.0" },
     { name = "pip", specifier = ">=25" },
     { name = "pre-commit", specifier = "==4.0.1" },

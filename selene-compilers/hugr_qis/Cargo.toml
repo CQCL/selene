@@ -18,7 +18,7 @@ crate-type = ["cdylib"]
 [dependencies]
 anyhow = "1.0"
 tket2 = "0.12.1"
-tket2-hseries = { version = "0.15.1", features = ["llvm"] }
+tket2-hseries = { version = "0.16.0", features = ["llvm"] }
 pyo3 = { version = "0.24", features = ["abi3-py310", "anyhow"] }
 tracing = "0.1"
 
@@ -27,7 +27,7 @@ default = []
 extension-module = ["pyo3/extension-module"]
 
 [build-dependencies]
-cbindgen = "0.28"
+cbindgen = "0.29"
 pyo3-build-config = "0.24"
 
 [dev-dependencies]
@@ -40,5 +40,5 @@ ignored = ["cbindgen", "pyo3-build-config"]
 
 [patch.crates-io]
 # Uncomment to use unreleased versions of tket2
-# tket2 = {git = "https://github.com/CQCL/tket2.git", branch = "main" }
-# tket2-hseries = {git = "https://github.com/CQCL/tket2.git", branch = "main" }
+# tket2 = {git = "https://github.com/CQCL/tket2.git", rev = "0dd4ebd"}
+# tket2-hseries = {git = "https://github.com/CQCL/tket2.git", rev = "0dd4ebd" }
