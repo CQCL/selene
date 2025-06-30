@@ -1,6 +1,6 @@
-use anyhow::{anyhow, Result};
-use tket2::hugr::package::Package;
+use anyhow::{Result, anyhow};
 use tket2::hugr::Hugr;
+use tket2::hugr::package::Package;
 
 use crate::REGISTRY;
 
