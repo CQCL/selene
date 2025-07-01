@@ -1738,6 +1738,7 @@ version = "0.2.0-a.4"
 dependencies = [
  "anyhow",
  "cbindgen",
+ "itertools 0.14.0",
  "pyo3",
  "pyo3-build-config",
  "rstest 0.25.0",

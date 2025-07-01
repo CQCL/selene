@@ -20,6 +20,7 @@ use inkwell::support::LLVMString;
 use inkwell::targets::{
     CodeModel, InitializationConfig, RelocMode, Target, TargetMachine, TargetTriple,
 };
+use itertools::Itertools;
 use pyo3::prelude::*;
 
 use std::error::Error;
@@ -200,13 +201,33 @@ fn optimize_module(module: &Module, args: &CompileArgs) -> Result<()> {
 }
 
 fn find_entry_point(namer: &Namer, hugr: &impl HugrView<Node = Node>) -> Result<String> {
-    let entry_point_node = hugr.entrypoint();
-    let name = {
-        hugr.entrypoint_optype()
-            .as_func_defn()
-            .ok_or_else(|| anyhow!("Entry point node is not a function definition"))?
-            .func_name()
+    const HUGR_MAIN: &str = "main";
+    let (name, entry_point_node) = if hugr.entrypoint_optype().is_module() {
+        // backwards compatibility with old Guppy versions: assume entrypoint is "main"
+        // function in module.
+
+        let node = hugr
+            .children(hugr.module_root())
+            .filter(|&n| {
+                hugr.get_optype(n)
+                    .as_func_defn()
+                    .is_some_and(|f| f.func_name() == HUGR_MAIN)
+            })
+            .exactly_one()
+            .map_err(|_| {
+                anyhow!("Module entrypoint must have a single function named {HUGR_MAIN} as child")
+            })?;
+        (HUGR_MAIN, node)
+    } else {
+        let name = {
+            hugr.entrypoint_optype()
+                .as_func_defn()
+                .ok_or_else(|| anyhow!("Entry point node is not a function definition"))?
+                .func_name()
+        };
+        (name.as_ref(), hugr.entrypoint())
     };
+
     Ok(namer.name_func(name, entry_point_node))
 }
 
