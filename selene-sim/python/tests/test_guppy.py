@@ -30,12 +30,12 @@ from selene_sim.exceptions import SelenePanicError, SeleneRuntimeError
 
 def test_no_results():
     @guppy
-    def main() -> None:
+    def bar() -> None:
         q0: qubit = qubit()
         h(q0)
         m = measure(q0)
 
-    runner = build(guppy.compile(main), "no_results")
+    runner = build(guppy.compile(bar), "no_results")
     # time limits aren't necessary in general, but they are helpful in testing
     got = list(
         runner.run(Coinflip(), n_qubits=1, timeout=datetime.timedelta(seconds=1))

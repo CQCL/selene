@@ -16,6 +16,7 @@ from guppylang.std.quantum import (
     x,
     z,
 )
+from hugr.package import Package
 from selene_hugr_qis_compiler import HugrReadError, check_hugr, compile_to_llvm_ir
 
 triples = [
@@ -30,11 +31,11 @@ def test_check() -> None:
     """Test the check_hugr function to ensure it can load a HUGR envelope."""
 
     @guppy
-    def main() -> None:
+    def foo() -> None:
         q = qubit()
         discard(q)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = guppy.compile(foo).package.to_bytes()
 
     check_hugr(hugr_envelope)  # guppy produces a valid HUGR envelope!
 
@@ -48,14 +49,33 @@ def test_check() -> None:
 
 
 @pytest.mark.parametrize("target_triple", triples)
-def test_llvm_no_results(snapshot, target_triple):
+def test_backwards_entrypoiny(snapshot, target_triple) -> None:
+    """Test a HUGR with a module entrypoint and main is accepted.
+    Backwards compatibility test."""
+
     @guppy
     def main() -> None:
+        q = qubit()
+        discard(q)
+
+    package: Package = guppy.compile(main).package
+    # Set the entrypoint to the module root, which is the old behaviour
+    package.modules[0].entrypoint = package.modules[0].module_root
+
+    hugr_envelope = package.to_bytes()
+    ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
+    snapshot.assert_match(ir, f"module_main_{target_triple}")
+
+
+@pytest.mark.parametrize("target_triple", triples)
+def test_llvm_no_results(snapshot, target_triple):
+    @guppy
+    def bar() -> None:
         q0: qubit = qubit()
         h(q0)
         m = measure(q0)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = guppy.compile(bar).package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"no_results_{target_triple}")
 
