@@ -216,7 +216,7 @@ class SeleneQuestState:
         )
 
     @staticmethod
-    def parse_from_file(filename: Path) -> "SeleneQuestState":
+    def parse_from_file(filename: Path, cleanup: bool = True) -> "SeleneQuestState":
         with open(filename, "rb") as f:
             magic = f.read(12)
             if magic != b"selene-quest":
@@ -232,4 +232,6 @@ class SeleneQuestState:
                 dtype=np.complex128,
                 count=state_size,
             )
-            return SeleneQuestState(state, total_qubits, specified_qubits)
+        if cleanup:
+            filename.unlink()
+        return SeleneQuestState(state, total_qubits, specified_qubits)
