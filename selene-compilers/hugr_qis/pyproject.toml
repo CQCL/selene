@@ -99,6 +99,7 @@ exclude = [
 build = "cp310-*"
 skip = "*-win32 *-manylinux_i686 *-musllinux*"
 manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
 test-requires = ["pytest", "pytest-snapshot", "git+https://github.com/cqcl/guppylang@090f920"]
 test-command = "pytest -vv {package}"
 
@@ -120,10 +121,17 @@ before-all = '''
             cp -r /host/tmp/ci-cache/hugr-qis/target {package}
         fi;
     fi;
-    dnf install https://azure.repo.almalinux.org/8.10/BaseOS/x86_64/os/Packages/libffi-devel-3.1-24.el8.x86_64.rpm -y;
-    curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.6/clang+llvm-14.0.6-x86_64-linux-gnu-rhel-8.4.tar.xz;
     mkdir -p /tmp/llvm;
-    tar xf clang+llvm-14.0.6-x86_64-linux-gnu-rhel-8.4.tar.xz -C /tmp/llvm --strip-components=1;
+    if [ "$(uname -m)" = "x86_64" ];
+    then
+        dnf install https://azure.repo.almalinux.org/8.10/BaseOS/x86_64/os/Packages/libffi-devel-3.1-24.el8.x86_64.rpm -y;
+        curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.6/clang+llvm-14.0.6-x86_64-linux-gnu-rhel-8.4.tar.xz;
+        tar xf clang+llvm-14.0.6-x86_64-linux-gnu-rhel-8.4.tar.xz -C /tmp/llvm --strip-components=1;
+    else
+        dnf install https://azure.repo.almalinux.org/almalinux/8.10/BaseOS/aarch64/os/Packages/libffi-devel-3.1-24.el8.aarch64.rpm -y;
+        curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.6/clang+llvm-14.0.6-aarch64-linux-gnu.tar.xz
+        tar xf clang+llvm-14.0.6-aarch64-linux-gnu.tar.xz -C /tmp/llvm --strip-components=1;
+    fi;
 '''
 before-test = '''
     if ${CACHE_CARGO};
