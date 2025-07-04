@@ -1153,7 +1153,7 @@ dev = [
 
 [[package]]
 name = "selene-sim"
-version = "0.2.0a4"
+version = "0.2.1"
 source = { editable = "." }
 dependencies = [
     { name = "hugr" },
