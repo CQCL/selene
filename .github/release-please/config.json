@@ -13,7 +13,7 @@
             "include-component-in-tag": true,
             "draft": false,
             "prerelease": false,
-            "draft-pull-request": true,
+            "draft-pull-request": true
         },
         "selene-compilers/hugr_qis": {
             "package-name": "selene-hugr-qis-compiler",
@@ -51,7 +51,7 @@
                     "jsonpath": "$.package[?(@.name.value=='selene-sim')].version"
                 }
             ]
-        },
+        }
     },
     "changelog-sections": [
         {
