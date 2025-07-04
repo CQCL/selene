@@ -36,19 +36,32 @@ class QuestPlugin(Simulator):
     @staticmethod
     def extract_states_dict(
         results: Iterable[TaggedResult],
+        cleanup: bool = True,
     ) -> dict[str, SeleneQuestState]:
         """Extract state results from a shot result stream and return them as a
-        dictionary keyed by the state tag. Assumes tags are unique within the shot."""
-        return dict(QuestPlugin.extract_states(results))
+        dictionary keyed by the state tag. Assumes tags are unique within the shot.
+
+        By default, state files are removed after extraction, as they may take up
+        considerable storage space. Pass `cleanup=False` to keep the files.
+        """
+        return dict(QuestPlugin.extract_states(results, cleanup=cleanup))
 
     @staticmethod
     def extract_states(
         results: Iterable[TaggedResult],
+        cleanup: bool = True,
     ) -> Iterator[tuple[str, SeleneQuestState]]:
         """Extract state results from a shot result stream and return them as a
-        pair of (tag, state)."""
+        pair of (tag, state).
+
+        By default, state files are removed after extraction, as they may take up
+        considerable storage space. Pass `cleanup=False` to keep the state files.
+        """
         return (
-            (cast(str, state_tag), SeleneQuestState.parse_from_file(pth))
+            (
+                cast(str, state_tag),
+                SeleneQuestState.parse_from_file(pth, cleanup=cleanup),
+            )
             for tag, result in results
             if (state_tag := _state_tag(tag)) is not None
             and isinstance(result, str)
