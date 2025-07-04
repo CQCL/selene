@@ -1,0 +1,21 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - feat/add-release-please
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Create  
+    runs-on: ubuntu-latest
+    steps:
+      uses: googleapis/release-please-action@v4
+      with:
+        token: ${{ secrets.HUGRBOT_PAT }}
+        config-file: .github/release-please/config.json
+        manifest-file: .github/release-please/manifest.json

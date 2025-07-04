@@ -1,0 +1,103 @@
+{
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+    "include-component-in-tag": true,
+    "bump-minor-pre-major": true,
+    "bump-patch-for-minor-pre-major": true,
+    "initial-version": "0.0.0",
+    "extra-label": "release",
+    "packages": {
+        "selene-core": {
+            "package-name": "selene-core",
+            "release-type": "python",
+            "component": "selene-core",
+            "include-component-in-tag": true,
+            "draft": false,
+            "prerelease": false,
+            "draft-pull-request": true,
+        },
+        "selene-compilers/hugr_qis": {
+            "package-name": "selene-hugr-qis-compiler",
+            "release-type": "python",
+            "component": "selene-hugr-qis-compiler",
+            "include-component-in-tag": true,
+            "draft": false,
+            "prerelease": false,
+            "draft-pull-request": true,
+            "extra-files": [
+                {
+                    "type": "toml",
+                    "path": "selene-compilers/hugr_qis/Cargo.toml",
+                    "jsonpath": "$.package.version"
+                },
+                {
+                    "type": "toml",
+                    "path": "selene-compilers/hugr_qis/Cargo.lock",
+                    "jsonpath": "$.package[?(@.name.value=='selene-hugr-qis-compiler')].version"
+                }
+            ]
+        },
+        ".": {
+            "package-name": "selene-sim",
+            "release-type": "python",
+            "component": "selene-sim",
+            "include-component-in-tag": true,
+            "draft": false,
+            "prerelease": false,
+            "draft-pull-request": true,
+            "extra-files": [
+                {
+                    "type": "toml",
+                    "path": "uv.lock",
+                    "jsonpath": "$.package[?(@.name.value=='selene-sim')].version"
+                }
+            ]
+        },
+    },
+    "changelog-sections": [
+        {
+            "type": "feat",
+            "section": "Features"
+        },
+        {
+            "type": "fix",
+            "section": "Bug Fixes"
+        },
+        {
+            "type": "perf",
+            "section": "Performance Improvements"
+        },
+        {
+            "type": "revert",
+            "section": "Reverts"
+        },
+        {
+            "type": "docs",
+            "section": "Documentation"
+        },
+        {
+            "type": "style",
+            "section": "Styling",
+            "hidden": true
+        },
+        {
+            "type": "chore",
+            "section": "Miscellaneous Chores",
+            "hidden": true
+        },
+        {
+            "type": "refactor",
+            "section": "Code Refactoring",
+            "hidden": true
+        },
+        {
+            "type": "test",
+            "section": "Tests",
+            "hidden": true
+        },
+        {
+            "type": "ci",
+            "section": "Continuous Integration",
+            "hidden": true
+        }
+    ]
+}
