@@ -147,6 +147,12 @@ class BundleBuildHook(BuildHookInterface):
 
         artifacts = []
         for package in packages:
+            package_root = Path(package)
+            # add py.typed
+            py_typed = package_root / "py.typed"
+            if py_typed.exists():
+                artifacts.append(str(py_typed.as_posix()))
+            # add distribution files (e.g. dynamic libraries, headers)
             dist_dir = Path(package) / "_dist"
             if not dist_dir.exists():
                 pass
