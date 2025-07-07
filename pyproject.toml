@@ -26,7 +26,7 @@ maintainers = [
     { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
     { name = "TKET development team", email = "tket-support@quantinuum.com" },
 ]
-readme = "README.md"
+readme = "selene-sim/python/selene_sim/README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
 
@@ -76,7 +76,11 @@ members = [
 [tool.hatch.build.hooks.custom]
 path = "hatch_build.py"
 
+
 [tool.hatch.build.targets.wheel]
+exclude = [
+    "selene-sim/python/selene_sim/README.md"
+]
 packages = [
     "selene-sim/python/selene_sim",
     "selene-ext/error-models/depolarizing/python/selene_depolarizing_error_model_plugin",
