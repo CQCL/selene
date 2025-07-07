@@ -154,7 +154,7 @@ before-all = '''
             cp -r /host/tmp/ci-cache/selene/target {project};
         fi;
     fi;
-    curl -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y && cargo install cbindgen
+    curl -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y && cargo install cbindgen cargo-expand
 '''
 before-test = '''
     # if we have caching enabled and it exists, copy caches to the
@@ -198,7 +198,7 @@ before-all = [
     # make sure we strip out non-version-controlled files,
     # e.g. when building locally.
     'curl -sSf https://sh.rustup.rs | sh -s -- -y',
-    'cargo install cbindgen',
+    'cargo install cbindgen cargo-expand',
 ]
 before-test = '''
     # install selene-core. This is quick so no need to pass in a wheel for now.
@@ -220,7 +220,7 @@ before-test = '''
 [tool.cibuildwheel.windows]
 before-all = [
     'curl -sSf https://sh.rustup.rs | sh -s -- -y',
-    'cargo install cbindgen',
+    'cargo install cbindgen cargo-expand',
 ]
 before-test = [
     # install selene-core. This is quick so no need to pass in a wheel for now.
