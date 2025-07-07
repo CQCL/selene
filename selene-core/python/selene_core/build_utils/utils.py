@@ -103,7 +103,25 @@ def get_undefined_symbols_from_object(path: Path) -> list[str]:
             if func.is_ordinal is False and func.name
         ]
 
+    elif binary is None:
+        # lief.parse() returned None, which means the binary format is not supported (yet),
+        # and we can't add support in Selene unless it does (or we find another approach).
+        raise RuntimeError(
+            f"The binary format of {path} is not yet supported by Lief, which is used by Selene for identifying undefined symbols."
+        )
+
     else:
+        # lief.parse() didn't return None, but it didn't return a binary type we can handle
+        # in selene yet. If we reach this error, it's possible that adding support is low-
+        # hanging fruit.
+        #
+        # An example is COFF. At the time of writing, lief does not support COFF input, so
+        # support for Windows lib files is currently diminished. However, lief has added
+        # basic COFF support on github, so the next pypi release should recognise COFF. When
+        # it does, we should be able to perform windows .lib file symbol extraction in Selene,
+        # which is a clear win.
+        #
+        # Until then, we wait.
         raise NotImplementedError(
             f"Unsupported binary format {type(binary)} for undefined symbol extraction: {path}"
         )

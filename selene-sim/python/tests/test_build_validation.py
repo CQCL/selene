@@ -1,4 +1,5 @@
 import pytest
+import platform
 
 from guppylang import guppy
 from guppylang.std.quantum import discard, qubit
@@ -7,6 +8,14 @@ from selene_sim.build import build
 from selene_sim import Quest
 
 
+@pytest.mark.xfail(
+    platform.system() == "Windows",
+    reason=(
+        "As Lief doesn't support COFF formats yet, we can't "
+        "detect undefined symbols in Windows lib files, and "
+        "thus can't run a strict build on Windows."
+    ),
+)
 @pytest.mark.parametrize(
     "build_config",
     [
