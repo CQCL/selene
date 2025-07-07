@@ -85,7 +85,7 @@ class SeleneCoreBuildHook(BuildHookInterface):
         header_extractor.run()
 
         artifacts = []
-        dist_dir = Path(self.root) / "python/_dist"
+        dist_dir = Path(self.root) / "python/selene_core/_dist"
         for artifact in dist_dir.rglob("*"):
             if artifact.is_file():
                 artifacts.append(str(artifact.as_posix()))
