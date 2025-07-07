@@ -105,7 +105,7 @@ def get_undefined_symbols_from_object(path: Path) -> list[str]:
 
     else:
         raise NotImplementedError(
-            f"Unsupported binary format for undefined symbol extraction: {path}"
+            f"Unsupported binary format {type(binary)} for undefined symbol extraction: {path}"
         )
 
 
