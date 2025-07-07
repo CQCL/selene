@@ -82,7 +82,7 @@ def get_undefined_symbols_from_object(path: Path) -> list[str]:
     if isinstance(binary, lief.ELF.Binary):
         # ELF: undefined symbols have shndx == 0 (SHN_UNDEF)
         return [
-            s.name
+            str(s.name)
             for s in binary.symbols
             if s.shndx == 0 and s.value == 0  # Optional extra check
         ]
@@ -90,14 +90,14 @@ def get_undefined_symbols_from_object(path: Path) -> list[str]:
     elif isinstance(binary, lief.MachO.Binary):
         # Mach-O: undefined symbols have section_number == 0
         def demangle(name):
-            return name[1:] if name.startswith("_") else name
+            return str(name[1:] if name.startswith("_") else name)
 
         return [demangle(s.name) for s in binary.symbols if s.is_external]
 
     elif isinstance(binary, lief.PE.Binary):
         # PE doesn't have undefined symbols in the same sense, but we can check imports
         return [
-            entry.name
+            str(entry.name)
             for entry in binary.imports
             for func in entry.entries
             if func.is_ordinal is False and func.name
