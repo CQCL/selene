@@ -1,6 +1,7 @@
 import datetime
 import os
 import platform
+import shutil
 from pathlib import Path
 from typing import Iterator
 from subprocess import Popen
@@ -225,6 +226,44 @@ class SeleneInstance:
         run_dir.mkdir()
         return run_dir
 
+    def delete_files(self):
+        """
+        Deletes the files associated with this instance, including the
+        executable, artifacts, and run directories.
+        """
+        shutil.rmtree(self.root)
+
+    def delete_run_directories(self):
+        """
+        Deletes the run directories associated with this instance.
+        This does not delete the artifacts directory or the executable.
+        """
+        for run_dir in self.runs.iterdir():
+            if run_dir.is_dir():
+                shutil.rmtree(run_dir)
+
+    def _check_health(self):
+        """
+        Checks the health of the instance, ensuring that the root directory
+        and executable exist. If they do not, raises a FileNotFoundError.
+
+        If the runs directory does not exist, it is created.
+        """
+        if not self.root.exists():
+            raise FileNotFoundError(
+                f"This Selene instance's root directory does not exist ({self.root}). "
+                "This is likely because the instance has been deleted. Please rebuild."
+            )
+        if not self.executable.exists():
+            raise FileNotFoundError(
+                f"This Selene instance's executable does not exist ({self.root}). "
+                f"This is likely because the file has been deleted manually. Please rebuild."
+            )
+
+        if not self.runs.exists():
+            print("Warning: The runs directory does not exist. Creating it again.")
+            self.runs.mkdir(parents=True, exist_ok=True)
+
     def run_shots(
         self,
         simulator: Simulator,
@@ -260,6 +299,7 @@ class SeleneInstance:
                          each shot, the random seed will be incremented by 1.
         """
 
+        self._check_health()
         n_processes = max(1, n_processes)
         n_processes = min(n_processes, n_shots)
 
