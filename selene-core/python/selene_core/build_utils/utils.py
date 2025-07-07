@@ -69,7 +69,7 @@ def invoke_zig(*args, handle_triple=True, verbose=False) -> str:
     return handle.stdout
 
 
-def get_undefined_symbols_from_object(path: Path):
+def get_undefined_symbols_from_object(path: Path) -> list[str]:
     """
     Extract undefined symbols from an object file, with help from the `lief` library.
 
@@ -92,11 +92,7 @@ def get_undefined_symbols_from_object(path: Path):
         def demangle(name):
             return name[1:] if name.startswith("_") else name
 
-        return [
-            demangle(s.name)
-            for s in binary.symbols
-            if s.section_number == 0 and s.is_external  # type: ignore[attr-defined]
-        ]
+        return [demangle(s.name) for s in binary.symbols if s.is_external]
 
     elif isinstance(binary, lief.PE.Binary):
         # PE doesn't have undefined symbols in the same sense, but we can check imports
