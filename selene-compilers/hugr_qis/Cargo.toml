@@ -17,8 +17,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0"
-tket2 = "0.12.1"
-tket2-hseries = { version = "0.16.0", features = ["llvm"] }
+tket2 = "0.12.3"
+tket2-hseries = { version = "0.16.1", features = ["llvm"] }
 pyo3 = { version = "0.24", features = ["abi3-py310", "anyhow"] }
 tracing = "0.1"
 itertools = "0.14.0"

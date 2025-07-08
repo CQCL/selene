@@ -826,16 +826,16 @@ cond_169_case_1:                                  ; preds = %cond_194_case_1
   br label %cond_exit_194
 
 cond_exit_194:                                    ; preds = %cond_194_case_1, %cond_169_case_1, %alloca_block
-  ret {} zeroinitializer
+  ret {} undef
 }
-
-declare void @___dec_future_refcount(i64) local_unnamed_addr
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
 define { i1, { i1, i64, i1 } } @"__hugr__.$array.__comprehension.init.6$$t(bool).367"() local_unnamed_addr #0 {
 alloca_block:
   ret { i1, { i1, i64, i1 } } { i1 false, { i1, i64, i1 } poison }
 }
+
+declare void @___dec_future_refcount(i64) local_unnamed_addr
 
 ; Function Attrs: noreturn
 declare void @panic(i32, i8*) local_unnamed_addr #1
