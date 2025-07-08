@@ -147,6 +147,8 @@ environment = { PATH = "$PATH:$HOME/.cargo/bin" }
 before-all = '''
     # during testing, we need to ensure that dependencies built in prior
     # steps are passed in correctly, otherwise we should fail fast.
+    # note: linux builds are in a docker container so we use /host/ to access
+    # files on the host system.
     if [ !-n "${SELENE_CORE_WHL}" ]; then
         echo "SELENE_CORE_WHL is not set - it is needed for testing selene-sim."
         exit 1;
@@ -209,6 +211,8 @@ environment = { PATH = "$PATH:$HOME/.cargo/bin", MACOSX_DEPLOYMENT_TARGET = "11.
 before-all = '''
     # during testing, we need to ensure that dependencies built in prior
     # steps are passed in correctly, otherwise we should fail fast.
+    # note: macos builds are NOT in a docker container so we can access the files
+    # from their original path.
     if [ ! -n "${SELENE_CORE_WHL}" ]; then
         echo "SELENE_CORE_WHL is not set - it is needed for testing selene-sim."
         exit 1;
@@ -217,11 +221,11 @@ before-all = '''
         echo "SELENE_HUGR_QIS_WHL is not set - it is needed for testing selene-sim.";
         exit 1;
     fi;
-    if [ ! -f "/host/${SELENE_CORE_WHL}" ]; then
+    if [ ! -f "/${SELENE_CORE_WHL}" ]; then
         echo "SELENE_CORE_WHL is set but does not point to an existing file: ${SELENE_CORE_WHL}";
         exit 1;
     fi;
-    if [ ! -f "/host/${SELENE_HUGR_QIS_WHL}" ]; then
+    if [ ! -f "/${SELENE_HUGR_QIS_WHL}" ]; then
         echo "SELENE_HUGR_QIS_WHL is set but does not point to an existing file: ${SELENE_HUGR_QIS_WHL}";
         exit 1;
     fi;
@@ -236,6 +240,8 @@ before-test = '''
 '''
 [tool.cibuildwheel.windows]
 before-all = [
+    # during testing, we need to ensure that dependencies built in prior
+    # steps are passed in correctly, otherwise we should fail fast.
     'IF NOT DEFINED SELENE_CORE_WHL (ECHO SELENE_CORE_WHL is not set - it is needed for testing selene-sim. && EXIT /B 1)',
     'IF NOT DEFINED SELENE_HUGR_QIS_WHL (ECHO SELENE_HUGR_QIS_WHL is not set - it is needed for testing selene-sim. && EXIT /B 1)',
     'curl -sSf https://sh.rustup.rs | sh -s -- -y',
