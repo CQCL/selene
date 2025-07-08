@@ -36,14 +36,10 @@ jobs:
           path: wheelhouse/selene_core-*.whl
           key: selene-core-wheel-${{ hashFiles('selene-core/**') }}
 
-      - name: Upload selene-core wheel (cached)
-        if: steps.selene_core_wheel_cache.outputs.hit == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: selene-core
-          path: wheelhouse/selene_core-*.whl
-          if-no-files-found: error
-
+      ##################################################################
+      #
+      # If no cache hit, build selene-core...
+      #
       - uses: actions/cache@v4
         if: steps.selene_core_wheel_cache.outputs.cache-hit != 'true'
         with:
@@ -72,9 +68,10 @@ jobs:
           mkdir -p wheelhouse
           python -m pip install --upgrade build
           python -m build --wheel --outdir wheelhouse selene-core
+      #
+      #################################################################
 
-      - name: Upload selene-core wheel (built)
-        if: steps.selene_core_wheel_cache.outputs.hit != 'true'
+      - name: Upload selene-core wheel
         id: upload_selene_core
         uses: actions/upload-artifact@v4
         with:
