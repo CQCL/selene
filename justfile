@@ -30,6 +30,11 @@ build-ci:
     set -euo pipefail
     mkdir -p /tmp/ci-cache
     export CACHE_CARGO=true
+
+    uv build --package selene-core --out-dir wheelhouse
+    export SELENE_CORE_WHL=$(ls -t wheelhouse/selene_core-*.whl | xargs readlink -f | head -n1)
+
     cibuildwheel selene-compilers/hugr_qis
-    export SELENE_HUGR_QIS_WHL=$(ls wheelhouse/selene_hugr_qis_compiler-*.whl | xargs readlink -f | head -n1)
+    export SELENE_HUGR_QIS_WHL=$(ls -t wheelhouse/selene_hugr_qis_compiler-*.whl | xargs readlink -f | head -n1)
+
     cibuildwheel .
