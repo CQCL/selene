@@ -43,7 +43,7 @@ def test_check() -> None:
         check_hugr(bad_number)
 
     bad_end = hugr_envelope[:-1]
-    with pytest.raises(HugrReadError, match="EOF while parsing an object"):
+    with pytest.raises(HugrReadError, match="Premature end of file"):
         check_hugr(bad_end)
 
 
