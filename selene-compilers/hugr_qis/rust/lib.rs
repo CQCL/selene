@@ -3,16 +3,15 @@
 #![deny(missing_docs)]
 #![warn(rust_2021_compatibility, future_incompatible, unused)]
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use hugr::envelope::EnvelopeConfig;
-use hugr::llvm::CodegenExtsBuilder;
 use hugr::llvm::custom::CodegenExtsMap;
 use hugr::llvm::emit::{EmitHugr, Namer};
 #[allow(deprecated)]
 use hugr::llvm::extension::int::IntCodegenExtension;
 use hugr::llvm::utils::fat::FatExt as _;
 use hugr::llvm::utils::inline_constant_functions;
-use inkwell::OptimizationLevel;
+use hugr::llvm::CodegenExtsBuilder;
 use inkwell::context::Context;
 use inkwell::module::Module;
 use inkwell::passes::PassBuilderOptions;
@@ -20,6 +19,7 @@ use inkwell::support::LLVMString;
 use inkwell::targets::{
     CodeModel, InitializationConfig, RelocMode, Target, TargetMachine, TargetTriple,
 };
+use inkwell::OptimizationLevel;
 use itertools::Itertools;
 use pyo3::prelude::*;
 
@@ -29,9 +29,9 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::vec::Vec;
 use std::{fs, str, vec};
-use tket2::extension::TKET2_EXTENSION;
 use tket2::extension::rotation::ROTATION_EXTENSION;
-use tket2::hugr::extension::{ExtensionRegistry, prelude};
+use tket2::extension::TKET2_EXTENSION;
+use tket2::hugr::extension::{prelude, ExtensionRegistry};
 use tket2::hugr::std_extensions::arithmetic::{
     conversions, float_ops, float_types, int_ops, int_types,
 };
@@ -39,7 +39,6 @@ use tket2::hugr::std_extensions::{collections, logic, ptr};
 use tket2::hugr::{self, llvm::inkwell};
 use tket2::hugr::{Hugr, HugrView, Node};
 use tket2::llvm::rotation::RotationCodegenExtension;
-use tket2_hseries::QSystemPass;
 use tket2_hseries::extension::{futures as qsystem_futures, qsystem, result as qsystem_result};
 use tket2_hseries::llvm::array_utils::{ArrayLowering, DEFAULT_STACK_ARRAY_LOWERING};
 pub use tket2_hseries::llvm::futures::FuturesCodegenExtension;
@@ -47,7 +46,8 @@ use tket2_hseries::llvm::{
     debug::DebugCodegenExtension, prelude::QISPreludeCodegen, qsystem::QSystemCodegenExtension,
     random::RandomCodegenExtension, result::ResultsCodegenExtension, utils::UtilsCodegenExtension,
 };
-use tracing::{Level, event, instrument};
+use tket2_hseries::QSystemPass;
+use tracing::{event, instrument, Level};
 use utils::read_hugr_envelope;
 
 mod utils;
@@ -404,15 +404,15 @@ mod exceptions {
 #[pymodule]
 mod selene_hugr_qis_compiler {
     use super::{
-        CompileArgs, Context, Hugr, PyResult, compile, get_native_target_machine, get_opt_level,
-        get_target_machine_from_triple, pyfunction, read_hugr_envelope,
+        compile, get_native_target_machine, get_opt_level, get_target_machine_from_triple,
+        pyfunction, read_hugr_envelope, CompileArgs, Context, Hugr, PyResult,
     };
 
     #[pymodule_export]
     use super::exceptions::HugrReadError;
 
     fn py_read_envelope(pkg_bytes: &[u8]) -> PyResult<Hugr> {
-        read_hugr_envelope(pkg_bytes).map_err(|e| HugrReadError::new_err(e.to_string()))
+        read_hugr_envelope(pkg_bytes).map_err(|e| HugrReadError::new_err(format!("{e:?}")))
     }
 
     /// Load serialized HUGR and validate it
