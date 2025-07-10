@@ -86,7 +86,7 @@ cache-keys = [
 ]
 
 [tool.uv.sources]
-guppylang = {git = "https://github.com/CQCL/guppylang.git", rev = "63854c5"}
+guppylang = { git = "https://github.com/CQCL/guppylang.git", branch = "ss/hugr-py-v0.13" }
 
 [tool.mypy]
 ignore_missing_imports = true

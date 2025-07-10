@@ -5,7 +5,7 @@ target triple = "x86_64-apple-darwin"
 
 @res_shot.6D86EAF7.0 = private constant [14 x i8] c"\0DUSER:INT:shot"
 
-define void @__hugr__.main.1() local_unnamed_addr {
+define void @__hugr__._main_1.1() local_unnamed_addr {
 alloca_block:
   %shot = tail call i64 @get_current_shot()
   tail call void @print_int(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @res_shot.6D86EAF7.0, i64 0, i64 0), i64 13, i64 %shot)

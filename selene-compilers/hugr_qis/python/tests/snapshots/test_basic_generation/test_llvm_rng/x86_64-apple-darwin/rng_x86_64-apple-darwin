@@ -11,7 +11,7 @@ target triple = "x86_64-apple-darwin"
 @res_rfloat2.4DAB941F.0 = private constant [19 x i8] c"\12USER:FLOAT:rfloat2"
 @res_rint_bnd2.169DE399.0 = private constant [19 x i8] c"\12USER:INT:rint_bnd2"
 
-define void @__hugr__.main.1() local_unnamed_addr {
+define void @__hugr__._main_1.1() local_unnamed_addr {
 alloca_block:
   tail call void @random_seed(i64 42)
   %rint = tail call i32 @random_int()
@@ -37,7 +37,7 @@ alloca_block:
   ret void
 }
 
-define {} @__hugr__.__new__.9(i64 %0) local_unnamed_addr {
+define {} @__hugr__.___new___9.72(i64 %0) local_unnamed_addr {
 alloca_block:
   tail call void @random_seed(i64 %0)
   ret {} undef
@@ -58,7 +58,7 @@ declare void @random_seed(i64) local_unnamed_addr
 define i64 @qmain(i64 %0) local_unnamed_addr {
 entry:
   tail call void @setup(i64 %0)
-  tail call void @__hugr__.main.1()
+  tail call void @__hugr__._main_1.1()
   %1 = tail call i64 @teardown()
   ret i64 %1
 }

@@ -65,22 +65,17 @@ dev = [
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
 selene-hugr-qis-compiler = { workspace = true }
-guppylang = {git = "https://github.com/CQCL/guppylang.git", rev = "63854c5"}
+guppylang = { git = "https://github.com/CQCL/guppylang.git", branch = "ss/hugr-py-v0.13" }
 
 [tool.uv.workspace]
-members = [
-    "selene-core",
-    "selene-compilers/hugr_qis",
-]
+members = ["selene-core", "selene-compilers/hugr_qis"]
 
 [tool.hatch.build.hooks.custom]
 path = "hatch_build.py"
 
 
 [tool.hatch.build.targets.wheel]
-exclude = [
-    "selene-sim/python/selene_sim/README.md"
-]
+exclude = ["selene-sim/python/selene_sim/README.md"]
 packages = [
     "selene-sim/python/selene_sim",
     "selene-ext/error-models/depolarizing/python/selene_depolarizing_error_model_plugin",
@@ -110,11 +105,11 @@ cache-keys = [
     { file = "selene-ext/**/Cargo.lock" },
 ]
 
-[tool.ruff] 
+[tool.ruff]
 # exclude upstream code
 extend-exclude = [
     "selene-ext/simulators/stim/upstream",
-#    "selene-ext/*/*/python/tests"
+    #    "selene-ext/*/*/python/tests"
 ]
 [tool.ruff.lint.per-file-ignores]
 "**/python/tests/*.py" = ["F821", "F841"] #  ^
@@ -126,7 +121,7 @@ exclude = [
     "selene-compilers/.*/python/tests/test_.*.py$",
     ".*upstream.*$",
     "^selene-core/.*$",
-    "^scratch/.*$"
+    "^scratch/.*$",
 ]
 
 
@@ -141,7 +136,7 @@ build = "cp310-*"
 skip = "*-win32 *-manylinux_i686 *-musllinux*"
 build-frontend = { name = "build[uv]", args = ["-C--profile=release"] }
 environment-pass = ["UV_EXTRA_INDEX_URL", "PIP_EXTRA_INDEX_URL", "CACHE_CARGO", "SELENE_CORE_WHL", "SELENE_HUGR_QIS_WHL"]
-test-requires = ["pytest", "pytest-snapshot", "git+https://github.com/cqcl/guppylang@63854c5"]
+test-requires = ["pytest", "pytest-snapshot", "git+https://github.com/cqcl/guppylang@090f920"]
 test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
 [tool.cibuildwheel.linux]
 environment = { PATH = "$PATH:$HOME/.cargo/bin" }
