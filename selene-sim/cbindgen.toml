@@ -73,8 +73,7 @@ U64Result = "selene_u64_result_t"
 U32Result = "selene_u32_result_t"
 F64Result = "selene_f64_result_t"
 WrappedString = "selene_string_t"
-FutureBoolResult = "selene_future_bool_result_t"
-
+FutureResult = "selene_future_result_t"
 
 
 [export.body]

@@ -134,7 +134,22 @@ impl ErrorModelInterface for ExampleErrorModel {
                     } else {
                         measurement
                     };
-                    results.set_measurement_result(result_id, measurement);
+                    results.set_bool_result(result_id, measurement);
+                }
+                Operation::MeasureLeaked {
+                    qubit_id,
+                    result_id,
+                } => {
+                    // We aren't modelling leakage so let's resolve this to
+                    // a normal measurement following the same logic as with Operation::Measure
+                    let measurement = self.simulator.measure(qubit_id)?;
+                    let measurement = if self.should_flip() {
+                        self.stats.flips_induced += 1;
+                        !measurement
+                    } else {
+                        measurement
+                    };
+                    results.set_u64_result(result_id, if measurement { 1 } else { 0 });
                 }
                 Operation::Reset { qubit_id } => {
                     // A reset has been requested.
