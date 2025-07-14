@@ -26,7 +26,7 @@ class HeliosLLVMIRStringKind(ArtifactKind):
         if not isinstance(resource, str):
             return False
         undefined_symbols = get_undefined_symbols_from_llvm_ir_string(resource)
-        return any(s in undefined_symbols for s in ("teardown", "setup"))
+        return "teardown" in undefined_symbols
 
 
 class HeliosLLVMIRFileKind(ArtifactKind):
@@ -39,7 +39,7 @@ class HeliosLLVMIRFileKind(ArtifactKind):
         if resource.suffix != ".ll":
             return False
         undefined_symbols = get_undefined_symbols_from_llvm_ir_file(resource)
-        return any(s in undefined_symbols for s in ("teardown", "setup"))
+        return "teardown" in undefined_symbols
 
 
 class HeliosLLVMBitcodeStringKind(ArtifactKind):
@@ -53,11 +53,13 @@ class HeliosLLVMBitcodeStringKind(ArtifactKind):
 class HeliosLLVMBitcodeFileKind(ArtifactKind):
     @classmethod
     def matches(cls, resource: Any) -> bool:
-        return (
-            isinstance(resource, Path)
-            and resource.suffixes == [".helios", ".bc"]
-            and b"teardown" in resource.read_bytes()
-        )
+        if not isinstance(resource, Path):
+            return False
+        if not resource.is_file():
+            return False
+        if resource.suffix != ".bc":
+            return False
+        return b"teardown" in resource.read_bytes()
 
 
 class HeliosObjectFileKind(ArtifactKind):
