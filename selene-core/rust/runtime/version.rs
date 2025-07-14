@@ -34,9 +34,13 @@ impl From<RuntimeAPIVersion> for u64 {
 pub const CURRENT_API_VERSION: RuntimeAPIVersion = RuntimeAPIVersion {
     reserved: 0,
     major: 0,
-    minor: 1,
+    minor: 2,
     patch: 0,
 };
+
+// CHANGELOG:
+// 0.0.1: Initial version
+// 0.0.2: Introduced MeasureLeaked, changed get_result to get_bool_result and get_u64_result
 
 impl RuntimeAPIVersion {
     pub fn validate(&self) -> Result<()> {

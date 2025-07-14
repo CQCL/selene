@@ -10,7 +10,8 @@ struct UserProgramMetrics {
     qfree_count: u64,
     reset_count: u64,
     measure_request_count: u64,
-    measure_read_count: u64,
+    measure_leaked_request_count: u64,
+    future_read_count: u64,
     rxy_count: u64,
     rz_count: u64,
     rzz_count: u64,
@@ -32,7 +33,8 @@ impl UserProgramMetrics {
             }
             Operation::Reset(_) => self.reset_count += 1,
             Operation::MeasureRequest(_) => self.measure_request_count += 1,
-            Operation::MeasureRead(_) => self.measure_read_count += 1,
+            Operation::MeasureLeakedRequest(_) => self.measure_leaked_request_count += 1,
+            Operation::FutureRead(_) => self.future_read_count += 1,
             Operation::RXY(..) => self.rxy_count += 1,
             Operation::RZ(..) => self.rz_count += 1,
             Operation::RZZ(..) => self.rzz_count += 1,
@@ -63,8 +65,12 @@ impl UserProgramMetrics {
         encoder.write(self.measure_request_count)?;
         encoder.end_message()?;
         encoder.begin_message(time_cursor)?;
+        encoder.write("METRICS:INT:user_program:measure_leaked_request_count")?;
+        encoder.write(self.measure_leaked_request_count)?;
+        encoder.end_message()?;
+        encoder.begin_message(time_cursor)?;
         encoder.write("METRICS:INT:user_program:measure_read_count")?;
-        encoder.write(self.measure_read_count)?;
+        encoder.write(self.future_read_count)?;
         encoder.end_message()?;
         encoder.begin_message(time_cursor)?;
         encoder.write("METRICS:INT:user_program:rxy_count")?;
@@ -103,6 +109,8 @@ struct PostRuntimeMetrics {
     custom_op_individual_count: u64,
     measure_batch_count: u64,
     measure_individual_count: u64,
+    measure_leaked_batch_count: u64,
+    measure_leaked_individual_count: u64,
     reset_batch_count: u64,
     reset_individual_count: u64,
     rxy_batch_count: u64,
@@ -120,6 +128,7 @@ impl PostRuntimeMetrics {
         let mut rzz_count = 0;
         let mut rz_count = 0;
         let mut measure_count = 0;
+        let mut measure_leaked_count = 0;
         let mut reset_count = 0;
         let mut custom_op_count = 0;
         for op in batch.iter_ops() {
@@ -135,6 +144,9 @@ impl PostRuntimeMetrics {
                 }
                 runtime::Operation::Measure { .. } => {
                     measure_count += 1;
+                }
+                runtime::Operation::MeasureLeaked { .. } => {
+                    measure_leaked_count += 1;
                 }
                 runtime::Operation::Reset { .. } => {
                     reset_count += 1;
@@ -165,6 +177,10 @@ impl PostRuntimeMetrics {
             self.measure_batch_count += 1;
             self.measure_individual_count += measure_count;
         }
+        if measure_leaked_count > 0 {
+            self.measure_leaked_batch_count += 1;
+            self.measure_leaked_individual_count += measure_leaked_count;
+        }
         if reset_count > 0 {
             self.reset_batch_count += 1;
             self.reset_individual_count += reset_count;
@@ -194,6 +210,14 @@ impl PostRuntimeMetrics {
         encoder.begin_message(time_cursor)?;
         encoder.write("METRICS:INT:post_runtime:measure_individual_count")?;
         encoder.write(self.measure_individual_count)?;
+        encoder.end_message()?;
+        encoder.begin_message(time_cursor)?;
+        encoder.write("METRICS:INT:post_runtime:measure_leaked_batch_count")?;
+        encoder.write(self.measure_leaked_batch_count)?;
+        encoder.end_message()?;
+        encoder.begin_message(time_cursor)?;
+        encoder.write("METRICS:INT:post_runtime:measure_leaked_individual_count")?;
+        encoder.write(self.measure_leaked_individual_count)?;
         encoder.end_message()?;
         encoder.begin_message(time_cursor)?;
         encoder.write("METRICS:INT:post_runtime:reset_batch_count")?;

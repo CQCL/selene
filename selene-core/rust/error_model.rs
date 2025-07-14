@@ -13,20 +13,27 @@ pub use interface::{ErrorModelInterface, ErrorModelInterfaceFactory};
 pub use version::ErrorModelAPIVersion;
 
 #[derive(Default)]
-pub struct MeasurementResult {
+pub struct BoolResult {
     pub result_id: u64,
-    pub measurement: bool,
+    pub value: bool,
 }
 #[derive(Default)]
+pub struct U64Result {
+    pub result_id: u64,
+    pub value: u64,
+}
+
+#[derive(Default)]
 pub struct BatchResult {
-    pub measurements: Vec<MeasurementResult>,
+    pub bool_results: Vec<BoolResult>,
+    pub u64_results: Vec<U64Result>,
 }
 impl BatchResult {
-    pub fn set_measurement_result(&mut self, result_id: u64, measurement: bool) {
-        self.measurements.push(MeasurementResult {
-            result_id,
-            measurement,
-        });
+    pub fn set_bool_result(&mut self, result_id: u64, value: bool) {
+        self.bool_results.push(BoolResult { result_id, value });
+    }
+    pub fn set_u64_result(&mut self, result_id: u64, value: u64) {
+        self.u64_results.push(U64Result { result_id, value });
     }
 }
 

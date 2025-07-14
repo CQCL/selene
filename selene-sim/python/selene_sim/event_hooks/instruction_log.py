@@ -266,7 +266,25 @@ class MeasureRequest(Operation):
 
 
 @dataclass
-class MeasureRead(Operation):
+class MeasureLeakedRequest(Operation):
+    qubit: int
+
+    def append_to_circuit(self, circuit: "pytket.Circuit"):
+        assert PYTKET_AVAILABLE, "pytket is not available"
+        for i in range(circuit.n_bits, self.qubit + 1):
+            circuit.add_bit(pytket.Bit(i))
+        circuit.Measure(qubit=self.qubit, bit=self.qubit)
+
+    def to_dict(self) -> dict:
+        return {"op": "MeasureLeakedRequest", "qubit": self.qubit}
+
+    @staticmethod
+    def from_iterator(it: Iterator):
+        return MeasureLeakedRequest(qubit=next(it))
+
+
+@dataclass
+class FutureRead(Operation):
     qubit: int
 
     def append_to_circuit(self, circuit: "pytket.Circuit"):
@@ -275,11 +293,11 @@ class MeasureRead(Operation):
         pass
 
     def to_dict(self) -> dict:
-        return {"op": "MeasureRead", "qubit": self.qubit}
+        return {"op": "FutureRead", "qubit": self.qubit}
 
     @staticmethod
     def from_iterator(it: Iterator):
-        return MeasureRead(qubit=next(it))
+        return FutureRead(qubit=next(it))
 
 
 class Source(Enum):
@@ -337,7 +355,7 @@ class Instruction:
             case 4:
                 operation = MeasureRequest.from_iterator(it)
             case 5:
-                operation = MeasureRead.from_iterator(it)
+                operation = FutureRead.from_iterator(it)
             case 6:
                 operation = Rxy.from_iterator(it)
             case 7:
@@ -350,6 +368,8 @@ class Instruction:
                 operation = LocalBarrier.from_iterator(it)
             case 11:
                 operation = GlobalBarrier.from_iterator(it)
+            case 12:
+                operation = MeasureLeakedRequest.from_iterator(it)
         if operation is None:
             raise ValueError(f"Unknown instruction operation index {operation_idx}")
         return Instruction(source=source, operation=operation)

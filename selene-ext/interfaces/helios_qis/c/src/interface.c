@@ -54,7 +54,7 @@ void panic_impl(int32_t error_code) {
     , struct selene_f64_result_t: unwrap_f64 \
     , struct selene_void_result_t: unwrap_void \
     , struct selene_bool_result_t: unwrap_bool \
-    , struct selene_future_bool_result_t: unwrap_future_bool \
+    , struct selene_future_result_t: unwrap_future \
 )(value)
 
 uint64_t unwrap_u64(struct selene_u64_result_t result){
@@ -86,7 +86,7 @@ bool unwrap_bool(struct selene_bool_result_t result){
     }
     return result.value;
 }
-uint64_t unwrap_future_bool(struct selene_future_bool_result_t result){
+uint64_t unwrap_future(struct selene_future_result_t result){
     if (result.error_code != 0) {
         panic_impl(result.error_code);
     }
@@ -180,6 +180,7 @@ void ___rzz(uint64_t q1, uint64_t q2, double theta) {
 void ___zz(uint64_t q1, uint64_t q2) { // deprecated
     ___rzz(q1, q2, M_PI / 2);
 }
+
 void ___rz(uint64_t q, double theta) {
     DIAGNOSTIC("___rz(%" PRIu64 ", %f)\n", q, theta);
     unwrap(selene_rz(selene_instance, q, theta));
@@ -202,6 +203,12 @@ uint64_t ___lazy_measure(uint64_t q) {
     DIAGNOSTIC("   reference: %" PRIu64 "\n", reference);
     return reference;
 }
+uint64_t ___lazy_measure_leaked(uint64_t q) {
+    DIAGNOSTIC("___lazy_measure_leaked(%" PRIu64 ")\n", q);
+    uint64_t reference = unwrap(selene_qubit_lazy_measure_leaked(selene_instance, q));
+    DIAGNOSTIC("   reference: %" PRIu64 "\n", reference);
+    return reference;
+}
 void ___dec_future_refcount(uint64_t r) {
     DIAGNOSTIC("___dec_future_refcount(%" PRIu64 ")\n", r);
     unwrap(selene_refcount_decrement(selene_instance, r));
@@ -214,10 +221,17 @@ void ___inc_future_refcount(uint64_t r) {
 }
 bool ___read_future_bool(uint64_t r) {
     DIAGNOSTIC("___read_future_bool(%" PRIu64 ")\n", r);
-    bool result = unwrap(selene_future_read(selene_instance, r));
+    bool result = unwrap(selene_future_read_bool(selene_instance, r));
     DIAGNOSTIC("   returned %s\n", result ? "true" : "false");
     return result;
 }
+uint64_t ___read_future_uint(uint64_t r) {
+    DIAGNOSTIC("___read_future_uint(%" PRIu64 ")\n", r);
+    uint64_t result = unwrap(selene_future_read_u64(selene_instance, r));
+    DIAGNOSTIC("   returned %" PRIu64 "\n", result);
+    return result;
+}
+
 void print_bool(cl_string tag, uint64_t _unused, char value) {
     DIAGNOSTIC("print_bool(\"%.*s\", %02X)\n", tag[0], tag+1, value);
     // Rust bools are specifically 0x00 for false and 0x01 for true,

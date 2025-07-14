@@ -18,133 +18,6 @@ pub type Errno = i32;
 /// 0 on success, and non-zero on failure.
 /// When returning failure a plugin should write a short error message to stderr.
 ///
-/// The plugin must export the following functions:
-/// - `i32 selene_runtime_init(
-///      void** instance, // user settable state
-///      uint64_t n_qubits, // number of qubits to be available
-///      uint64_t start,    // start time (nanos)
-///      uint32_t argc,     // number of additional arguments
-///      const char **argv  // additional arguments
-///   )`
-///   Initialises a new instance of the runtime plugin.
-/// - (Optional)`i32 selene_runtime_exit(
-///      *void, // user settable state
-///    )`
-///    Signals that the instance of the runtime plugin should cleanup. Plugins
-///    should return non-zero(i.e. failure) from any functions called on an
-///    instance after `exit`.
-/// - `i32 selene_runtime_get_next_operations(
-///     void* instance, // user-set state
-///     void* get_op_instance, // [RuntimeGetOperationInstance],
-///     RuntimeGetOperationInterface* get_op_interface,
-///   )`
-///   Called to retrieve the next batch of operations from the runtime. The
-///   plugin should construct the batch by calling the functions in
-///   `get_op_interface`, always passing `get_op_instance` as the first argument.
-///   An empty batch is interpreted as the plugin having no more operations at
-///   this time.
-/// - `i32 selene_runtime_shot_start(
-///      void* instance, // user-set state
-///      uint64_t shot_id, // id of the shot
-///      uint64_t new_seed // new seed for the next shot
-///    )`
-///    Called to signal that the runtime should proceed to the next shot.
-/// - `i32 selene_runtime_shot_end(
-///      void* instance, // user-set state
-///    )`
-///    Called to signal that the current shot has ended. This is an ideal
-///    place to perform validation (if applicable) and cleanup.
-/// - (Optional)`i32 selene_runtime_get_metrics(
-///       *void  // user-set state
-///       uint8_t nth_metric, // index of metric to fetch (called with 0 to 255 until a non-zero
-///       return)
-///       char* tag, // pointer to 256-byte char array to write a tag name (up to 255 chars) into.
-///       u8* datatype // write the datatype here: 0 => bool, 1 => i64, 2 => u64, 3 => f64
-///       u64* data // write the data here
-///    )`
-///    Provide a set of metrics to be written to the output stream. Return zero if a metric
-///    has been written, nonzero if there are no more metrics to write.
-///  - `i32 selene_runtime_qalloc(
-///       void* instance, // user-set state
-///       uint64_t* qubit_id // write the qubit id here
-///    )`
-///    Attempt to allocate a free qubit. If no qubits are available, the plugin
-///    should set `qubit_id` to [u64::MAX] and return success.
-///  - `i32 selene_runtime_qfree(
-///     void* instance, // user-set state
-///     uint64_t qubit_id // qubit to free
-///     )`
-///     Free a qubit. The plugin should return an error if the qubit is not allocated.
-///  - `i32 selene_runtime_rxy_gate(
-///      void* instance, // user-set state
-///      uint64_t qubit_id, // qubit to apply the gate to
-///      double theta, // angle
-///      double phi // angle
-///    )`
-///    Schedule an RXY gate to qubit `qubit_id` with the given angles.
-///  - `i32 selene_runtime_rzz_gate(
-///      void* instance, // user-set state
-///      uint64_t qubit_id_1, // first qubit
-///      uint64_t qubit_id_2, // second qubit
-///      double theta // angle
-///    )`
-///    Schedule an RZZ gate between qubits `qubit_id_1` and `qubit_id_2` with the given angle.
-///  - `i32 selene_runtime_rz_gate(
-///      void* instance, // user-set state
-///      uint64_t qubit_id, // qubit to apply the gate to
-///      double theta // angle
-///    )`
-///    Schedule an RZ gate to qubit `qubit_id` with the given angle.
-///  - `i32 selene_runtime_measure(
-///    void* instance, // user-set state
-///      uint64_t qubit_id, // qubit to measure
-///      uint64_t* result_id // write the result index here
-///    )`
-///    Schedule a measurement of qubit `qubit_id`. The plugin should set
-///    *result_idx to a new result index. That result index must have a reference
-///    count of 1.
-///  - `i32 selene_runtime_reset(
-///      void* instance, // user-set state
-///      uint64_t qubit_id // qubit to reset
-///    )`
-///    Schedule a reset of qubit `qubit_id`.
-///  - `i32 selene_runtime_force_result(
-///      void* instance, // user-set state
-///      uint64_t result_id // result index to force
-///    )`
-///    A hint to the plugin that the result with index `result_id` is needed.
-///  - `i32 selene_runtime_get_result(`
-///      void* instance, // user-set state
-///      uint64_t result_id, // result index to get
-///      int8_t* result // write the result here
-///    )`
-///    Get the result of the measurement with index `result_id`. The plugin should
-///    write 0 for false, 1 for true, and any other positive value if the result
-///    is not yet available.
-///  - `i32 selene_runtime_set_result(
-///      void* instance, // user-set state
-///      uint64_t result_id, // result index to set
-///      bool result // result to set
-///    )`
-///    Set the result of the measurement with index `result_id` to `result`.
-///    This is called with the result from the simulator after the corresponding
-///    measurement is returned from `get_next_operations`.
-///  - `i32 selene_runtime_increment_future_refcount(
-///      void* instance, // user-set state
-///      uint64_t result_id // result index to increment
-///    )`
-///    Increment the reference count of the result with index `result_id`.
-///    It is invalid to refer to a result index after its reference count has
-///    reached zero.
-///
-///  - `i32 selene_runtime_decrement_future_refcount(
-///      void* instance, // user-set state
-///      uint64_t result_id // result index to decrement
-///    )`
-///    Decrement the reference count of the result with index `result_id`.
-///    It is invalid to refer to a result index after its reference count has
-///    reached zero.
-///
 /// Users should be cautious about the plugins they use, as it is possible that mistakes
 /// or malicious code could be present in the plugin, and as with all external libraries, due
 /// dilligence must be done to verify the source and the trustworthiness of the provider.
@@ -275,6 +148,13 @@ pub struct RuntimePluginInterface {
 
     #[borrows(lib)]
     #[covariant]
+    measure_leaked_fn: libloading::Symbol<
+        'this,
+        unsafe extern "C" fn(handle: RuntimeInstance, qubit: u64, result_id: *mut u64) -> Errno,
+    >,
+
+    #[borrows(lib)]
+    #[covariant]
     reset_fn: libloading::Symbol<
         'this,
         unsafe extern "C" fn(handle: RuntimeInstance, qubit: u64) -> Errno,
@@ -289,16 +169,30 @@ pub struct RuntimePluginInterface {
 
     #[borrows(lib)]
     #[covariant]
-    get_result_fn: libloading::Symbol<
+    get_bool_result_fn: libloading::Symbol<
         'this,
         unsafe extern "C" fn(handle: RuntimeInstance, id: u64, result: *mut i8) -> Errno,
     >,
 
     #[borrows(lib)]
     #[covariant]
-    set_result_fn: libloading::Symbol<
+    get_u64_result_fn: libloading::Symbol<
+        'this,
+        unsafe extern "C" fn(handle: RuntimeInstance, id: u64, result: *mut u64) -> Errno,
+    >,
+
+    #[borrows(lib)]
+    #[covariant]
+    set_bool_result_fn: libloading::Symbol<
         'this,
         unsafe extern "C" fn(handle: RuntimeInstance, result_id: u64, result: bool) -> Errno,
+    >,
+
+    #[borrows(lib)]
+    #[covariant]
+    set_u64_result_fn: libloading::Symbol<
+        'this,
+        unsafe extern "C" fn(handle: RuntimeInstance, result_id: u64, result: u64) -> Errno,
     >,
 
     #[borrows(lib)]
@@ -374,10 +268,13 @@ impl RuntimePluginInterface {
             rzz_gate_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_rzz_gate") },
             rz_gate_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_rz_gate") },
             measure_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_measure") },
+            measure_leaked_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_measure_leaked") },
             reset_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_reset") },
             force_result_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_force_result") },
-            get_result_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_get_result") },
-            set_result_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_set_result") },
+            get_bool_result_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_get_bool_result") },
+            get_u64_result_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_get_u64_result") },
+            set_bool_result_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_set_bool_result") },
+            set_u64_result_fn_builder: |lib| unsafe { lib.get(b"selene_runtime_set_u64_result") },
             increment_future_refcount_fn_builder: |lib| unsafe {
                 lib.get(b"selene_runtime_increment_future_refcount")
             },
@@ -545,6 +442,22 @@ impl RuntimeInterface for RuntimePlugin {
         Ok(result)
     }
 
+    fn measure_leaked(&mut self, qubit_id: u64) -> Result<u64> {
+        let mut result = 0;
+        let result_ref = &mut result;
+        check_errno(
+            unsafe {
+                self.interface.borrow_measure_leaked_fn()(
+                    self.instance,
+                    qubit_id,
+                    result_ref as *mut _,
+                )
+            },
+            || anyhow!("RuntimePlugin: measure failed"),
+        )?;
+        Ok(result)
+    }
+
     fn reset(&mut self, qubit_id: u64) -> Result<()> {
         check_errno(
             unsafe { self.interface.borrow_reset_fn()(self.instance, qubit_id) },
@@ -559,18 +472,18 @@ impl RuntimeInterface for RuntimePlugin {
         )
     }
 
-    fn get_result(&mut self, result_id: u64) -> Result<Option<bool>> {
+    fn get_bool_result(&mut self, result_id: u64) -> Result<Option<bool>> {
         let mut result = 0i8;
         let result_ref = &mut result;
         check_errno(
             unsafe {
-                self.interface.borrow_get_result_fn()(
+                self.interface.borrow_get_bool_result_fn()(
                     self.instance,
                     result_id,
                     result_ref as *mut _,
                 )
             },
-            || anyhow!("RuntimePlugin: get_result failed"),
+            || anyhow!("RuntimePlugin: get_bool_result failed"),
         )?;
         // TODO document this
         Ok(match result {
@@ -580,10 +493,37 @@ impl RuntimeInterface for RuntimePlugin {
         })
     }
 
-    fn set_result(&mut self, result_id: u64, result: bool) -> Result<()> {
+    fn get_u64_result(&mut self, result_id: u64) -> Result<Option<u64>> {
+        let mut result = 0u64;
+        let result_ref = &mut result;
         check_errno(
-            unsafe { self.interface.borrow_set_result_fn()(self.instance, result_id, result) },
-            || anyhow!("RuntimePlugin: set_result failed"),
+            unsafe {
+                self.interface.borrow_get_u64_result_fn()(
+                    self.instance,
+                    result_id,
+                    result_ref as *mut u64,
+                )
+            },
+            || anyhow!("RuntimePlugin: get_u64_result failed"),
+        )?;
+        // TODO document this
+        Ok(match result {
+            u64::MAX => None,
+            n => Some(n),
+        })
+    }
+
+    fn set_bool_result(&mut self, result_id: u64, result: bool) -> Result<()> {
+        check_errno(
+            unsafe { self.interface.borrow_set_bool_result_fn()(self.instance, result_id, result) },
+            || anyhow!("RuntimePlugin: set_bool_result failed"),
+        )
+    }
+
+    fn set_u64_result(&mut self, result_id: u64, result: u64) -> Result<()> {
+        check_errno(
+            unsafe { self.interface.borrow_set_u64_result_fn()(self.instance, result_id, result) },
+            || anyhow!("RuntimePlugin: set_u64_result failed"),
         )
     }
 
@@ -703,6 +643,20 @@ impl BatchBuilder {
         )
     }
 
+    unsafe extern "C" fn measure_leaked(
+        interface: RuntimeGetOperationInstance,
+        qubit_id: u64,
+        result_id: u64,
+    ) {
+        Self::push(
+            interface,
+            Operation::MeasureLeaked {
+                qubit_id,
+                result_id,
+            },
+        )
+    }
+
     unsafe extern "C" fn reset(interface: RuntimeGetOperationInstance, qubit_id: u64) {
         Self::push(interface, Operation::Reset { qubit_id })
     }
@@ -745,6 +699,7 @@ impl BatchBuilder {
             rxy_fn: Self::rxy,
             rz_fn: Self::rz,
             measure_fn: Self::measure,
+            measure_leaked_fn: Self::measure_leaked,
             reset_fn: Self::reset,
             custom_fn: Self::custom,
             set_batch_time_fn: Self::set_batch_time,
@@ -780,6 +735,7 @@ pub struct RuntimeGetOperationInterface<'a> {
     pub rxy_fn: unsafe extern "C" fn(RuntimeGetOperationInstance, u64, f64, f64),
     pub rz_fn: unsafe extern "C" fn(RuntimeGetOperationInstance, u64, f64),
     pub measure_fn: unsafe extern "C" fn(RuntimeGetOperationInstance, u64, u64),
+    pub measure_leaked_fn: unsafe extern "C" fn(RuntimeGetOperationInstance, u64, u64),
     pub reset_fn: unsafe extern "C" fn(RuntimeGetOperationInstance, u64),
     pub custom_fn:
         unsafe extern "C" fn(RuntimeGetOperationInstance, usize, *const ffi::c_void, usize),
@@ -806,6 +762,7 @@ impl BatchExtractor {
             rxy_fn,
             rz_fn,
             measure_fn,
+            measure_leaked_fn,
             reset_fn,
             custom_fn,
             set_batch_time_fn,
@@ -818,6 +775,10 @@ impl BatchExtractor {
                     qubit_id,
                     result_id,
                 } => unsafe { measure_fn(instance_out, *qubit_id, *result_id) },
+                Operation::MeasureLeaked {
+                    qubit_id,
+                    result_id,
+                } => unsafe { measure_leaked_fn(instance_out, *qubit_id, *result_id) },
                 Operation::Reset { qubit_id } => unsafe { reset_fn(instance_out, *qubit_id) },
                 Operation::RXYGate {
                     qubit_id,

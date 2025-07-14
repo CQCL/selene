@@ -101,6 +101,7 @@ impl<F: RuntimeInterfaceFactory> Helper<F> {
                     rxy_fn,
                     rz_fn,
                     measure_fn,
+                    measure_leaked_fn,
                     reset_fn,
                     custom_fn,
                     set_batch_time_fn,
@@ -113,6 +114,10 @@ impl<F: RuntimeInterfaceFactory> Helper<F> {
                             qubit_id,
                             result_id,
                         } => unsafe { measure_fn(goi, qubit_id, result_id) },
+                        Operation::MeasureLeaked {
+                            qubit_id,
+                            result_id,
+                        } => unsafe { measure_leaked_fn(goi, qubit_id, result_id) },
                         Operation::Reset { qubit_id } => unsafe { reset_fn(goi, qubit_id) },
                         Operation::RZGate { qubit_id, theta } => unsafe {
                             rz_fn(goi, qubit_id, theta)
@@ -251,6 +256,21 @@ impl<F: RuntimeInterfaceFactory> Helper<F> {
         )
     }
 
+    pub unsafe fn measure_leaked(
+        instance: RuntimeInstance,
+        qubit_id: u64,
+        result: *mut u64,
+    ) -> Errno {
+        result_to_errno(
+            "Failed in measure_leaked",
+            Self::with_runtime_instance(instance, |runtime| {
+                let r = runtime.measure_leaked(qubit_id)?;
+                unsafe { *result = r };
+                anyhow::Ok(())
+            }),
+        )
+    }
+
     pub unsafe fn reset(instance: RuntimeInstance, qubit_id: u64) -> Errno {
         result_to_errno(
             "Failed in reset",
@@ -265,11 +285,15 @@ impl<F: RuntimeInterfaceFactory> Helper<F> {
         )
     }
 
-    pub unsafe fn get_result(instance: RuntimeInstance, result_id: u64, result: *mut i8) -> Errno {
+    pub unsafe fn get_bool_result(
+        instance: RuntimeInstance,
+        result_id: u64,
+        result: *mut i8,
+    ) -> Errno {
         result_to_errno(
-            "Failed in get_result",
+            "Failed in get_bool_result",
             Self::with_runtime_instance(instance, |runtime| {
-                match runtime.get_result(result_id)? {
+                match runtime.get_bool_result(result_id)? {
                     Some(r) => {
                         unsafe { *result = r as i8 };
                     }
@@ -282,10 +306,46 @@ impl<F: RuntimeInterfaceFactory> Helper<F> {
         )
     }
 
-    pub unsafe fn set_result(instance: RuntimeInstance, result_id: u64, result: bool) -> Errno {
+    pub unsafe fn get_u64_result(
+        instance: RuntimeInstance,
+        result_id: u64,
+        result: *mut u64,
+    ) -> Errno {
         result_to_errno(
-            "Failed in set_result",
-            Self::with_runtime_instance(instance, |runtime| runtime.set_result(result_id, result)),
+            "Failed in get_u64_result",
+            Self::with_runtime_instance(instance, |runtime| {
+                match runtime.get_u64_result(result_id)? {
+                    Some(r) => {
+                        unsafe { *result = r };
+                    }
+                    None => unsafe {
+                        *result = u64::MAX;
+                    },
+                };
+                anyhow::Ok(())
+            }),
+        )
+    }
+
+    pub unsafe fn set_bool_result(
+        instance: RuntimeInstance,
+        result_id: u64,
+        result: bool,
+    ) -> Errno {
+        result_to_errno(
+            "Failed in set_bool_result",
+            Self::with_runtime_instance(instance, |runtime| {
+                runtime.set_bool_result(result_id, result)
+            }),
+        )
+    }
+
+    pub unsafe fn set_u64_result(instance: RuntimeInstance, result_id: u64, result: u64) -> Errno {
+        result_to_errno(
+            "Failed in set_u64_result",
+            Self::with_runtime_instance(instance, |runtime| {
+                runtime.set_u64_result(result_id, result)
+            }),
         )
     }
 
@@ -625,6 +685,19 @@ macro_rules! export_runtime_plugin {
                 Helper::measure(instance, qubit_id, result)
             }
 
+            /// Instruct the runtime that a measurement is to be requested with additional
+            /// capabilities to provide leakage information, and to write a reference ID
+            /// to the result to the `result` pointer. This result is a u64, packed with
+            /// appropriate information for the additional capabilities.
+            #[unsafe(no_mangle)]
+            pub unsafe extern "C" fn selene_runtime_measure_leaked(
+                instance: RuntimeInstance,
+                qubit_id: u64,
+                result: *mut u64,
+            ) -> i32 {
+                Helper::measure_leaked(instance, qubit_id, result)
+            }
+
             /// Instruct the runtime to reset a qubit to the |0> state with the given ID.
             /// Note that it is up to the runtime whether or not this reset is applied immediately.
             /// It may wait until it is required, e.g. another gate is applied to the qubit.
@@ -637,7 +710,7 @@ macro_rules! export_runtime_plugin {
             }
 
             /// Instruct the runtime to force a result with the given ID to be made available, e.g.
-            /// that the measurement must be performed now if it has not been performed yet.
+            /// that a measurement must be performed now if it has not been performed yet.
             #[unsafe(no_mangle)]
             pub unsafe extern "C" fn selene_runtime_force_result(
                 instance: RuntimeInstance,
@@ -646,27 +719,50 @@ macro_rules! export_runtime_plugin {
                 Helper::force_result(instance, result_id)
             }
 
-            /// Read the result from the runtime.
+            /// Read a bool result from the runtime.
             #[unsafe(no_mangle)]
-            pub unsafe extern "C" fn selene_runtime_get_result(
+            pub unsafe extern "C" fn selene_runtime_get_bool_result(
                 instance: RuntimeInstance,
                 result_id: u64,
                 result: *mut i8,
             ) -> i32 {
-                Helper::get_result(instance, result_id, result)
+                Helper::get_bool_result(instance, result_id, result)
+            }
+
+            /// Read a u64 result from the runtime.
+            #[unsafe(no_mangle)]
+            pub unsafe extern "C" fn selene_runtime_get_u64_result(
+                instance: RuntimeInstance,
+                result_id: u64,
+                result: *mut u64,
+            ) -> i32 {
+                Helper::get_u64_result(instance, result_id, result)
             }
 
             /// If the result relies on a quantum operation such as a measurement, then forcing the
             /// result might flush a measurement operation (amongst other things) to Selene for the
-            /// error model and simulator to act upon. set_result is used by Selene to provide the
-            /// result back to the runtime for later reporting to the user program.
+            /// error model and simulator to act upon. set_bool_result is used by Selene to provide
+            /// the result back to the runtime for later reporting to the user program.
             #[unsafe(no_mangle)]
-            pub unsafe extern "C" fn selene_runtime_set_result(
+            pub unsafe extern "C" fn selene_runtime_set_bool_result(
                 instance: RuntimeInstance,
                 result_id: u64,
                 result: bool,
             ) -> i32 {
-                Helper::set_result(instance, result_id, result)
+                Helper::set_bool_result(instance, result_id, result)
+            }
+
+            /// If the result relies on a quantum operation such as a measurement, then forcing the
+            /// result might flush a measurement operation (amongst other things) to Selene for the
+            /// error model and simulator to act upon. set_bool_result is used by Selene to provide
+            /// the result back to the runtime for later reporting to the user program.
+            #[unsafe(no_mangle)]
+            pub unsafe extern "C" fn selene_runtime_set_u64_result(
+                instance: RuntimeInstance,
+                result_id: u64,
+                result: u64,
+            ) -> i32 {
+                Helper::set_u64_result(instance, result_id, result)
             }
 
             /// Increment the reference count of a future ID.
