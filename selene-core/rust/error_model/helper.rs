@@ -150,15 +150,15 @@ impl<F: ErrorModelInterfaceFactory> Helper<F> {
                 extract_fn(extract_ops_instance, builder_instance, builder_interface);
                 let results = error_model.handle_operations(batch_builder.finish())?;
                 let ErrorModelSetResultInterface {
-                    set_measurement_result_fn,
+                    set_bool_result_fn,
+                    set_u64_result_fn,
                     ..
                 } = &*result_interface;
-                for measurement_result in results.measurements {
-                    set_measurement_result_fn(
-                        result_instance,
-                        measurement_result.result_id,
-                        measurement_result.measurement,
-                    );
+                for bool_result in results.bool_results {
+                    set_bool_result_fn(result_instance, bool_result.result_id, bool_result.value);
+                }
+                for u64_result in results.u64_results {
+                    set_u64_result_fn(result_instance, u64_result.result_id, u64_result.value);
                 }
                 anyhow::Ok(())
             }),

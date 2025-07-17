@@ -91,19 +91,19 @@ impl BoolResult {
     }
 }
 #[repr(C)]
-pub struct FutureBoolResult {
+pub struct FutureResult {
     pub error_code: u32,
     pub reference: u64,
 }
-impl FutureBoolResult {
+impl FutureResult {
     pub fn ok(reference: u64) -> Self {
-        FutureBoolResult {
+        FutureResult {
             error_code: 0,
             reference,
         }
     }
     pub fn err(error_code: u32) -> Self {
-        FutureBoolResult {
+        FutureResult {
             error_code,
             reference: 0,
         }
@@ -281,25 +281,26 @@ where
     }
 }
 
-fn with_instance_future_bool<F>(instance: *mut SeleneInstance, f: F) -> FutureBoolResult
+fn with_instance_future_bool<F>(instance: *mut SeleneInstance, f: F) -> FutureResult
 where
     F: FnOnce(&mut SeleneInstance) -> Result<u64>,
 {
     if instance.is_null() {
-        return FutureBoolResult::err(100000);
+        return FutureResult::err(100000);
     }
     let instance = unsafe { &mut *instance };
     match f(instance) {
-        Ok(value) => FutureBoolResult::ok(value),
+        Ok(value) => FutureResult::ok(value),
         Err(e) => {
             let code = 100001;
             instance
                 .print_panic(format!("{e:#}").as_str(), code)
                 .unwrap();
-            FutureBoolResult::err(code)
+            FutureResult::err(code)
         }
     }
 }
+
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn selene_exit(instance: *mut SeleneInstance) -> VoidResult {
     if instance.is_null() {
@@ -553,8 +554,17 @@ pub unsafe extern "C" fn selene_qubit_measure(instance: *mut SeleneInstance, q: 
 pub unsafe extern "C" fn selene_qubit_lazy_measure(
     instance: *mut SeleneInstance,
     q: u64,
-) -> FutureBoolResult {
+) -> FutureResult {
     with_instance_future_bool(instance, |instance| instance.qubit_lazy_measure(q))
+}
+
+/// Performs a lazy measurement with leakage detection
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn selene_qubit_lazy_measure_leaked(
+    instance: *mut SeleneInstance,
+    q: u64,
+) -> FutureResult {
+    with_instance_future_bool(instance, |instance| instance.qubit_lazy_measure_leaked(q))
 }
 
 /// Decrements a refcount
@@ -577,8 +587,20 @@ pub unsafe extern "C" fn selene_refcount_increment(
 
 /// Reads a bool future
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn selene_future_read(instance: *mut SeleneInstance, r: u64) -> BoolResult {
-    with_instance_bool(instance, |instance| instance.future_read(r))
+pub unsafe extern "C" fn selene_future_read_bool(
+    instance: *mut SeleneInstance,
+    r: u64,
+) -> BoolResult {
+    with_instance_bool(instance, |instance| instance.future_read_bool(r))
+}
+
+/// Reads a u64 future
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn selene_future_read_u64(
+    instance: *mut SeleneInstance,
+    r: u64,
+) -> U64Result {
+    with_instance_u64(instance, |instance| instance.future_read_u64(r))
 }
 
 #[unsafe(no_mangle)]

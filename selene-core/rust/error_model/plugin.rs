@@ -1,6 +1,6 @@
 use super::{
-    BatchResult, ErrorModelAPIVersion, ErrorModelInterface, ErrorModelInterfaceFactory,
-    MeasurementResult,
+    BatchResult, BoolResult, ErrorModelAPIVersion, ErrorModelInterface, ErrorModelInterfaceFactory,
+    U64Result,
 };
 use crate::runtime::BatchOperation;
 use crate::utils::{MetricValue, check_errno, read_raw_metric, with_strings_to_cargs};
@@ -13,83 +13,7 @@ use std::{ffi, sync::Arc};
 pub type ErrorModelInstance = *mut ffi::c_void;
 pub type Errno = i32;
 
-/// Controls an error model plugin adhering to the interface:
-///
-/// - `int selene_error_model_init(
-///      void** handle,    // user-settable opaque handle
-///      uint64_t n_qubits, // max number of qubits to be available
-///      uint32_t argc,     // number of additional arguments
-///      char const** argv  // additional arguments
-///      char const* simulator_plugin, // path to the simulator plugin
-///      uint32_t simulator_argc, // number of additional arguments for the simulator
-///      char const** simulator_argv // additional arguments for the simulator
-///   )`
-///   Called at startup to initialize the plugin. The plugin should return 0 on success, or
-///   any other value on failure. It should allocate all state to a struct on the heap and
-///   set the handle to point to it. Global state should be avoided where possible, as future
-///   versions of selene may support multiple instances of the same plugin to be invoked in
-///   parallel.
-///
-/// - `int selene_error_model_shot_start(
-///      void* handle, // user-set state
-///      uint64_t shot_id, // shot id
-///      uint64_t error_model_seed, // new random seed for generating errors
-///      uint64_t simulator_seed // new random seed for the simulator
-///   )`
-///   Called at the start of a shot to signal that the error model and simulator should prepare
-///   to start receiving operations for a new simulation. The random number generators for the
-///   error model and the simulator should be reseeded with the provided seeds for reproducibility.
-///
-/// - `int selene_error_model_shot_end(
-///      void* handle, // user-set state
-///   )`
-///   Called at the end of a shot to signal that the error model and simulator should
-///   end the current simulation. This is an ideal point to clean up any state, and perform
-///   validation of the simulation if required. The plugin should return 0 on success, or
-///   any other value on failure.
-///
-/// - `int selene_error_model_handle_operations(
-///     void* handle, // user-set state
-///     RuntimeExtractOperationInstance batch_instance, // batch instance
-///     RuntimeExtractOperationInterface const* batch_interface, // batch interface
-///     ErrorModelSetResultInstance result_instance, // result instance
-///     ErrorModelSetResultInterface const* result_interface // result interface
-///    )`
-///    Handle a sequence of operations from the runtime. Individual operations may
-///    be extracted through the batch_instance, utilising the batch_interface. See
-///    [crate::runtime::plugin::RuntimeExtractOperationInterface] for more information
-///    about this interface. The error model should apply errors to the operations as
-///    it chooses, and can also handle custom data from the runtime if it chooses (
-///    and if it is compatible). Results should be provided to the result_instance
-///    using the result_interface function interface - see [ErrorModelSetResultInterface]
-///    for more information.
-///
-/// - (optional)
-///   `int selene_error_model_get_metrics(
-///       *void  // user-set state
-///       uint8_t nth_metric, // index of the metric to fetch
-///       char* out_tag, // pointer to 256-byte char array to write a tag name (up to 255 chars) into.
-///       u8* out_datatype // write 0 => bool, 1 => i64, 2 => u64, 3 => f64
-///       u64* out_data // write the data here
-///    )`
-///    Provide a set of metrics to be provided to the user stream. Return zero if a metric
-///    has been written, nonzero if there are no more metrics to write.
-///
-/// - (optional)
-///   `int selene_error_model_get_simulator_metrics(
-///       *void  // user-set state
-///       uint8_t nth_metric, // index of the metric to fetch
-///       char* out_tag, // pointer to 256-byte char array to write a tag name (up to 255 chars) into.
-///       u8* out_datatype // write 0 => bool, 1 => i64, 2 => u64, 3 => f64
-///       u64* out_data // write the data here
-///    )`
-///    Provide a set of metrics from the simulator to be provided to the user stream. Return zero if a metric
-///    has been written, nonzero if there are no more metrics to write.
-///
-//// - (optional) `int selene_error_model_exit(void* handle)`
-///    If present, is invoked at the end of the simulation to allow the plugin to clean up.
-///    If the plugin returns a nonzero value, it is considered to be an error. This allows
-///    a plugin to perform post-simulation validation.
+/// Controls an error model plugin according to the C interface provided in the selene-core wheel.
 ///
 /// This interface allows implementations of behaviour to be written and distributed independently
 /// of selene. Users should be cautious about the plugins they use, as it is possible that mistakes
@@ -389,18 +313,25 @@ impl ErrorModelInterface for ErrorModelPlugin {
 struct BatchResultBuilder(BatchResult);
 
 impl BatchResultBuilder {
-    unsafe extern "C" fn set_measurement_result(
+    unsafe extern "C" fn set_bool_result(
         interface: ErrorModelSetResultInstance,
         result_id: u64,
-        measurement: bool,
+        value: bool,
     ) {
         let result = interface as *mut BatchResult;
         (unsafe { &mut *result })
-            .measurements
-            .push(MeasurementResult {
-                result_id,
-                measurement,
-            })
+            .bool_results
+            .push(BoolResult { result_id, value })
+    }
+    unsafe extern "C" fn set_u64_result(
+        interface: ErrorModelSetResultInstance,
+        result_id: u64,
+        value: u64,
+    ) {
+        let result = interface as *mut BatchResult;
+        (unsafe { &mut *result })
+            .u64_results
+            .push(U64Result { result_id, value })
     }
 
     /// The plugin calls this to obtain an instance and an interface.
@@ -414,7 +345,8 @@ impl BatchResultBuilder {
     ) {
         let instance = &raw mut self.0 as ErrorModelSetResultInstance;
         let interface = ErrorModelSetResultInterface {
-            set_measurement_result_fn: Self::set_measurement_result,
+            set_bool_result_fn: Self::set_bool_result,
+            set_u64_result_fn: Self::set_u64_result,
             _marker: PhantomData,
         };
         (instance, interface)
@@ -439,6 +371,7 @@ pub type ErrorModelSetResultInstance = *mut ffi::c_void;
 /// within to populate a batch. All such calls must pass the instance as the
 /// first parameter.
 pub struct ErrorModelSetResultInterface<'a> {
-    pub set_measurement_result_fn: unsafe extern "C" fn(ErrorModelSetResultInstance, u64, bool),
+    pub set_bool_result_fn: unsafe extern "C" fn(ErrorModelSetResultInstance, u64, bool),
+    pub set_u64_result_fn: unsafe extern "C" fn(ErrorModelSetResultInstance, u64, u64),
     _marker: PhantomData<&'a ()>,
 }
