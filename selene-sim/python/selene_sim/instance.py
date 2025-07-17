@@ -279,6 +279,7 @@ class SeleneInstance:
         shot_offset: int = 0,
         shot_increment: int = 1,
         n_processes: int = 1,
+        parse_results: bool = True,
     ) -> Iterator[Iterator[TaggedResult]]:
         """
         Run the compiled program through multiple selene shots.
@@ -297,6 +298,26 @@ class SeleneInstance:
             random_seed: The random seed to use for the simulator, error model,
                          and runtime if they have not been set explicitly. On
                          each shot, the random seed will be incremented by 1.
+            parse_results:
+                Whether to interpret tags in the result stream.
+                If True (default), tags will be stripped, interpreted,
+                and routed according to their type, e.g:
+                - ("USER:INT:example", 42) will be interpreted as
+                    an output variable "example"
+                - ("METRICS:INT:user_program:qalloc_count", 5) will
+                    be interpreted as a metric with the name "qalloc_count"
+                    in the "user_program" namespace, and given to a MetricStore
+                    event hook WITHOUT yielding it as a result.
+                If False, no stripping or routing will be done: everything
+                in the result stream is passed directly to the result iterator,
+                e.g:
+                - ("USER:INT:example", 42) will be yielded as-is,
+                  without interpretation.
+                - ("METRICS:INT:user_program:qalloc_count", 5) will
+                  also be yielded as-is, without interpretation.
+                Setting to True provides the high level Selene interface, and
+                using False allows for Selene to be used as an intermediate
+                component for use with an external result stream handler.
         """
 
         self._check_health()
@@ -349,7 +370,6 @@ class SeleneInstance:
                 )
 
             processes.spawn()
-
             for i in range(n_shots):
                 shot_idx = shot_offset + (i * shot_increment)
                 if verbose:
@@ -365,6 +385,7 @@ class SeleneInstance:
                 yield parse_shot(
                     result_stream,
                     event_hook,
+                    parse_results,
                     relevant_process.stdout,
                     relevant_process.stderr,
                 )
@@ -383,6 +404,7 @@ class SeleneInstance:
         results_logfile=None,
         random_seed: int | None = None,
         shot_offset: int = 0,
+        parse_results: bool = True,
     ) -> Iterator[TaggedResult]:
         """
         Run the compiled program through a single selene shot.
@@ -413,6 +435,7 @@ class SeleneInstance:
             results_logfile=results_logfile,
             random_seed=random_seed,
             shot_offset=shot_offset,
+            parse_results=parse_results,
         )
         # We cannot simply yield from the shot generator, as this can
         # cause lifetime issues with the run_shots generator.
