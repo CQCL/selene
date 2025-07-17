@@ -27,6 +27,26 @@ class ShotBoundary:
     pass
 
 
+def parse_record_minimal(
+    record: tuple,
+) -> TaggedResult | ExitMessage | ShotBoundary:
+    """
+    We still need *some* parsing to handle the exit messages and shot boundaries,
+    but ordinary events are returned as-is, without stripping or passing to
+    event hooks.
+    """
+    tag, *data = record
+    assert isinstance(tag, str), f"tag must be a string, got {tag} of type {type(tag)}"
+    if tag.endswith(":__SHOT_BOUNDARY__"):
+        return ShotBoundary()
+
+    if tag.startswith("EXIT:"):
+        code = data[0]
+        return ExitMessage(message=tag, code=code)
+
+    return (tag, data[0])
+
+
 def parse_record(
     record: tuple,
     event_hook: EventHook,
@@ -65,7 +85,11 @@ def parse_record(
 
 
 def parse_shot(
-    parser: ResultStream, event_hook: EventHook, stdout_file: Path, stderr_file: Path
+    parser: ResultStream,
+    event_hook: EventHook,
+    parse_results: bool,
+    stdout_file: Path,
+    stderr_file: Path,
 ) -> Iterator[TaggedResult]:
     """
     Filters the results stream for tagged results within one shot, yielding them
@@ -73,7 +97,11 @@ def parse_shot(
     """
     try:
         for record in parser:
-            parsed = parse_record(record, event_hook)
+            parsed = (
+                parse_record(record, event_hook)
+                if parse_results
+                else parse_record_minimal(record)
+            )
             if parsed is None:
                 pass
             if isinstance(parsed, tuple):  # TaggedResult is a tuple
@@ -87,8 +115,10 @@ def parse_shot(
                         stderr=stderr_file.read_text(),
                     )
                 else:
-                    # temporary behaviour: yield it as a result
-                    yield (f"exit: {parsed.message}", parsed.code)
+                    if parse_results:
+                        yield (f"exit: {parsed.message}", parsed.code)
+                    else:
+                        yield (parsed.message, parsed.code)
             elif isinstance(parsed, ShotBoundary):
                 parser.next_shot()
                 break
