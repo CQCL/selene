@@ -16,6 +16,7 @@ from guppylang.std.quantum import (
     x,
     z,
 )
+from hugr.ops import CFG
 from selene_hugr_qis_compiler import HugrReadError, check_hugr, compile_to_llvm_ir
 
 triples = [
@@ -34,7 +35,8 @@ def test_check() -> None:
         q = qubit()
         discard(q)
 
-    hugr_envelope = guppy.compile(foo).package.to_bytes()
+    package = guppy.compile(foo).package
+    hugr_envelope = package.to_bytes()
 
     check_hugr(hugr_envelope)  # guppy produces a valid HUGR envelope!
 
@@ -45,6 +47,11 @@ def test_check() -> None:
     bad_end = hugr_envelope[:-1]
     with pytest.raises(HugrReadError, match="Premature end of file"):
         check_hugr(bad_end)
+
+    hugr = package.modules[0]
+    hugr.add_node(CFG([], []))
+    with pytest.raises(HugrReadError, match="CFG must have children"):
+        check_hugr(package.to_str().encode("utf-8"))
 
 
 @pytest.mark.parametrize("target_triple", triples)
