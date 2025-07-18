@@ -7,6 +7,7 @@ readme = "python/selene_core/README.md"
 
 [dependencies]
 networkx = "~=3.0.0"
+pyyaml = "~=6.0.2"
 
 [project.urls]
 homepage = "https://github.com/CQCL/selene/selene-core"
