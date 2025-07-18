@@ -43,6 +43,6 @@ ignored = ["cbindgen", "pyo3-build-config"]
 # Uncomment to use unreleased versions of tket2
 tket2 = { git = "https://github.com/CQCL/tket2.git", rev = "6017450" }
 tket2-hseries = { git = "https://github.com/CQCL/tket2.git", rev = "6017450" }
-hugr = { git = "https://github.com/CQCL/hugr", rev = "1a301eb" }
-hugr-core = { git = "https://github.com/CQCL/hugr", rev = "1a301eb" }
-hugr-llvm = { git = "https://github.com/CQCL/hugr", rev = "1a301eb" }
+hugr = { git = "https://github.com/CQCL/hugr", rev = "e49089e" }
+hugr-core = { git = "https://github.com/CQCL/hugr", rev = "e49089e" }
+hugr-llvm = { git = "https://github.com/CQCL/hugr", rev = "e49089e" }
