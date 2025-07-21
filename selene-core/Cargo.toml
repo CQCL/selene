@@ -1,6 +1,6 @@
 [package]
 name = "selene-core"
-version = "0.2.0-alpha.4"
+version = "0.2.0-rc.2"
 edition = "2024"
 
 [lib]
