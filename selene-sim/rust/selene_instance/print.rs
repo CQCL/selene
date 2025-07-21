@@ -13,7 +13,14 @@ impl SeleneInstance {
     }
 
     pub fn print_panic(&mut self, message: &str, error_code: u32) -> Result<()> {
-        let tag = format!("EXIT:INT:{}", message);
+        // In some cases, e.g. the compiled user program, the exit namespace is already
+        // encoded in the provided message. In others, e.g. runtime panics from components,
+        // we need to prepend it.
+        let tag = if message.starts_with("EXIT:INT:") {
+            message.to_string()
+        } else {
+            format!("EXIT:INT:{}", message)
+        };
         let error_code_u64 = error_code as u64;
         self.out_encoder.begin_message(self.time_cursor)?;
         self.out_encoder.write(tag.as_str())?;
@@ -22,7 +29,14 @@ impl SeleneInstance {
         Ok(())
     }
     pub fn print_exit(&mut self, message: &str, error_code: u32) -> Result<()> {
-        let tag = format!("EXIT:INT:{}", message);
+        // In some cases, e.g. the compiled user program, the exit namespace is already
+        // encoded in the provided message. In others, e.g. runtime panics from components,
+        // we need to prepend it.
+        let tag = if message.starts_with("EXIT:INT:") {
+            message.to_string()
+        } else {
+            format!("EXIT:INT:{}", message)
+        };
         let error_code_u64 = error_code as u64;
         self.out_encoder.begin_message(self.time_cursor)?;
         self.out_encoder.write(tag.as_str())?;
