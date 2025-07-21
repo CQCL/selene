@@ -1,0 +1,93 @@
+- !!python/tuple
+  - USER:BOOL:c0
+  - 1
+- !!python/tuple
+  - USER:BOOL:c1
+  - 0
+- !!python/tuple
+  - USER:BOOL:c2
+  - 1
+- !!python/tuple
+  - USER:BOOL:c3
+  - 1
+- !!python/tuple
+  - METRICS:INT:user_program:qalloc_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:user_program:qfree_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:user_program:reset_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:user_program:measure_request_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:user_program:measure_read_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:user_program:rxy_count
+  - 3
+- !!python/tuple
+  - METRICS:INT:user_program:rzz_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:user_program:rz_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:user_program:global_barrier_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:user_program:local_barrier_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:user_program:max_allocated
+  - 4
+- !!python/tuple
+  - METRICS:INT:user_program:currently_allocated
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:custom_op_batch_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:custom_op_individual_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:measure_batch_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:post_runtime:measure_individual_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:post_runtime:reset_batch_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:post_runtime:reset_individual_count
+  - 4
+- !!python/tuple
+  - METRICS:INT:post_runtime:rxy_batch_count
+  - 3
+- !!python/tuple
+  - METRICS:INT:post_runtime:rxy_individual_count
+  - 3
+- !!python/tuple
+  - METRICS:INT:post_runtime:rz_batch_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:rz_individual_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:rzz_batch_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:rzz_individual_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:total_duration_ns
+  - 0
+- !!python/tuple
+  - METRICS:INT:emulator:shot_number
+  - 0
+- !!python/tuple
+  - METRICS:FLOAT:simulator:cumulative_postselect_probability
+  - 1.0

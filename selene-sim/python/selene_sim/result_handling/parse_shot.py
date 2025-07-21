@@ -31,9 +31,13 @@ def parse_record_minimal(
     record: tuple,
 ) -> TaggedResult | ExitMessage | ShotBoundary:
     """
-    We still need *some* parsing to handle the exit messages and shot boundaries,
-    but ordinary events are returned as-is, without stripping or passing to
-    event hooks.
+    When the user requests that results from the data stream are unparsed, it is
+    an instruction  to selene to avoid manipulation of the entries of the data itself.
+    This allows them to perform their own parsing after the selene run.
+
+    Nonetheless, we do require some minimal parsing of structural entries within
+    the data stream, such as shot boundaries and exits, to maintain the normal operation
+    of the selene frontend.
     """
     tag, *data = record
     assert isinstance(tag, str), f"tag must be a string, got {tag} of type {type(tag)}"
@@ -51,6 +55,25 @@ def parse_record(
     record: tuple,
     event_hook: EventHook,
 ) -> TaggedResult | ExitMessage | ShotBoundary | None:
+    """
+    When the user requests that the results stream is parsed, we wish to intercept
+    entries from the stream in order to understand their context, then provide them
+    in a simple and friendly manner to the user.
+
+    - Structural entries such as exits and shot boundaries are processed as normal,
+      with the handling managed by the selene frontend for smooth operation.
+
+    - Normal "USER:[TYPE]:[NAME]" tags, e.g. the I/O result of 'result(...)' calls
+      in Guppy, are stripped of their namespace prefixes and their data elements are
+      returned. Thus a user that makes a result call with a tag will receive that tag
+      back without the intermediate namespacing added during compilation to guide
+      preprocessing.
+
+    - "STATE" tags are preserved, but stripped of their namespace prefix.
+
+    - Other tags are passed to the event hook, which can handle them as needed. This
+      currently includes metrics and circuit instructions.
+    """
     tag, *data = record
     assert isinstance(tag, str), f"tag must be a string, got {tag} of type {type(tag)}"
     if tag.endswith(":__SHOT_BOUNDARY__"):
@@ -94,6 +117,10 @@ def parse_shot(
     """
     Filters the results stream for tagged results within one shot, yielding them
     them one by one.
+
+    If parse_results is True, the results are parsed through `parse_record`.
+    Otherwise, the results are parsed through `parse_record_minimal`, which
+    only processes structural entries such as exits and shot boundaries.
     """
     try:
         for record in parser:
@@ -107,18 +134,18 @@ def parse_shot(
             if isinstance(parsed, tuple):  # TaggedResult is a tuple
                 yield parsed
             elif isinstance(parsed, ExitMessage):
-                if parsed.code >= 1000:
-                    raise SelenePanicError(
-                        message=parsed.message,
-                        code=parsed.code,
-                        stdout=stdout_file.read_text(),
-                        stderr=stderr_file.read_text(),
-                    )
-                else:
-                    if parse_results:
-                        yield (f"exit: {parsed.message}", parsed.code)
+                if parse_results:
+                    if parsed.code >= 1000:
+                        raise SelenePanicError(
+                            message=parsed.message,
+                            code=parsed.code,
+                            stdout=stdout_file.read_text(),
+                            stderr=stderr_file.read_text(),
+                        )
                     else:
-                        yield (parsed.message, parsed.code)
+                        yield (f"exit: {parsed.message}", parsed.code)
+                else:
+                    yield (parsed.message, parsed.code)
             elif isinstance(parsed, ShotBoundary):
                 parser.next_shot()
                 break

@@ -1,13 +1,11 @@
-import pytest
+import yaml
 
 from guppylang import guppy
 from guppylang.std.quantum import qubit, x, h, measure, measure_array
-from hugr.qsystem.result import QsysResult
 from guppylang.std.builtins import exit
 
 from selene_sim.build import build
 from selene_sim import Quest, Stim
-from selene_sim.exceptions import SelenePanicError
 from selene_sim.event_hooks import MetricStore
 
 
@@ -67,7 +65,7 @@ def test_flip_some_multishot_unparsed():
         assert got == expected, f"expected {expected}, got {got}"
 
 
-def test_flip_some_with_metrics_unparsed():
+def test_flip_some_with_metrics_unparsed(snapshot):
     @guppy
     def main() -> None:
         q0: qubit = qubit()
@@ -89,40 +87,7 @@ def test_flip_some_with_metrics_unparsed():
             Quest(), verbose=True, n_qubits=4, parse_results=False, event_hook=store
         )
     )
-    expected = [
-        ("USER:BOOL:c0", 1),
-        ("USER:BOOL:c1", 0),
-        ("USER:BOOL:c2", 1),
-        ("USER:BOOL:c3", 1),
-        ("METRICS:INT:user_program:qalloc_count", 4),
-        ("METRICS:INT:user_program:qfree_count", 4),
-        ("METRICS:INT:user_program:reset_count", 4),
-        ("METRICS:INT:user_program:measure_request_count", 4),
-        ("METRICS:INT:user_program:measure_read_count", 4),
-        ("METRICS:INT:user_program:rxy_count", 3),
-        ("METRICS:INT:user_program:rzz_count", 0),
-        ("METRICS:INT:user_program:rz_count", 0),
-        ("METRICS:INT:user_program:global_barrier_count", 0),
-        ("METRICS:INT:user_program:local_barrier_count", 0),
-        ("METRICS:INT:user_program:max_allocated", 4),
-        ("METRICS:INT:user_program:currently_allocated", 0),
-        ("METRICS:INT:post_runtime:custom_op_batch_count", 0),
-        ("METRICS:INT:post_runtime:custom_op_individual_count", 0),
-        ("METRICS:INT:post_runtime:measure_batch_count", 4),
-        ("METRICS:INT:post_runtime:measure_individual_count", 4),
-        ("METRICS:INT:post_runtime:reset_batch_count", 4),
-        ("METRICS:INT:post_runtime:reset_individual_count", 4),
-        ("METRICS:INT:post_runtime:rxy_batch_count", 3),
-        ("METRICS:INT:post_runtime:rxy_individual_count", 3),
-        ("METRICS:INT:post_runtime:rz_batch_count", 0),
-        ("METRICS:INT:post_runtime:rz_individual_count", 0),
-        ("METRICS:INT:post_runtime:rzz_batch_count", 0),
-        ("METRICS:INT:post_runtime:rzz_individual_count", 0),
-        ("METRICS:INT:post_runtime:total_duration_ns", 0),
-        ("METRICS:INT:emulator:shot_number", 0),
-        ("METRICS:FLOAT:simulator:cumulative_postselect_probability", 1.0),
-    ]
-    assert got == expected, f"expected {expected}, got {got}"
+    snapshot.assert_match(yaml.dump(got), "unparsed_metrics")
 
 
 def test_array_results_unparsed():
@@ -223,9 +188,9 @@ def test_exit_unparsed():
 def test_panic_unparsed():
     """
     This test verifies the behaviour of panic(), which should stop the shot
-    and should not allow any further shots to be performed. On the python
-    client side, this should result in an Exception. Unlike with parse_result=True,
-    the panic should STILL be added into the results.
+    and should not allow any further shots to be performed. Unlike with
+    parse_results=True, the panic should be added into the results,
+    and the panic should not result in an exception.
     """
 
     @guppy
@@ -238,15 +203,18 @@ def test_panic_unparsed():
         result("c", outcome)
 
     runner = build(main.compile(), "panic")
-    with pytest.raises(
-        SelenePanicError, match="Postselection failed"
-    ) as exception_info:
-        shots = QsysResult(
-            runner.run_shots(
-                Quest(),
-                n_qubits=1,
-                n_shots=100,
-                random_seed=0,
-                parse_results=False,
-            )
+    shots = list(
+        list(shot)
+        for shot in runner.run_shots(
+            Stim(),
+            n_qubits=1,
+            n_shots=100,
+            random_seed=1,
+            parse_results=False,
         )
+    )
+    assert shots[0] == [("USER:BOOL:c", 0)]
+    assert shots[1] == [("USER:BOOL:c", 0)]
+    assert shots[2] == [("EXIT:INT:Postselection failed", 1001)]
+    for subsequent in shots[3:]:
+        assert subsequent == []
