@@ -6,7 +6,7 @@ target triple = "x86_64-apple-darwin"
 @res_result.457DE32D.0 = private constant [17 x i8] c"\10USER:BOOL:result"
 @"e_No more qu.3B2EEBF0.0" = private constant [47 x i8] c".EXIT:INT:No more qubits available to allocate."
 
-define void @__hugr__._main_1.1() local_unnamed_addr {
+define void @__hugr__.main.1() local_unnamed_addr {
 alloca_block:
   %qalloc.i = tail call i64 @___qalloc()
   %not_max.not.i = icmp eq i64 %qalloc.i, -1
@@ -28,7 +28,7 @@ cond_87_case_0.i:                                 ; preds = %id_bb.i
 
 __hugr__.__tk2_qalloc.83.exit:                    ; preds = %id_bb.i
   %.fca.1.extract.i = extractvalue { i1, i64 } %1, 1
-  %2 = tail call i64 @__hugr__._rus_10.17(i64 %.fca.1.extract.i)
+  %2 = tail call i64 @__hugr__.rus.17(i64 %.fca.1.extract.i)
   %lazy_measure = tail call i64 @___lazy_measure(i64 %2)
   tail call void @___qfree(i64 %2)
   %read_bool = tail call i1 @___read_future_bool(i64 %lazy_measure)
@@ -62,7 +62,7 @@ cond_87_case_0:                                   ; preds = %id_bb
   unreachable
 }
 
-define i64 @__hugr__._rus_10.17(i64 %0) local_unnamed_addr {
+define i64 @__hugr__.rus.17(i64 %0) local_unnamed_addr {
 alloca_block:
   br label %cond_177_case_1
 
@@ -223,7 +223,7 @@ declare void @___rzz(i64, i64, double) local_unnamed_addr
 define i64 @qmain(i64 %0) local_unnamed_addr {
 entry:
   tail call void @setup(i64 %0)
-  tail call void @__hugr__._main_1.1()
+  tail call void @__hugr__.main.1()
   %1 = tail call i64 @teardown()
   ret i64 %1
 }
