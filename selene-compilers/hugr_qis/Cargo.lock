@@ -530,9 +530,9 @@ dependencies = [
 
 [[package]]
 name = "delegate"
-version = "0.13.3"
+version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9b6483c2bbed26f97861cf57651d4f2b731964a28cd2257f934a4b452480d21"
+checksum = "6178a82cf56c836a3ba61a7935cdb1c49bfaa6fa4327cd5bf554a503087de26b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -863,7 +863,7 @@ dependencies = [
 [[package]]
 name = "hugr"
 version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=1a301eb#1a301eb818401c314d4d7bac40698ec2e73babe7"
+source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
 dependencies = [
  "hugr-core",
  "hugr-llvm",
@@ -874,8 +874,7 @@ dependencies = [
 [[package]]
 name = "hugr-cli"
 version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c5d062da5abe43ce11a1a7b555bd1d3e8b86107ec1de380d6faca7407653d0e"
+source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
 dependencies = [
  "anyhow",
  "clap",
@@ -892,7 +891,7 @@ dependencies = [
 [[package]]
 name = "hugr-core"
 version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=1a301eb#1a301eb818401c314d4d7bac40698ec2e73babe7"
+source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
 dependencies = [
  "base64",
  "cgmath",
@@ -929,7 +928,7 @@ dependencies = [
 [[package]]
 name = "hugr-llvm"
 version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=1a301eb#1a301eb818401c314d4d7bac40698ec2e73babe7"
+source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
 dependencies = [
  "anyhow",
  "delegate",
@@ -948,7 +947,7 @@ dependencies = [
 [[package]]
 name = "hugr-model"
 version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=1a301eb#1a301eb818401c314d4d7bac40698ec2e73babe7"
+source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
 dependencies = [
  "base64",
  "bumpalo",
@@ -968,7 +967,7 @@ dependencies = [
 [[package]]
 name = "hugr-passes"
 version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=1a301eb#1a301eb818401c314d4d7bac40698ec2e73babe7"
+source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
 dependencies = [
  "ascent",
  "derive_more 1.0.0",
@@ -1382,13 +1381,14 @@ checksum = "f84267b20a16ea918e43c6a88433c2d54fa145c92a811b5b047ccbe153674483"
 
 [[package]]
 name = "portgraph"
-version = "0.14.1"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5fdce52d51ec359351ff3c209fafb6f133562abf52d951ce5821c0184798d979"
+checksum = "eb3112e4b1e107ff15507baeb67417f2eacbb3de476f1175c2846b1305d9848b"
 dependencies = [
  "bitvec",
  "delegate",
  "itertools 0.14.0",
+ "num-traits",
  "petgraph 0.8.2",
  "serde",
  "thiserror 2.0.12",
@@ -2101,7 +2101,7 @@ dependencies = [
 [[package]]
 name = "tket2"
 version = "0.12.3"
-source = "git+https://github.com/CQCL/tket2.git?rev=6017450#601745019579fc50461a43e02347304f37dc8d97"
+source = "git+https://github.com/CQCL/tket2.git?branch=lm%2Fhugr-v22#97670d73dac399bb83b01f4c697e8a4e3d5a133c"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -2137,7 +2137,7 @@ dependencies = [
 [[package]]
 name = "tket2-hseries"
 version = "0.16.1"
-source = "git+https://github.com/CQCL/tket2.git?rev=6017450#601745019579fc50461a43e02347304f37dc8d97"
+source = "git+https://github.com/CQCL/tket2.git?branch=lm%2Fhugr-v22#97670d73dac399bb83b01f4c697e8a4e3d5a133c"
 dependencies = [
  "anyhow",
  "clap",
@@ -2805,3 +2805,18 @@ dependencies = [
  "cc",
  "pkg-config",
 ]
+
+[[patch.unused]]
+name = "hugr"
+version = "0.21.0"
+source = "git+https://github.com/CQCL/hugr?rev=50a2bac#50a2bacdcd8c296cc5385183fe49928a136eaf10"
+
+[[patch.unused]]
+name = "hugr-core"
+version = "0.21.0"
+source = "git+https://github.com/CQCL/hugr?rev=50a2bac#50a2bacdcd8c296cc5385183fe49928a136eaf10"
+
+[[patch.unused]]
+name = "hugr-llvm"
+version = "0.21.0"
+source = "git+https://github.com/CQCL/hugr?rev=50a2bac#50a2bacdcd8c296cc5385183fe49928a136eaf10"

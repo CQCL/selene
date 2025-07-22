@@ -197,7 +197,7 @@ wheels = [
 [[package]]
 name = "guppylang"
 version = "0.20.0"
-source = { git = "https://github.com/CQCL/guppylang.git?rev=63854c5#63854c54492e66de0d2e70d6f06a411093dab992" }
+source = { git = "https://github.com/CQCL/guppylang.git?branch=ss%2Fhugr-py-v0.13#e18d8ef590f93efe9e2d796931f7429735f3a461" }
 dependencies = [
     { name = "graphviz" },
     { name = "hugr" },
@@ -211,7 +211,7 @@ dependencies = [
 [[package]]
 name = "hugr"
 version = "0.12.5"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/CQCL/hugr?subdirectory=hugr-py&rev=1a301eb#1a301eb818401c314d4d7bac40698ec2e73babe7" }
 dependencies = [
     { name = "graphviz" },
     { name = "pydantic" },
@@ -1427,7 +1427,7 @@ wheels = [
 [[package]]
 name = "tket2-exts"
 version = "0.9.2"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/CQCL/tket2?subdirectory=tket2-exts&rev=6017450#601745019579fc50461a43e02347304f37dc8d97" }
 dependencies = [
     { name = "hugr" },
 ]
