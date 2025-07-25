@@ -33,6 +33,9 @@ impl SeleneInstance {
     pub fn qubit_lazy_measure(&mut self, q: u64) -> Result<u64> {
         self.emulator.user_issued_lazy_measure(q)
     }
+    pub fn qubit_lazy_measure_leaked(&mut self, q: u64) -> Result<u64> {
+        self.emulator.user_issued_lazy_measure_leaked(q)
+    }
 
     pub fn global_barrier(&mut self, sleep_time: u64) -> Result<()> {
         self.emulator.user_issued_global_barrier(sleep_time)
@@ -49,8 +52,11 @@ impl SeleneInstance {
         self.emulator.user_issued_increment_measurement_refcount(r)
     }
 
-    pub fn future_read(&mut self, r: u64) -> Result<bool> {
-        self.emulator.user_issued_read_measurement(r)
+    pub fn future_read_bool(&mut self, r: u64) -> Result<bool> {
+        self.emulator.user_issued_read_future_bool(r)
+    }
+    pub fn future_read_u64(&mut self, r: u64) -> Result<u64> {
+        self.emulator.user_issued_read_future_u64(r)
     }
 
     pub fn custom_runtime_call(&mut self, custom_tag: u64, data: &[u8]) -> Result<u64> {

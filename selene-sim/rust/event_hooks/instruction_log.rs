@@ -40,7 +40,7 @@ impl Instruction {
                 encoder.write(4u64)?;
                 encoder.write(*qubit1)?;
             }
-            Operation::MeasureRead(qubit1) => {
+            Operation::FutureRead(qubit1) => {
                 encoder.write(5u64)?;
                 encoder.write(*qubit1)?;
             }
@@ -77,6 +77,10 @@ impl Instruction {
             Operation::GlobalBarrier(sleep_time) => {
                 encoder.write(11u64)?;
                 encoder.write(*sleep_time)?;
+            }
+            Operation::MeasureLeakedRequest(qubit1) => {
+                encoder.write(12u64)?;
+                encoder.write(*qubit1)?;
             }
         }
         Ok(())
@@ -116,7 +120,10 @@ impl EventHook for InstructionLog {
                     theta,
                 } => Operation::RZZ(*qubit_id_1, *qubit_id_2, *theta),
                 runtime::Operation::RZGate { qubit_id, theta } => Operation::RZ(*qubit_id, *theta),
-                runtime::Operation::Measure { qubit_id, .. } => Operation::MeasureRead(*qubit_id),
+                runtime::Operation::Measure { qubit_id, .. } => Operation::FutureRead(*qubit_id),
+                runtime::Operation::MeasureLeaked { qubit_id, .. } => {
+                    Operation::FutureRead(*qubit_id)
+                }
                 runtime::Operation::Custom { custom_tag, data } => {
                     Operation::Custom(*custom_tag as u64, data.to_vec())
                 }

@@ -75,6 +75,11 @@ pub trait RuntimeInterface {
     /// new result index. That result index must have a reference count of 1.
     fn measure(&mut self, qubit_id: u64) -> Result<u64>;
 
+    /// Schedule a leakage-detection and measurement of allocated qubit `qubit_id`.
+    /// The plugin should return a new result index. That result index must have a
+    /// reference count of 1.
+    fn measure_leaked(&mut self, qubit_id: u64) -> Result<u64>;
+
     /// Schedule a reset of allocated qubit `qubit_id`.
     fn reset(&mut self, qubit_id: u64) -> Result<()>;
 
@@ -87,14 +92,23 @@ pub trait RuntimeInterface {
 
     /// Get the result of the measurement with index `result_id`. The plugin should
     /// return `None` if the result is not yet available.
-    fn get_result(&mut self, result_id: u64) -> Result<Option<bool>>;
+    fn get_bool_result(&mut self, result_id: u64) -> Result<Option<bool>>;
+
+    /// Get the result of the measurement with index `result_id`. The plugin should
+    /// return `None` if the result is not yet available.
+    fn get_u64_result(&mut self, result_id: u64) -> Result<Option<u64>>;
 
     /// Set the result of the measurement with index `result_id` to `result`.
     /// This is called by the emulator with the result from the simulator after
     /// the corresponding measurement is returned from `get_next_operations`.
-    fn set_result(&mut self, result_id: u64, result: bool) -> Result<()>;
+    fn set_bool_result(&mut self, result_id: u64, result: bool) -> Result<()>;
 
     /// Increment the reference count of the result with index `result_id`.
+    /// Set the result of the measurement with index `result_id` to `result`.
+    /// This is called by the emulator with the result from the simulator after
+    /// the corresponding measurement is returned from `get_next_operations`.
+    fn set_u64_result(&mut self, result_id: u64, result: u64) -> Result<()>;
+
     /// It is invalid to refer to a result index after its reference count has
     /// reached zero.
     fn increment_future_refcount(&mut self, future: u64) -> Result<()>;

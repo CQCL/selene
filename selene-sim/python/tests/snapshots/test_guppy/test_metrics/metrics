@@ -5,6 +5,8 @@ post_runtime:
   custom_op_individual_count: 0
   measure_batch_count: 3
   measure_individual_count: 3
+  measure_leaked_batch_count: 0
+  measure_leaked_individual_count: 0
   reset_batch_count: 3
   reset_individual_count: 3
   rxy_batch_count: 8
@@ -21,6 +23,7 @@ user_program:
   global_barrier_count: 0
   local_barrier_count: 0
   max_allocated: 3
+  measure_leaked_request_count: 0
   measure_read_count: 3
   measure_request_count: 3
   qalloc_count: 3
