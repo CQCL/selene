@@ -58,7 +58,7 @@ dev = [
     "mypy>=1.14.1",
     "ruff>=0.8.0",
     "types-pyyaml>=6.0.12.20250402",
-    "tket2~=0.11.0",
+    "tket",
 ]
 
 [tool.uv.sources]
@@ -66,6 +66,7 @@ selene-sim = { workspace = true }
 selene-core = { workspace = true }
 selene-hugr-qis-compiler = { workspace = true }
 guppylang = { git = "https://github.com/CQCL/guppylang.git", branch = "ss/hugr-py-v0.13" }
+tket = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-py", rev = "1bf4c70" }
 
 [tool.uv.workspace]
 members = ["selene-core", "selene-compilers/hugr_qis"]

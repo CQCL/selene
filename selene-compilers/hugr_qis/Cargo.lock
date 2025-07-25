@@ -235,9 +235,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "capnp"
-version = "0.20.6"
+version = "0.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "053b81915c2ce1629b8fb964f578b18cb39b23ef9d5b24120d0dfc959569a1d9"
+checksum = "def25bdbbc2758b363d79129c7f277520e3347e8b647c404d4823591f837c4ad"
 dependencies = [
  "embedded-io",
 ]
@@ -862,8 +862,9 @@ dependencies = [
 
 [[package]]
 name = "hugr"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ccc992a69300fb5835dd9fd259620b21b726bc22ade4aea9fcd20fbdd580e653"
 dependencies = [
  "hugr-core",
  "hugr-llvm",
@@ -873,8 +874,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-cli"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e095693e2c78868aebdc16919deba50fb3e6c458f2fba37c05efceb3fc926e4e"
 dependencies = [
  "anyhow",
  "clap",
@@ -890,8 +892,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-core"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f7cae0bac05d0551d805552db1c6000262f2234897b174e467a394a85a058af"
 dependencies = [
  "base64",
  "cgmath",
@@ -927,8 +930,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-llvm"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a986b3b9cdb4c61f0a0c5980eee0c0e89839edfb1bc361025eb5aab767d110b7"
 dependencies = [
  "anyhow",
  "delegate",
@@ -946,8 +950,9 @@ dependencies = [
 
 [[package]]
 name = "hugr-model"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64698533246838bfcd11f5ad5823871e03135e98fe858b8971c7da37df328c8a"
 dependencies = [
  "base64",
  "bumpalo",
@@ -960,14 +965,16 @@ dependencies = [
  "pest",
  "pest_derive",
  "pretty",
+ "semver",
  "smol_str",
  "thiserror 2.0.12",
 ]
 
 [[package]]
 name = "hugr-passes"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=f7cedb4f39b67a77b4c6a55ec00b624b54668eaa#f7cedb4f39b67a77b4c6a55ec00b624b54668eaa"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4561dfe756a0bc7e25c905255d056d7c73bbd6ac88552b4c1d9778b6140cc87"
 dependencies = [
  "ascent",
  "derive_more 1.0.0",
@@ -1381,9 +1388,9 @@ checksum = "f84267b20a16ea918e43c6a88433c2d54fa145c92a811b5b047ccbe153674483"
 
 [[package]]
 name = "portgraph"
-version = "0.15.0"
+version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb3112e4b1e107ff15507baeb67417f2eacbb3de476f1175c2846b1305d9848b"
+checksum = "61fb905fbfbc9abf3bd37853bbd4b25d31dffd5631994f8df528f85455085657"
 dependencies = [
  "bitvec",
  "delegate",
@@ -1793,8 +1800,8 @@ dependencies = [
  "pyo3-build-config",
  "rstest 0.25.0",
  "serde",
- "tket2",
- "tket2-hseries",
+ "tket",
+ "tket-qsystem",
  "tracing",
  "typetag",
 ]
@@ -2086,22 +2093,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "tket-json-rs"
-version = "0.7.4"
+name = "tket"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc84d7bd6b104cea080d51fb23ce5ec7c583fa1f676842c3c46a50ccd0e2000e"
-dependencies = [
- "derive_more 1.0.0",
- "serde",
- "serde_json",
- "strum",
- "uuid",
-]
-
-[[package]]
-name = "tket2"
-version = "0.12.3"
-source = "git+https://github.com/CQCL/tket2.git?branch=lm%2Fhugr-v22#97670d73dac399bb83b01f4c697e8a4e3d5a133c"
+checksum = "b178715072fc45e9fa69d9d6f8aefc9d0df6feaeec0562889be44fce430af258"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -2135,9 +2130,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "tket2-hseries"
-version = "0.16.1"
-source = "git+https://github.com/CQCL/tket2.git?branch=lm%2Fhugr-v22#97670d73dac399bb83b01f4c697e8a4e3d5a133c"
+name = "tket-json-rs"
+version = "0.7.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fc84d7bd6b104cea080d51fb23ce5ec7c583fa1f676842c3c46a50ccd0e2000e"
+dependencies = [
+ "derive_more 1.0.0",
+ "serde",
+ "serde_json",
+ "strum",
+ "uuid",
+]
+
+[[package]]
+name = "tket-qsystem"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0f4d11fffc27cb589d073ff1be1dc6709492aeb856edf576d8034ad38946b15"
 dependencies = [
  "anyhow",
  "clap",
@@ -2151,7 +2160,7 @@ dependencies = [
  "serde",
  "smol_str",
  "strum",
- "tket2",
+ "tket",
  "typetag",
 ]
 
@@ -2805,18 +2814,3 @@ dependencies = [
  "cc",
  "pkg-config",
 ]
-
-[[patch.unused]]
-name = "hugr"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=50a2bac#50a2bacdcd8c296cc5385183fe49928a136eaf10"
-
-[[patch.unused]]
-name = "hugr-core"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=50a2bac#50a2bacdcd8c296cc5385183fe49928a136eaf10"
-
-[[patch.unused]]
-name = "hugr-llvm"
-version = "0.21.0"
-source = "git+https://github.com/CQCL/hugr?rev=50a2bac#50a2bacdcd8c296cc5385183fe49928a136eaf10"
