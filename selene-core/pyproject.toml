@@ -4,10 +4,12 @@ version = "0.2.0rc2"
 requires-python = ">=3.10"
 description = "The core interop library for Selene python interfaces"
 readme = "python/selene_core/README.md"
-
-[dependencies]
-networkx = "~=3.0.0"
-pyyaml = "~=6.0.2"
+dependencies = [
+  "networkx~=3.4",
+  "pyyaml~=6.0",
+  "pydot>=4.0.0",
+  "typing_extensions~=4.14",
+]
 
 [project.urls]
 homepage = "https://github.com/CQCL/selene/selene-core"
