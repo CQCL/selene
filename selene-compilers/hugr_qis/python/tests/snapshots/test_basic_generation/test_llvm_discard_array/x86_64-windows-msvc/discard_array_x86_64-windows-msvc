@@ -11,72 +11,72 @@ target triple = "x86_64-windows-msvc"
 
 define void @__hugr__.main.1() local_unnamed_addr {
 alloca_block:
-  br label %cond_33_case_1
+  br label %cond_25_case_1
 
-cond_33_case_1:                                   ; preds = %alloca_block, %cond_exit_33
-  %"25_0.sroa.0.0285" = phi i64 [ 0, %alloca_block ], [ %0, %cond_exit_33 ]
-  %"25_1.sroa.95.0284" = phi i64 [ undef, %alloca_block ], [ %.fca.9.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.90.0283" = phi i1 [ false, %alloca_block ], [ %.fca.9.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.85.0282" = phi i64 [ undef, %alloca_block ], [ %.fca.8.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.80.0281" = phi i1 [ false, %alloca_block ], [ %.fca.8.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.75.0280" = phi i64 [ undef, %alloca_block ], [ %.fca.7.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.70.0279" = phi i1 [ false, %alloca_block ], [ %.fca.7.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.65.0278" = phi i64 [ undef, %alloca_block ], [ %.fca.6.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.60.0277" = phi i1 [ false, %alloca_block ], [ %.fca.6.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.55.0276" = phi i64 [ undef, %alloca_block ], [ %.fca.5.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.50.0275" = phi i1 [ false, %alloca_block ], [ %.fca.5.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.45.0274" = phi i64 [ undef, %alloca_block ], [ %.fca.4.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.40.0273" = phi i1 [ false, %alloca_block ], [ %.fca.4.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.35.0272" = phi i64 [ undef, %alloca_block ], [ %.fca.3.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.30.0271" = phi i1 [ false, %alloca_block ], [ %.fca.3.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.25.0270" = phi i64 [ undef, %alloca_block ], [ %.fca.2.1.extract, %cond_exit_33 ]
-  %"25_1.sroa.20.0269" = phi i1 [ false, %alloca_block ], [ %.fca.2.0.extract, %cond_exit_33 ]
-  %"25_1.sroa.15.0268" = phi i64 [ undef, %alloca_block ], [ %.fca.1.1.extract72, %cond_exit_33 ]
-  %"25_1.sroa.10.0267" = phi i1 [ false, %alloca_block ], [ %.fca.1.0.extract71, %cond_exit_33 ]
-  %"25_1.sroa.5.0266" = phi i64 [ undef, %alloca_block ], [ %.fca.0.1.extract70, %cond_exit_33 ]
-  %"25_1.sroa.0.0265" = phi i1 [ false, %alloca_block ], [ %.fca.0.0.extract69, %cond_exit_33 ]
-  %0 = add nuw nsw i64 %"25_0.sroa.0.0285", 1
-  %"25_111.fca.0.0.insert" = insertvalue [10 x { i1, i64 }] poison, i1 %"25_1.sroa.0.0265", 0, 0
-  %"25_111.fca.0.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.0.0.insert", i64 %"25_1.sroa.5.0266", 0, 1
-  %"25_111.fca.1.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.0.1.insert", i1 %"25_1.sroa.10.0267", 1, 0
-  %"25_111.fca.1.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.1.0.insert", i64 %"25_1.sroa.15.0268", 1, 1
-  %"25_111.fca.2.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.1.1.insert", i1 %"25_1.sroa.20.0269", 2, 0
-  %"25_111.fca.2.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.2.0.insert", i64 %"25_1.sroa.25.0270", 2, 1
-  %"25_111.fca.3.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.2.1.insert", i1 %"25_1.sroa.30.0271", 3, 0
-  %"25_111.fca.3.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.3.0.insert", i64 %"25_1.sroa.35.0272", 3, 1
-  %"25_111.fca.4.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.3.1.insert", i1 %"25_1.sroa.40.0273", 4, 0
-  %"25_111.fca.4.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.4.0.insert", i64 %"25_1.sroa.45.0274", 4, 1
-  %"25_111.fca.5.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.4.1.insert", i1 %"25_1.sroa.50.0275", 5, 0
-  %"25_111.fca.5.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.5.0.insert", i64 %"25_1.sroa.55.0276", 5, 1
-  %"25_111.fca.6.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.5.1.insert", i1 %"25_1.sroa.60.0277", 6, 0
-  %"25_111.fca.6.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.6.0.insert", i64 %"25_1.sroa.65.0278", 6, 1
-  %"25_111.fca.7.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.6.1.insert", i1 %"25_1.sroa.70.0279", 7, 0
-  %"25_111.fca.7.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.7.0.insert", i64 %"25_1.sroa.75.0280", 7, 1
-  %"25_111.fca.8.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.7.1.insert", i1 %"25_1.sroa.80.0281", 8, 0
-  %"25_111.fca.8.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.8.0.insert", i64 %"25_1.sroa.85.0282", 8, 1
-  %"25_111.fca.9.0.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.8.1.insert", i1 %"25_1.sroa.90.0283", 9, 0
-  %"25_111.fca.9.1.insert" = insertvalue [10 x { i1, i64 }] %"25_111.fca.9.0.insert", i64 %"25_1.sroa.95.0284", 9, 1
+cond_25_case_1:                                   ; preds = %alloca_block, %cond_exit_25
+  %"20_0.sroa.0.0285" = phi i64 [ 0, %alloca_block ], [ %0, %cond_exit_25 ]
+  %"20_1.sroa.95.0284" = phi i64 [ undef, %alloca_block ], [ %.fca.9.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.90.0283" = phi i1 [ false, %alloca_block ], [ %.fca.9.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.85.0282" = phi i64 [ undef, %alloca_block ], [ %.fca.8.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.80.0281" = phi i1 [ false, %alloca_block ], [ %.fca.8.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.75.0280" = phi i64 [ undef, %alloca_block ], [ %.fca.7.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.70.0279" = phi i1 [ false, %alloca_block ], [ %.fca.7.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.65.0278" = phi i64 [ undef, %alloca_block ], [ %.fca.6.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.60.0277" = phi i1 [ false, %alloca_block ], [ %.fca.6.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.55.0276" = phi i64 [ undef, %alloca_block ], [ %.fca.5.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.50.0275" = phi i1 [ false, %alloca_block ], [ %.fca.5.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.45.0274" = phi i64 [ undef, %alloca_block ], [ %.fca.4.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.40.0273" = phi i1 [ false, %alloca_block ], [ %.fca.4.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.35.0272" = phi i64 [ undef, %alloca_block ], [ %.fca.3.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.30.0271" = phi i1 [ false, %alloca_block ], [ %.fca.3.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.25.0270" = phi i64 [ undef, %alloca_block ], [ %.fca.2.1.extract, %cond_exit_25 ]
+  %"20_1.sroa.20.0269" = phi i1 [ false, %alloca_block ], [ %.fca.2.0.extract, %cond_exit_25 ]
+  %"20_1.sroa.15.0268" = phi i64 [ undef, %alloca_block ], [ %.fca.1.1.extract72, %cond_exit_25 ]
+  %"20_1.sroa.10.0267" = phi i1 [ false, %alloca_block ], [ %.fca.1.0.extract71, %cond_exit_25 ]
+  %"20_1.sroa.5.0266" = phi i64 [ undef, %alloca_block ], [ %.fca.0.1.extract70, %cond_exit_25 ]
+  %"20_1.sroa.0.0265" = phi i1 [ false, %alloca_block ], [ %.fca.0.0.extract69, %cond_exit_25 ]
+  %0 = add nuw nsw i64 %"20_0.sroa.0.0285", 1
+  %"20_111.fca.0.0.insert" = insertvalue [10 x { i1, i64 }] poison, i1 %"20_1.sroa.0.0265", 0, 0
+  %"20_111.fca.0.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.0.0.insert", i64 %"20_1.sroa.5.0266", 0, 1
+  %"20_111.fca.1.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.0.1.insert", i1 %"20_1.sroa.10.0267", 1, 0
+  %"20_111.fca.1.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.1.0.insert", i64 %"20_1.sroa.15.0268", 1, 1
+  %"20_111.fca.2.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.1.1.insert", i1 %"20_1.sroa.20.0269", 2, 0
+  %"20_111.fca.2.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.2.0.insert", i64 %"20_1.sroa.25.0270", 2, 1
+  %"20_111.fca.3.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.2.1.insert", i1 %"20_1.sroa.30.0271", 3, 0
+  %"20_111.fca.3.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.3.0.insert", i64 %"20_1.sroa.35.0272", 3, 1
+  %"20_111.fca.4.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.3.1.insert", i1 %"20_1.sroa.40.0273", 4, 0
+  %"20_111.fca.4.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.4.0.insert", i64 %"20_1.sroa.45.0274", 4, 1
+  %"20_111.fca.5.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.4.1.insert", i1 %"20_1.sroa.50.0275", 5, 0
+  %"20_111.fca.5.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.5.0.insert", i64 %"20_1.sroa.55.0276", 5, 1
+  %"20_111.fca.6.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.5.1.insert", i1 %"20_1.sroa.60.0277", 6, 0
+  %"20_111.fca.6.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.6.0.insert", i64 %"20_1.sroa.65.0278", 6, 1
+  %"20_111.fca.7.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.6.1.insert", i1 %"20_1.sroa.70.0279", 7, 0
+  %"20_111.fca.7.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.7.0.insert", i64 %"20_1.sroa.75.0280", 7, 1
+  %"20_111.fca.8.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.7.1.insert", i1 %"20_1.sroa.80.0281", 8, 0
+  %"20_111.fca.8.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.8.0.insert", i64 %"20_1.sroa.85.0282", 8, 1
+  %"20_111.fca.9.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.8.1.insert", i1 %"20_1.sroa.90.0283", 9, 0
+  %"20_111.fca.9.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.9.0.insert", i64 %"20_1.sroa.95.0284", 9, 1
   %qalloc.i = tail call i64 @___qalloc()
   %not_max.not.i = icmp eq i64 %qalloc.i, -1
   br i1 %not_max.not.i, label %id_bb.i, label %reset_bb.i
 
-reset_bb.i:                                       ; preds = %cond_33_case_1
+reset_bb.i:                                       ; preds = %cond_25_case_1
   tail call void @___reset(i64 %qalloc.i)
   br label %id_bb.i
 
-id_bb.i:                                          ; preds = %reset_bb.i, %cond_33_case_1
+id_bb.i:                                          ; preds = %reset_bb.i, %cond_25_case_1
   %1 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc.i, 1
   %2 = select i1 %not_max.not.i, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %1
   %.fca.0.extract.i = extractvalue { i1, i64 } %2, 0
-  br i1 %.fca.0.extract.i, label %cond_exit_33, label %cond_216_case_0.i
+  br i1 %.fca.0.extract.i, label %cond_exit_25, label %cond_266_case_0.i
 
-cond_216_case_0.i:                                ; preds = %id_bb.i
+cond_266_case_0.i:                                ; preds = %id_bb.i
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
   unreachable
 
-cond_exit_33:                                     ; preds = %id_bb.i
+cond_exit_25:                                     ; preds = %id_bb.i
   %.fca.1.extract.i = extractvalue { i1, i64 } %2, 1
-  %3 = tail call [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).285"([10 x { i1, i64 }] %"25_111.fca.9.1.insert", i64 %"25_0.sroa.0.0285", i64 %.fca.1.extract.i)
+  %3 = tail call [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).285"([10 x { i1, i64 }] %"20_111.fca.9.1.insert", i64 %"20_0.sroa.0.0285", i64 %.fca.1.extract.i)
   %.fca.0.0.extract69 = extractvalue [10 x { i1, i64 }] %3, 0, 0
   %.fca.0.1.extract70 = extractvalue [10 x { i1, i64 }] %3, 0, 1
   %.fca.1.0.extract71 = extractvalue [10 x { i1, i64 }] %3, 1, 0
@@ -98,9 +98,9 @@ cond_exit_33:                                     ; preds = %id_bb.i
   %.fca.9.0.extract = extractvalue [10 x { i1, i64 }] %3, 9, 0
   %.fca.9.1.extract = extractvalue [10 x { i1, i64 }] %3, 9, 1
   %exitcond.not = icmp eq i64 %0, 10
-  br i1 %exitcond.not, label %loop_out, label %cond_33_case_1
+  br i1 %exitcond.not, label %loop_out, label %cond_25_case_1
 
-loop_out:                                         ; preds = %cond_exit_33
+loop_out:                                         ; preds = %cond_exit_25
   tail call void @"__hugr__.$discard_array$$n(10).311"([10 x { i1, i64 }] %3)
   ret void
 }
@@ -112,7 +112,7 @@ alloca_block:
 }
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
-define { i1, { { i64, i64 }, i64 } } @__hugr__.__next__.28({ i64, i64 } %0) local_unnamed_addr #0 {
+define { i1, { { i64, i64 }, i64 } } @__hugr__.__next__.52({ i64, i64 } %0) local_unnamed_addr #0 {
 alloca_block:
   %.fca.0.extract84 = extractvalue { i64, i64 } %0, 0
   %.fca.1.extract85 = extractvalue { i64, i64 } %0, 1
@@ -125,7 +125,7 @@ alloca_block:
   ret { i1, { { i64, i64 }, i64 } } %"040.fca.1.1.insert"
 }
 
-define i64 @__hugr__.__tk2_qalloc.222() local_unnamed_addr {
+define i64 @__hugr__.__tk2_qalloc.270() local_unnamed_addr {
 alloca_block:
   %qalloc = tail call i64 @___qalloc()
   %not_max.not = icmp eq i64 %qalloc, -1
@@ -139,13 +139,13 @@ id_bb:                                            ; preds = %alloca_block, %rese
   %0 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc, 1
   %1 = select i1 %not_max.not, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %0
   %.fca.0.extract = extractvalue { i1, i64 } %1, 0
-  br i1 %.fca.0.extract, label %cond_216_case_1, label %cond_216_case_0
+  br i1 %.fca.0.extract, label %cond_266_case_1, label %cond_266_case_0
 
-cond_216_case_1:                                  ; preds = %id_bb
+cond_266_case_1:                                  ; preds = %id_bb
   %.fca.1.extract = extractvalue { i1, i64 } %1, 1
   ret i64 %.fca.1.extract
 
-cond_216_case_0:                                  ; preds = %id_bb
+cond_266_case_0:                                  ; preds = %id_bb
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
   unreachable
 }
@@ -206,13 +206,13 @@ cond_291_case_1:                                  ; preds = %alloca_block
   %.unpack161 = load { i1, i64 }, { i1, i64 }* %.repack141, align 8
   %.unpack163 = load { i1, i64 }, { i1, i64 }* %.repack143, align 8
   %.unpack165 = load { i1, i64 }, { i1, i64 }* %.repack145, align 8
-  br i1 %7, label %cond_300_case_1, label %cond_exit_300
+  br i1 %7, label %cond_301_case_1, label %cond_exit_301
 
-cond_300_case_1:                                  ; preds = %cond_291_case_1
+cond_301_case_1:                                  ; preds = %cond_291_case_1
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
-cond_exit_300:                                    ; preds = %cond_291_case_1
+cond_exit_301:                                    ; preds = %cond_291_case_1
   %.fca.2.9.1.extract = extractvalue { i1, i64 } %.unpack165, 1
   %.fca.2.9.0.extract = extractvalue { i1, i64 } %.unpack165, 0
   %.fca.2.8.1.extract = extractvalue { i1, i64 } %.unpack163, 1
@@ -262,9 +262,9 @@ alloca_block:
   %2 = extractvalue { i64, [10 x { i1, i64 }] } %1, 1
   br label %3
 
-3:                                                ; preds = %cond_456_case_1, %alloca_block
-  %.pn = phi [10 x { i1, i64 }] [ %2, %alloca_block ], [ %46, %cond_456_case_1 ]
-  %.pn379 = phi { i64, [10 x { i1, i64 }] } [ %1, %alloca_block ], [ %26, %cond_456_case_1 ]
+3:                                                ; preds = %cond_457_case_1, %alloca_block
+  %.pn = phi [10 x { i1, i64 }] [ %2, %alloca_block ], [ %46, %cond_457_case_1 ]
+  %.pn379 = phi { i64, [10 x { i1, i64 }] } [ %1, %alloca_block ], [ %26, %cond_457_case_1 ]
   %"335_1.sroa.133.0" = extractvalue [10 x { i1, i64 }] %.pn, 9, 1
   %"335_1.sroa.126.0" = extractvalue [10 x { i1, i64 }] %.pn, 9, 0
   %"335_1.sroa.119.0" = extractvalue [10 x { i1, i64 }] %.pn, 8, 1
@@ -307,9 +307,9 @@ alloca_block:
   %"341_023.fca.1.9.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"341_023.fca.1.9.0.insert", i64 %"335_1.sroa.133.0", 1, 9, 1
   %4 = tail call { i1, { { i64, [10 x { i1, i64 }] }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).343"({ i64, [10 x { i1, i64 }] } %"341_023.fca.1.9.1.insert")
   %.fca.0.extract142 = extractvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %4, 0
-  br i1 %.fca.0.extract142, label %cond_456_case_1, label %cond_exit_442
+  br i1 %.fca.0.extract142, label %cond_457_case_1, label %cond_exit_442
 
-cond_456_case_1:                                  ; preds = %3
+cond_457_case_1:                                  ; preds = %3
   %5 = extractvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %4, 1
   %.fca.1.0.0.extract118 = extractvalue { { i64, [10 x { i1, i64 }] }, i64 } %5, 0, 0
   %.fca.1.0.1.0.0.extract = extractvalue { { i64, [10 x { i1, i64 }] }, i64 } %5, 0, 1, 0, 0
@@ -735,9 +735,9 @@ cond_367_case_1:                                  ; preds = %alloca_block
   %.unpack167 = load { i1, i64 }, { i1, i64 }* %.repack147, align 8
   %.unpack169 = load { i1, i64 }, { i1, i64 }* %.repack149, align 8
   %.fca.1.0.extract65 = extractvalue { i1, i64 } %5, 0
-  br i1 %.fca.1.0.extract65, label %cond_376_case_1, label %cond_376_case_0
+  br i1 %.fca.1.0.extract65, label %cond_377_case_1, label %cond_377_case_0
 
-cond_376_case_1:                                  ; preds = %cond_367_case_1
+cond_377_case_1:                                  ; preds = %cond_367_case_1
   %.fca.2.9.1.extract = extractvalue { i1, i64 } %.unpack169, 1
   %.fca.2.9.0.extract = extractvalue { i1, i64 } %.unpack169, 0
   %.fca.2.8.1.extract = extractvalue { i1, i64 } %.unpack167, 1
@@ -783,7 +783,7 @@ cond_376_case_1:                                  ; preds = %cond_367_case_1
   %mrv40 = insertvalue { i64, [10 x { i1, i64 }] } %mrv, [10 x { i1, i64 }] %26, 1
   ret { i64, [10 x { i1, i64 }] } %mrv40
 
-cond_376_case_0:                                  ; preds = %cond_367_case_1
+cond_377_case_0:                                  ; preds = %cond_367_case_1
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 }

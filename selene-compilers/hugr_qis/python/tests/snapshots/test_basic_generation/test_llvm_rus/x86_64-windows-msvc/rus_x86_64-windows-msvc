@@ -28,7 +28,7 @@ cond_87_case_0.i:                                 ; preds = %id_bb.i
 
 __hugr__.__tk2_qalloc.83.exit:                    ; preds = %id_bb.i
   %.fca.1.extract.i = extractvalue { i1, i64 } %1, 1
-  %2 = tail call i64 @__hugr__.rus.10(i64 %.fca.1.extract.i)
+  %2 = tail call i64 @__hugr__.rus.17(i64 %.fca.1.extract.i)
   %lazy_measure = tail call i64 @___lazy_measure(i64 %2)
   tail call void @___qfree(i64 %2)
   %read_bool = tail call i1 @___read_future_bool(i64 %lazy_measure)
@@ -62,7 +62,7 @@ cond_87_case_0:                                   ; preds = %id_bb
   unreachable
 }
 
-define i64 @__hugr__.rus.10(i64 %0) local_unnamed_addr {
+define i64 @__hugr__.rus.17(i64 %0) local_unnamed_addr {
 alloca_block:
   br label %cond_177_case_1
 

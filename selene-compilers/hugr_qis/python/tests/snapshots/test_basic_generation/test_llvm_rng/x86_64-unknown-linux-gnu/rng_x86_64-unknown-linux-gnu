@@ -37,7 +37,7 @@ alloca_block:
   ret void
 }
 
-define {} @__hugr__.__new__.9(i64 %0) local_unnamed_addr {
+define {} @__hugr__.__new__.72(i64 %0) local_unnamed_addr {
 alloca_block:
   tail call void @random_seed(i64 %0)
   ret {} undef

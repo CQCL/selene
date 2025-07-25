@@ -16,7 +16,6 @@ from guppylang.std.quantum import (
     x,
     z,
 )
-from hugr.package import Package
 from selene_hugr_qis_compiler import HugrReadError, check_hugr, compile_to_llvm_ir
 
 triples = [
@@ -44,27 +43,8 @@ def test_check() -> None:
         check_hugr(bad_number)
 
     bad_end = hugr_envelope[:-1]
-    with pytest.raises(HugrReadError, match="EOF while parsing an object"):
+    with pytest.raises(HugrReadError, match="Premature end of file"):
         check_hugr(bad_end)
-
-
-@pytest.mark.parametrize("target_triple", triples)
-def test_backwards_entrypoiny(snapshot, target_triple) -> None:
-    """Test a HUGR with a module entrypoint and main is accepted.
-    Backwards compatibility test."""
-
-    @guppy
-    def main() -> None:
-        q = qubit()
-        discard(q)
-
-    package: Package = guppy.compile(main).package
-    # Set the entrypoint to the module root, which is the old behaviour
-    package.modules[0].entrypoint = package.modules[0].module_root
-
-    hugr_envelope = package.to_bytes()
-    ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
-    snapshot.assert_match(ir, f"module_main_{target_triple}")
 
 
 @pytest.mark.parametrize("target_triple", triples)
