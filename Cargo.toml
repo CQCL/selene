@@ -11,6 +11,7 @@ members = [
     "selene-ext/runtimes/simple",
     "selene-ext/runtimes/soft_rz",
     "selene-ext/error-models/depolarizing",
+    "selene-ext/error-models/simple-leakage",
     "selene-ext/error-models/ideal",
 ]
 

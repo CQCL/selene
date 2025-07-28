@@ -59,7 +59,7 @@ impl ErrorModelInterface for IdealErrorModel {
                     // In this ideal model, there's no leakage.
                     // Just do a normal measurement and stick to the [0,1] range
                     let measurement = self.simulator.measure(qubit_id)?;
-                    results.set_u64_result(result_id, if measurement { 1 } else { 0 });
+                    results.set_u64_result(result_id, measurement.into());
                 }
 
                 Operation::Reset { qubit_id } => {

@@ -267,7 +267,7 @@ impl RuntimeInterface for ExampleRuntime {
             None
         })
     }
-    fn get_u64_result(&mut self, result_id: u64) -> Result<Option<bool>> {
+    fn get_u64_result(&mut self, result_id: u64) -> Result<Option<u64>> {
         if result_id >= self.future_results.len() as u64 {
             bail!("getting out-of-bounds measurement {result_id}");
         }
@@ -279,17 +279,17 @@ impl RuntimeInterface for ExampleRuntime {
         })
     }
     fn set_bool_result(&mut self, result_id: u64, result: bool) -> Result<()> {
-        if result_id >= self.measurements.len() as u64 {
+        if result_id >= self.future_results.len() as u64 {
             bail!("setting out-of-bounds measurement {result_id}");
         }
         self.future_results[result_id as usize] = FutureResult {
             is_set: true,
-            value: if result { 1 } else { 0 },
+            value: result.into(),
         };
         Ok(())
     }
     fn set_u64_result(&mut self, result_id: u64, result: u64) -> Result<()> {
-        if result_id >= self.measurements.len() as u64 {
+        if result_id >= self.future_results.len() as u64 {
             bail!("setting out-of-bounds measurement {result_id}");
         }
         self.future_results[result_id as usize] = FutureResult {

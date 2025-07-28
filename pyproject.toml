@@ -65,7 +65,7 @@ dev = [
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
 selene-hugr-qis-compiler = { workspace = true }
-guppylang = {git = "https://github.com/CQCL/guppylang.git", rev = "090f920"}
+guppylang = {git = "https://github.com/CQCL/guppylang.git", rev = "63854c5"}
 
 [tool.uv.workspace]
 members = [
@@ -85,6 +85,7 @@ packages = [
     "selene-sim/python/selene_sim",
     "selene-ext/error-models/depolarizing/python/selene_depolarizing_error_model_plugin",
     "selene-ext/error-models/ideal/python/selene_ideal_error_model_plugin",
+    "selene-ext/error-models/simple-leakage/python/selene_simple_leakage_error_model_plugin",
     "selene-ext/interfaces/helios_qis/python/selene_helios_qis_plugin",
     "selene-ext/runtimes/simple/python/selene_simple_runtime_plugin",
     "selene-ext/runtimes/soft_rz/python/selene_soft_rz_runtime_plugin",
@@ -140,7 +141,7 @@ build = "cp310-*"
 skip = "*-win32 *-manylinux_i686 *-musllinux*"
 build-frontend = { name = "build[uv]", args = ["-C--profile=release"] }
 environment-pass = ["UV_EXTRA_INDEX_URL", "PIP_EXTRA_INDEX_URL", "CACHE_CARGO", "SELENE_CORE_WHL", "SELENE_HUGR_QIS_WHL"]
-test-requires = ["pytest", "pytest-snapshot", "git+https://github.com/cqcl/guppylang@090f920"]
+test-requires = ["pytest", "pytest-snapshot", "git+https://github.com/cqcl/guppylang@63854c5"]
 test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
 [tool.cibuildwheel.linux]
 environment = { PATH = "$PATH:$HOME/.cargo/bin" }

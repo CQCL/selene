@@ -17,11 +17,14 @@ struct Params {
     flip_probability: f64,
     #[arg(long, default_value = "0.01")]
     angle_mutation: f64,
+    #[arg(long, default_value = "0.01")]
+    leak_probability: f64,
 }
 
 #[derive(Default, Debug)]
 struct Stats {
     flips_induced: u64,
+    leaks_induced: u64,
     total_angle_error: f64,
 }
 
@@ -34,6 +37,7 @@ pub struct ExampleErrorModel {
     // We can gather statistics that will be reported back to the user
     // if they are using the MetricStore.
     stats: Stats,
+    leakage_map: Vec<bool>,
 }
 
 impl ExampleErrorModel {
@@ -46,6 +50,10 @@ impl ExampleErrorModel {
     fn should_flip(&mut self) -> bool {
         // Randomly decide whether to flip a qubit in the computational basis
         self.rng.random_bool(self.error_params.flip_probability)
+    }
+    fn should_leak(&mut self) -> bool {
+        // Randomly decide whether to leak a qubit
+        self.rng.random_bool(self.error_params.leak_probability)
     }
     fn flip_qubit(&mut self, qubit_id: u64) -> Result<()> {
         // Flip the qubit in the computational basis
@@ -89,6 +97,10 @@ impl ErrorModelInterface for ExampleErrorModel {
                     if self.should_flip() {
                         self.flip_qubit(qubit_id)?;
                     }
+                    if self.should_leak() {
+                        self.stats.leaks_induced += 1;
+                        self.leakage_map[qubit_id as usize] = true;
+                    }
                 }
                 Operation::RZZGate {
                     qubit_id_1,
@@ -100,11 +112,38 @@ impl ErrorModelInterface for ExampleErrorModel {
                     // randomly mutate theta
                     let theta = self.mutate_angle(theta);
                     // apply the RZZ gate
-                    self.simulator.rzz(qubit_id_1, qubit_id_2, theta)?;
-                    // randomly flip both qubits in the computational basis
-                    if self.should_flip() {
-                        self.flip_qubit(qubit_id_1)?;
-                        self.flip_qubit(qubit_id_2)?;
+                    let mut leaked_1 = self.leakage_map[qubit_id_1 as usize];
+                    let mut leaked_2 = self.leakage_map[qubit_id_2 as usize];
+                    match (leaked_1, leaked_2) {
+                        // For this example, we model leakage like a contagion. 
+                        // If one has leaked, leak the other upon interaction.
+                        (false, true) => {
+                            self.leakage_map[qubit_id_1 as usize] = true;
+                            leaked_1 = true;
+                        }
+                        (true, false) => {
+                            self.leakage_map[qubit_id_2 as usize] = true;
+                            leaked_2 = true;
+                        }
+                        (false, false) => {
+                            if self.should_leak() {
+                                // leak both
+                                self.stats.leaks_induced += 2;
+                                self.leakage_map[qubit_id_1 as usize] = true;
+                                self.leakage_map[qubit_id_2 as usize] = true;
+                                leaked_1 = true;
+                                leaked_2 = true;
+                            }
+                        }
+                        _ => {}
+                    }
+                    if !leaked_1 && !leaked_2 {
+                        self.simulator.rzz(qubit_id_1, qubit_id_2, theta)?;
+                        // randomly flip both qubits in the computational basis
+                        if self.should_flip() {
+                            self.flip_qubit(qubit_id_1)?;
+                            self.flip_qubit(qubit_id_2)?;
+                        }
                     }
                 }
                 Operation::RZGate { qubit_id, theta } => {
@@ -118,21 +157,30 @@ impl ErrorModelInterface for ExampleErrorModel {
                     if self.should_flip() {
                         self.flip_qubit(qubit_id)?;
                     }
+                    if self.should_leak() {
+                        self.stats.leaks_induced += 1;
+                        self.leakage_map[qubit_id as usize] = true;
+                    }
                 }
                 Operation::Measure {
                     qubit_id,
                     result_id,
                 } => {
-                    // A measurement has been requested.
-                    // We need to perform the measurement and store the result.
-                    let measurement = self.simulator.measure(qubit_id)?;
-                    // But wait! Let's randomly flip the measurement result with a small
-                    // probability.
-                    let measurement = if self.should_flip() {
-                        self.stats.flips_induced += 1;
-                        !measurement
+                    // If leaked, measure 1 with 90% chance.
+                    let measurement = if self.leakage_map[qubit_id as usize] {
+                        self.rng.random_bool(0.9)
                     } else {
-                        measurement
+                        // A measurement has been requested.
+                        // We need to perform the measurement and store the result.
+                        let true_measurement = self.simulator.measure(qubit_id)?;
+                        // But wait! Let's randomly flip the measurement result with a small
+                        // probability.
+                        if self.should_flip() {
+                            self.stats.flips_induced += 1;
+                            !true_measurement
+                        } else {
+                            true_measurement
+                        }
                     };
                     results.set_bool_result(result_id, measurement);
                 }
@@ -140,19 +188,28 @@ impl ErrorModelInterface for ExampleErrorModel {
                     qubit_id,
                     result_id,
                 } => {
-                    // We aren't modelling leakage so let's resolve this to
-                    // a normal measurement following the same logic as with Operation::Measure
-                    let measurement = self.simulator.measure(qubit_id)?;
-                    let measurement = if self.should_flip() {
-                        self.stats.flips_induced += 1;
-                        !measurement
+                    // If leaked, return 2, otherwise measure 0 or 1 according to the
+                    // normal measurement procedure.
+                    let measurement = if self.leakage_map[qubit_id as usize] {
+                        2 // Indicate leakage
                     } else {
-                        measurement
+                        // A measurement has been requested.
+                        // We need to perform the measurement and store the result.
+                        let true_measurement = self.simulator.measure(qubit_id)?;
+                        // But wait! Let's randomly flip the measurement result with a small
+                        // probability.
+                        if self.should_flip() {
+                            self.stats.flips_induced += 1;
+                            !true_measurement as u64
+                        } else {
+                            true_measurement as u64
+                        }
                     };
-                    results.set_u64_result(result_id, if measurement { 1 } else { 0 });
+                    results.set_u64_result(result_id, measurement);
                 }
                 Operation::Reset { qubit_id } => {
                     // A reset has been requested.
+                    self.leakage_map[qubit_id as usize] = false; // Reset leakage state
                     self.simulator.reset(qubit_id)?;
                     // So ideally it is in |0> now. Let's flip it with a small probability.
                     if self.should_flip() {
@@ -178,6 +235,10 @@ impl ErrorModelInterface for ExampleErrorModel {
                 Ok(Some(("total_angle_error".to_string(), MetricValue::F64(self.stats.total_angle_error))))
             }
             2 => {
+                // Return the number of leaks induced by the error model
+                Ok(Some(("leaks_induced".to_string(), MetricValue::U64(self.stats.leaks_induced))))
+            }
+            3 => {
                 // No other metrics are defined. Note this is NOT an error. We are
                 // simply reporting to Selene that we are at the end of the metric list.
                 Ok(None)
@@ -230,11 +291,13 @@ impl ErrorModelInterfaceFactory for ExampleErrorModelFactory {
             Ok(params) => {
                 let simulator =
                     Simulator::load_from_file(simulator_path, n_qubits, simulator_args)?;
+                let leakage_map = vec![false; n_qubits as usize]; // Initialize a leakage map if needed
                 Ok(Box::new(ExampleErrorModel {
                     rng: Pcg64Mcg::seed_from_u64(0),
                     simulator,
                     error_params: params,
                     stats: Stats::default(),
+                    leakage_map,
                 }))
             }
         }

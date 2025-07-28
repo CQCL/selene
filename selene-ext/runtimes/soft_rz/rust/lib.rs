@@ -214,14 +214,14 @@ impl RuntimeInterface for SoftRZRuntime {
     }
     fn measure_leaked(&mut self, qubit_id: u64) -> Result<u64> {
         if qubit_id >= self.qubits.len() as u64 {
-            bail!("measuring out-of-bounds qubit {qubit_id}")
+            bail!("leak-measuring out-of-bounds qubit {qubit_id}")
         }
         let result_id = self.future_results.len() as u64;
         self.future_results.push(FutureResult {
             is_set: false,
             value: 0,
         });
-        self.push(Operation::Measure {
+        self.push(Operation::MeasureLeaked {
             qubit_id,
             result_id,
         });

@@ -637,6 +637,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "selene-error-model-simple-leakage"
+version = "0.2.0-rc.2"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rand",
+ "rand_pcg",
+ "selene-core",
+]
+
+[[package]]
 name = "selene-sim"
 version = "0.2.0-rc.2"
 dependencies = [

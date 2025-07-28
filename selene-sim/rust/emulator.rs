@@ -78,7 +78,7 @@ impl Emulator {
         Ok(result_id)
     }
     pub fn user_issued_lazy_measure_leaked(&mut self, q0: u64) -> Result<u64> {
-        let result_id = self.runtime.measure(q0)?;
+        let result_id = self.runtime.measure_leaked(q0)?;
         self.event_hooks
             .on_user_call(&Operation::MeasureLeakedRequest(q0));
         self.process_runtime()?;
