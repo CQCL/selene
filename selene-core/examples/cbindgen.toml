@@ -1,6 +1,6 @@
 language = "C"
 include_version = true
-includes = ["selene_core/core_types.h"]
+includes = ["selene/core_types.h"]
 no_includes = false
 cpp_compat = true
 after_includes = ""
