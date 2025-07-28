@@ -23,6 +23,9 @@
   - METRICS:INT:user_program:measure_request_count
   - 4
 - !!python/tuple
+  - METRICS:INT:user_program:measure_leaked_request_count
+  - 0
+- !!python/tuple
   - METRICS:INT:user_program:measure_read_count
   - 4
 - !!python/tuple
@@ -58,6 +61,12 @@
 - !!python/tuple
   - METRICS:INT:post_runtime:measure_individual_count
   - 4
+- !!python/tuple
+  - METRICS:INT:post_runtime:measure_leaked_batch_count
+  - 0
+- !!python/tuple
+  - METRICS:INT:post_runtime:measure_leaked_individual_count
+  - 0
 - !!python/tuple
   - METRICS:INT:post_runtime:reset_batch_count
   - 4
