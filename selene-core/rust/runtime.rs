@@ -48,6 +48,10 @@ pub enum Operation {
         custom_tag: usize,
         data: Box<[u8]>,
     },
+    MeasureLeaked {
+        qubit_id: u64,
+        result_id: u64,
+    },
 }
 
 #[derive(Default, Clone, Debug)]
@@ -152,10 +156,13 @@ impl RuntimeInterface for Runtime {
             fn rzz_gate(&mut self, qubit_id_1: u64, qubit_id_2: u64, theta: f64) -> Result<()>;
             fn rz_gate(&mut self, qubit_id: u64, theta: f64) -> Result<()>;
             fn measure(&mut self, qubit_id: u64) -> Result<u64>;
+            fn measure_leaked(&mut self, qubit_id: u64) -> Result<u64>;
             fn reset(&mut self, qubit_id: u64) -> Result<()>;
             fn force_result(&mut self, result_id: u64) -> Result<()>;
-            fn get_result(&mut self, result_id: u64) -> Result<Option<bool>>;
-            fn set_result(&mut self, result_id: u64, result: bool) -> Result<()>;
+            fn get_bool_result(&mut self, result_id: u64) -> Result<Option<bool>>;
+            fn set_bool_result(&mut self, result_id: u64, result: bool) -> Result<()>;
+            fn get_u64_result(&mut self, result_id: u64) -> Result<Option<u64>>;
+            fn set_u64_result(&mut self, result_id: u64, result: u64) -> Result<()>;
             fn increment_future_refcount(&mut self, future: u64) -> Result<()>;
             fn decrement_future_refcount(&mut self, future: u64) -> Result<()>;
             fn custom_call(&mut self, custom_tag: u64, data: &[u8]) -> Result<u64>;

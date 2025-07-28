@@ -8,6 +8,7 @@ from guppylang.decorator import guppy
 from guppylang.std.builtins import array, exit, panic, result
 from guppylang.std.qsystem.random import RNG
 from guppylang.std.qsystem.utils import get_current_shot
+from guppylang.std.qsystem import measure_leaked
 from guppylang.std.quantum import (
     cx,
     discard,
@@ -22,7 +23,7 @@ from guppylang.std.quantum import (
     z,
 )
 from hugr.qsystem.result import QsysResult
-from selene_sim import ClassicalReplay, Coinflip, Quest, Stim
+from selene_sim import ClassicalReplay, Coinflip, Quest, Stim, SimpleLeakageErrorModel
 from selene_sim.build import build
 from selene_sim.event_hooks import CircuitExtractor, MetricStore
 from selene_sim.exceptions import SelenePanicError, SeleneRuntimeError
@@ -190,6 +191,73 @@ def test_panic():
                 random_seed=0,
             )
         )
+
+
+def test_measure_leaked(snapshot):
+    @guppy
+    def cx_from_head() -> None:
+        head = qubit()
+        tail = array(qubit() for _ in range(20))
+        h(head)
+        for i in range(20):
+            cx(head, tail[i])
+        hl = measure_leaked(head)
+        if hl.is_leaked():
+            hl.discard()
+            result("head_leaked", 1)
+        else:
+            result("head", hl.to_result().unwrap())
+        result("tail", measure_array(tail))
+
+    @guppy
+    def cx_within_tail() -> None:
+        head = qubit()
+        tail = array(qubit() for _ in range(20))
+        h(head)
+        cx(head, tail[0])
+        for i in range(19):
+            cx(tail[i], tail[i + 1])
+        hl = measure_leaked(head)
+        if hl.is_leaked():
+            hl.discard()
+            result("head_leaked", 1)
+        else:
+            result("head", hl.to_result().unwrap())
+        result("tail", measure_array(tail))
+
+    simulator = Stim(random_seed=0)
+    error_model = SimpleLeakageErrorModel(
+        p_leak=0.01, leak_measurement_bias=0.8, random_seed=0
+    )
+
+    runner = build(cx_from_head.compile(), "leak_from_head")
+    shots = [
+        list(shot)
+        for shot in runner.run_shots(
+            simulator=simulator,
+            error_model=error_model,
+            n_qubits=40,
+            n_shots=50,
+        )
+    ]
+    snapshot.assert_match(
+        yaml.dump(shots),
+        "measure_leaked_from_head",
+    )
+    runner = build(cx_within_tail.compile(), "leak_within_tail")
+    shots = [
+        list(shot)
+        for shot in runner.run_shots(
+            simulator=simulator,
+            error_model=error_model,
+            n_qubits=40,
+            n_shots=50,
+        )
+    ]
+    snapshot.assert_match(
+        yaml.dump(shots),
+        "measure_leaked_within_tail",
+    )
 
 
 def test_rus():

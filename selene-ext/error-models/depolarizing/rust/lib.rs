@@ -242,7 +242,17 @@ impl ErrorModelInterface for DepolarizingErrorModel {
                 } => {
                     let measurement = self.simulator.measure(qubit_id)?;
                     let modified_measurement = self.maybe_flip_measurement(qubit_id, measurement);
-                    results.set_measurement_result(result_id, modified_measurement);
+                    results.set_bool_result(result_id, modified_measurement);
+                }
+                Operation::MeasureLeaked {
+                    qubit_id,
+                    result_id,
+                } => {
+                    // We aren't modelling leakage so this is the same as a normal measurement,
+                    // except we set the u64 future as 0 or 1 (leakage would include higher values)
+                    let measurement = self.simulator.measure(qubit_id)?;
+                    let modified_measurement = self.maybe_flip_measurement(qubit_id, measurement);
+                    results.set_u64_result(result_id, if modified_measurement { 1 } else { 0 });
                 }
                 Operation::Reset { qubit_id } => {
                     self.simulator.reset(qubit_id)?;

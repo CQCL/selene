@@ -1,0 +1,20 @@
+[package]
+name = "selene-error-model-simple-leakage"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "selene_simple_leakage_plugin"
+path = "rust/lib.rs"
+doctest = false
+crate-type = ["cdylib"]
+
+[dependencies]
+clap = { workspace = true }
+rand = { workspace = true }
+anyhow = { workspace = true }
+rand_pcg = "0.9"
+selene-core = { path = "../../../selene-core" }
+
+[lints]
+workspace = true

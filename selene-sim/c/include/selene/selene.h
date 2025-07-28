@@ -27,10 +27,10 @@ typedef struct selene_bool_result_t {
   bool value;
 } selene_bool_result_t;
 
-typedef struct selene_future_bool_result_t {
+typedef struct selene_future_result_t {
   uint32_t error_code;
   uint64_t reference;
-} selene_future_bool_result_t;
+} selene_future_result_t;
 
 typedef struct selene_f64_result_t {
   uint32_t error_code;
@@ -57,7 +57,12 @@ struct selene_void_result_t selene_exit(struct SeleneInstance *instance);
 /**
  * Reads a bool future
  */
-struct selene_bool_result_t selene_future_read(struct SeleneInstance *instance, uint64_t r);
+struct selene_bool_result_t selene_future_read_bool(struct SeleneInstance *instance, uint64_t r);
+
+/**
+ * Reads a u64 future
+ */
+struct selene_u64_result_t selene_future_read_u64(struct SeleneInstance *instance, uint64_t r);
 
 struct selene_u64_result_t selene_get_current_shot(struct SeleneInstance *instance);
 
@@ -130,8 +135,14 @@ struct selene_void_result_t selene_qfree(struct SeleneInstance *instance, uint64
 /**
  * Performs a lazy measurement
  */
-struct selene_future_bool_result_t selene_qubit_lazy_measure(struct SeleneInstance *instance,
-                                                             uint64_t q);
+struct selene_future_result_t selene_qubit_lazy_measure(struct SeleneInstance *instance,
+                                                        uint64_t q);
+
+/**
+ * Performs a lazy measurement with leakage detection
+ */
+struct selene_future_result_t selene_qubit_lazy_measure_leaked(struct SeleneInstance *instance,
+                                                               uint64_t q);
 
 struct selene_bool_result_t selene_qubit_measure(struct SeleneInstance *instance, uint64_t q);
 

@@ -35,9 +35,14 @@ impl From<ErrorModelAPIVersion> for u64 {
 pub const CURRENT_API_VERSION: ErrorModelAPIVersion = ErrorModelAPIVersion {
     reserved: 0,
     major: 0,
-    minor: 1,
+    minor: 2,
     patch: 0,
 };
+
+// Changelog:
+// 0.1.0: Initial version.
+// 0.2.0: Replaced set_measurement_result with set_bool_result and set_u64_result in
+//   ErrorModelSetResultInterface
 
 impl ErrorModelAPIVersion {
     pub fn validate(&self) -> Result<()> {

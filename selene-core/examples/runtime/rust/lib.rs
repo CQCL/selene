@@ -12,17 +12,22 @@ enum QubitStatus {
     Free,
     Active { phase: f64 },
 }
+
+// We choose to encode a future bool or future u64
+// result as a u64 value with a boolean 'is_set' flag.
+// User code should be careful to read the correct type.
 #[derive(Debug, Clone)]
-struct Measurement {
-    measured: bool,
-    value: bool,
+struct FutureResult {
+    is_set: bool,
+    value: u64,
 }
+
 
 struct ExampleRuntime {
     qubits: Vec<QubitStatus>,
     operation_queue: VecDeque<BatchOperation>,
     flush_size: usize,
-    measurements: Vec<Measurement>,
+    future_results: Vec<FutureResult>,
     start: selene_core::time::Instant,
 }
 
@@ -32,7 +37,7 @@ impl ExampleRuntime {
             qubits: vec![QubitStatus::Free; n_qubits as usize],
             operation_queue: VecDeque::with_capacity(10000),
             flush_size: 0,
-            measurements: Vec::with_capacity(1000),
+            future_results: Vec::with_capacity(1000),
             start,
         }
     }
@@ -51,7 +56,7 @@ impl RuntimeInterface for ExampleRuntime {
         self.operation_queue.clear();
         self.qubits.clear();
         self.flush_size = 0;
-        self.measurements.clear();
+        self.future_results.clear();
         Ok(())
     }
     // Engine ops
@@ -74,7 +79,7 @@ impl RuntimeInterface for ExampleRuntime {
         self.qubits = vec![QubitStatus::Free; self.qubits.len()];
         self.operation_queue.clear();
         self.flush_size = 0;
-        self.measurements.clear();
+        self.future_results.clear();
         Ok(())
     }
     fn global_barrier(&mut self, _sleep_ns: u64) -> Result<()> {
@@ -111,6 +116,11 @@ impl RuntimeInterface for ExampleRuntime {
                         }
                     }
                     Operation::Measure { qubit_id, .. } => {
+                        if qubits.contains(qubit_id) {
+                            last_op_using_qubits = i;
+                        }
+                    }
+                    Operation::MeasureLeaked { qubit_id, .. } => {
                         if qubits.contains(qubit_id) {
                             last_op_using_qubits = i;
                         }
@@ -193,12 +203,27 @@ impl RuntimeInterface for ExampleRuntime {
         if qubit_id >= self.qubits.len() as u64 {
             bail!("measuring out-of-bounds qubit {qubit_id}")
         }
-        let result_id = self.measurements.len() as u64;
-        self.measurements.push(Measurement {
-            measured: false,
-            value: false,
+        let result_id = self.future_results.len() as u64;
+        self.future_result.push(FutureResult {
+            is_set: false,
+            value: 0,
         });
         self.push(Operation::Measure {
+            qubit_id,
+            result_id,
+        });
+        Ok(result_id)
+    }
+    fn measure_leaked(&mut self, qubit_id: u64) -> Result<u64> {
+        if qubit_id >= self.qubits.len() as u64 {
+            bail!("measuring out-of-bounds qubit {qubit_id}")
+        }
+        let result_id = self.future_results.len() as u64;
+        self.future_results.push(FutureResult {
+            is_set: false,
+            value: 0,
+        });
+        self.push(Operation::MeasureLeaked {
             qubit_id,
             result_id,
         });
@@ -212,42 +237,65 @@ impl RuntimeInterface for ExampleRuntime {
         Ok(())
     }
     fn force_result(&mut self, result_id: u64) -> Result<()> {
-        if result_id >= self.measurements.len() as u64 {
+        if result_id >= self.future_results.len() as u64 {
             bail!("forcing out-of-bounds measurement {result_id}")
         }
         for (i, operation) in self.operation_queue.iter().enumerate().rev() {
             for op in operation.iter_ops() {
-                if let Operation::Measure {
-                    result_id: measure_result_id,
-                    ..
-                } = op
-                {
-                    if result_id == *measure_result_id {
-                        self.flush_size = std::cmp::max(self.flush_size, i + 1);
-                        return Ok(());
+                match op {
+                    Operation::Measure { result_id: id, .. }
+                    | Operation::MeasureLeaked { result_id: id, .. } => {
+                        if *id == result_id {
+                            self.flush_size = std::cmp::max(self.flush_size, i + 1);
+                            return Ok(());
+                        }
                     }
+                    _ => {}
                 }
             }
         }
         bail!("No measurement operation with result {result_id} found")
     }
-    fn get_result(&mut self, result_id: u64) -> Result<Option<bool>> {
-        if result_id >= self.measurements.len() as u64 {
+    fn get_bool_result(&mut self, result_id: u64) -> Result<Option<bool>> {
+        if result_id >= self.future_results.len() as u64 {
             bail!("getting out-of-bounds measurement {result_id}");
         }
-        let result = &self.measurements[result_id as usize];
-        Ok(if result.measured {
+        let result = &self.future_results[result_id as usize];
+        Ok(if result.is_set {
+            Some(result.value > 0)
+        } else {
+            None
+        })
+    }
+    fn get_u64_result(&mut self, result_id: u64) -> Result<Option<u64>> {
+        if result_id >= self.future_results.len() as u64 {
+            bail!("getting out-of-bounds measurement {result_id}");
+        }
+        let result = &self.future_results[result_id as usize];
+        Ok(if result.is_set {
             Some(result.value)
         } else {
             None
         })
     }
-    fn set_result(&mut self, result_id: u64, result: bool) -> Result<()> {
-        if result_id >= self.measurements.len() as u64 {
+    fn set_bool_result(&mut self, result_id: u64, result: bool) -> Result<()> {
+        if result_id >= self.future_results.len() as u64 {
             bail!("setting out-of-bounds measurement {result_id}");
         }
-        self.measurements[result_id as usize].value = result;
-        self.measurements[result_id as usize].measured = true;
+        self.future_results[result_id as usize] = FutureResult {
+            is_set: true,
+            value: result.into(),
+        };
+        Ok(())
+    }
+    fn set_u64_result(&mut self, result_id: u64, result: u64) -> Result<()> {
+        if result_id >= self.future_results.len() as u64 {
+            bail!("setting out-of-bounds measurement {result_id}");
+        }
+        self.future_results[result_id as usize] = FutureResult {
+            is_set: true,
+            value: result,
+        };
         Ok(())
     }
     fn increment_future_refcount(&mut self, _future_ref: u64) -> Result<()> {
