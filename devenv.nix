@@ -11,6 +11,7 @@
       graphviz
       graph-easy
       libffi
+      cargo-expand
     ];
 
     enterShell = ''
