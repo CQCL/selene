@@ -1262,7 +1262,7 @@ requires-dist = [
     { name = "networkx", specifier = "~=3.4" },
     { name = "pydot", specifier = ">=4.0.0" },
     { name = "pyyaml", specifier = "~=6.0" },
-    { name = "typing-extensions", specifier = "~=4.14" },
+    { name = "typing-extensions", specifier = ">=4" },
 ]
 
 [[package]]
