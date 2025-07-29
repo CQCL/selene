@@ -197,7 +197,7 @@ wheels = [
 [[package]]
 name = "guppylang"
 version = "0.20.0"
-source = { git = "https://github.com/CQCL/guppylang.git?branch=ss%2Fhugr-py-v0.13#7975706f6cdd02c8117d19d5bed64d4ae2b9e5fa" }
+source = { git = "https://github.com/CQCL/guppylang.git?branch=ss%2Fhugr-py-v0.13#1bab7da1151b887e69b74bde3d2495180285409b" }
 dependencies = [
     { name = "graphviz" },
     { name = "hugr" },
