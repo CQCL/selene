@@ -2094,9 +2094,9 @@ dependencies = [
 
 [[package]]
 name = "tket"
-version = "0.13.0"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b178715072fc45e9fa69d9d6f8aefc9d0df6feaeec0562889be44fce430af258"
+checksum = "9688bd5b806464a4756b96195e4cd820f54aba4d667b5cabaa8ea5ed3870132d"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -2144,9 +2144,9 @@ dependencies = [
 
 [[package]]
 name = "tket-qsystem"
-version = "0.17.0"
+version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0f4d11fffc27cb589d073ff1be1dc6709492aeb856edf576d8034ad38946b15"
+checksum = "dd2039d8fb07b73b94e114e684b7521b037583041f6e9edf2add0990b0d37882"
 dependencies = [
  "anyhow",
  "clap",
