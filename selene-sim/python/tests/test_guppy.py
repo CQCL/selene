@@ -91,6 +91,7 @@ def test_flip_some():
     assert got == got_replay, "Classical Replay failed to produce input results"
 
 
+@pytest.mark.skip("See https://github.com/CQCL/selene/issues/37")
 def test_print_array():
     @guppy
     def main() -> None:
