@@ -1,3 +1,4 @@
+import pytest
 import yaml
 
 from guppylang import guppy
@@ -90,6 +91,7 @@ def test_flip_some_with_metrics_unparsed(snapshot):
     snapshot.assert_match(yaml.dump(got), "unparsed_metrics")
 
 
+@pytest.mark.skip("See https://github.com/CQCL/selene/issues/37")
 def test_array_results_unparsed():
     @guppy
     def main() -> None:
