@@ -116,7 +116,6 @@ def test_llvm_measure_array(snapshot, target_triple):
     snapshot.assert_match(ir, f"measure_array_{target_triple}")
 
 
-@pytest.mark.skip("See https://github.com/CQCL/selene/issues/37")
 @pytest.mark.parametrize("target_triple", triples)
 def test_llvm_print_array(snapshot, target_triple):
     @guppy
