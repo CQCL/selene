@@ -27,7 +27,7 @@ def test_repetition(snapshot):
         result("random_float", rng.random_float())
         rng.discard()
 
-    runner = build(guppy.compile(main), "no_results")
+    runner = build(main.compile(), "no_results")
 
     error_model = DepolarizingErrorModel(
         random_seed=194678,

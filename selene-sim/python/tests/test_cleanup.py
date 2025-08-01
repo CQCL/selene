@@ -13,7 +13,7 @@ def test_delete_files():
         q0 = qubit()
         discard(q0)
 
-    runner = build(guppy.compile(main))
+    runner = build(main.compile())
     got = list(runner.run(Quest(), n_qubits=1))
     runner.delete_files()
     with pytest.raises(FileNotFoundError):
@@ -36,7 +36,7 @@ def test_delete_run_directories():
         q0 = qubit()
         discard(q0)
 
-    runner = build(guppy.compile(main))
+    runner = build(main.compile())
     got = list(runner.run(Quest(), n_qubits=1))
     assert len(list(runner.runs.iterdir())) == 1
 

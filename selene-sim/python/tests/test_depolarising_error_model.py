@@ -32,7 +32,7 @@ def test_measurement_error(snapshot):
         result("c1", measure(q1))
         result("c2", measure(q2))
 
-    runner = build(guppy.compile(main), "measurement_error")
+    runner = build(main.compile(), "measurement_error")
     error_model = DepolarizingErrorModel(
         random_seed=12478918,  # for reproducibility
         p_init=0,  # constant zero for this test
@@ -165,7 +165,7 @@ def test_init_error(snapshot):
         result("c1", measure(q1))
         result("c2", measure(q2))
 
-    runner = build(guppy.compile(main), "init_error")
+    runner = build(main.compile(), "init_error")
 
     simulator = Quest(random_seed=12472461)
     error_model = DepolarizingErrorModel(
@@ -252,7 +252,7 @@ def test_1q_error(snapshot):
         result("c1", measure(q1))
         result("c2", measure(q2))
 
-    runner = build(guppy.compile(main), "init_error")
+    runner = build(main.compile(), "init_error")
 
     simulator = Quest(random_seed=75264817)
     error_model = DepolarizingErrorModel(
@@ -337,7 +337,7 @@ def test_2q_error(snapshot):
         result("c1", measure(q1))
         result("c2", measure(q2))
 
-    runner = build(guppy.compile(main), "init_error")
+    runner = build(main.compile(), "init_error")
 
     simulator = Quest(random_seed=75264817)
     error_model = DepolarizingErrorModel(

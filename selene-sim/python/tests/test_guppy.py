@@ -36,7 +36,7 @@ def test_no_results():
         h(q0)
         m = measure(q0)
 
-    runner = build(guppy.compile(bar), "no_results")
+    runner = build(bar.compile(), "no_results")
     # time limits aren't necessary in general, but they are helpful in testing
     got = list(
         runner.run(Coinflip(), n_qubits=1, timeout=datetime.timedelta(seconds=1))
@@ -59,7 +59,7 @@ def test_flip_some():
         result("c2", measure(q2))
         result("c3", measure(q3))
 
-    runner = build(guppy.compile(main), "flip_n4")
+    runner = build(main.compile(), "flip_n4")
     expected = {"c0": 1, "c1": 0, "c2": 1, "c3": 1}
     # run the simulation on Quest and Stim
     for simulator in [Quest(), Stim()]:
@@ -104,7 +104,7 @@ def test_print_array():
         result("is", array(i for i in range(100)))
         result("fs", array(i * 0.0625 for i in range(100)))
 
-    runner = build(guppy.compile(main), "flip_n4_arr")
+    runner = build(main.compile(), "flip_n4_arr")
     expected = {
         "cs": [1, 0, 1, 1, 0, 0, 0, 0, 0, 1],
         "is": list(range(100)),
@@ -133,7 +133,7 @@ def test_exit():
             exit("Postselection failed", 42)
         result("c", outcome)
 
-    runner = build(guppy.compile(main), "exit")
+    runner = build(main.compile(), "exit")
     # some should have measurements of 0, some should have no measurements.
     n_1 = 0
     n_0 = 0
@@ -179,7 +179,7 @@ def test_panic():
             panic("Postselection failed")
         result("c", outcome)
 
-    runner = build(guppy.compile(main), "panic")
+    runner = build(main.compile(), "panic")
     with pytest.raises(
         SelenePanicError, match="Postselection failed"
     ) as exception_info:
@@ -294,7 +294,7 @@ def test_rus():
         rus(q)
         result("result", measure(q))
 
-    runner = build(guppy.compile(main), "repeat_until_success")
+    runner = build(main.compile(), "repeat_until_success")
     shots = QsysResult(
         runner.run_shots(
             Quest(random_seed=0),
@@ -319,7 +319,7 @@ def test_get_current_shot():
     def main() -> None:
         result("shot", get_current_shot())
 
-    runner = build(guppy.compile(main), "current_shot")
+    runner = build(main.compile(), "current_shot")
     n_shots = 100
     shots = list(dict(shot) for shot in runner.run_shots(Quest(), 1, n_shots=n_shots))
     shot_ids = [shot["shot"] for shot in shots]
@@ -348,7 +348,7 @@ def test_rng(snapshot):
         result("rfloat2", rfloat)
         result("rint_bnd2", rint_bnd)
 
-    runner = build(guppy.compile(main), "rng")
+    runner = build(main.compile(), "rng")
     shots = list(
         dict(shot) for shot in runner.run_shots(Quest(), 1, n_shots=10, verbose=True)
     )
@@ -383,7 +383,7 @@ def test_sim_restriction():
         result("c1", measure(q1))
         result("c2", measure(q2))
 
-    runner = build(guppy.compile(main), "nonclifford")
+    runner = build(main.compile(), "nonclifford")
     with pytest.raises(SelenePanicError, match="not representable") as exception_info:
         shots = QsysResult(
             runner.run_shots(
@@ -427,7 +427,7 @@ def test_corrupted_plugin():
         h(q0)
         result("c0", measure(q0))
 
-    runner = build(guppy.compile(main), "broken_plugin")
+    runner = build(main.compile(), "broken_plugin")
     with pytest.raises(
         SeleneRuntimeError, match=r"Failed to load runtime plugin"
     ) as exception_info:
@@ -454,7 +454,7 @@ def test_metrics(snapshot):
         result("c1", measure(q1))
         result("c2", measure(q2))
 
-    runner = build(guppy.compile(main), "metrics")
+    runner = build(main.compile(), "metrics")
     metric_store = MetricStore()
     shots = QsysResult(
         runner.run_shots(
@@ -504,7 +504,7 @@ def test_circuit_output():
                 c2 = measure(q2)
                 result("c2", c2)
 
-    runner = build(guppy.compile(main), "circuit")
+    runner = build(main.compile(), "circuit")
     circuits = CircuitExtractor()
     # ok, so let's construct some classical replay data
     # to run through all classical branches

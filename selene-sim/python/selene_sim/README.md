@@ -53,7 +53,7 @@ def main() -> None:
     # report measurements to the results stream
     result("measurements", ms)
 
-compiled_hugr = guppy.compile(main)
+compiled_hugr = main.compile()
 ```
 
 - Then we compile the resulting HUGR Envelope to LLVM IR or bitcode using the HUGR-QIS compiler
