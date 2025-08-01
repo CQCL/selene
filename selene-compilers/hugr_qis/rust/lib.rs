@@ -422,7 +422,7 @@ mod selene_hugr_qis_compiler {
 
     /// Compile HUGR package to LLVM IR string
     #[pyfunction]
-    #[pyo3(signature = (pkg_bytes, opt_level=2, target_triple="native"))]
+    #[pyo3(signature = (pkg_bytes, opt_level=1, target_triple="native"))]
     pub fn compile_to_llvm_ir(
         pkg_bytes: &[u8],
         opt_level: u32,
@@ -446,7 +446,7 @@ mod selene_hugr_qis_compiler {
 
     /// Compile HUGR package to LLVM bitcode
     #[pyfunction]
-    #[pyo3(signature = (pkg_bytes, opt_level=2, target_triple="native"))]
+    #[pyo3(signature = (pkg_bytes, opt_level=1, target_triple="native"))]
     pub fn compile_to_bitcode(
         pkg_bytes: &[u8],
         opt_level: u32,
