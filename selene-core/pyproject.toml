@@ -1,6 +1,6 @@
 [project]
 name = "selene-core"
-version = "0.2.0rc4"
+version = "0.2.0rc5"
 requires-python = ">=3.10"
 description = "The core interop library for Selene python interfaces"
 readme = "python/selene_core/README.md"
