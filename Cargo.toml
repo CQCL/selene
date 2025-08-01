@@ -19,7 +19,7 @@ members = [
 rust-version = "1.85"
 authors = ["Jake Arkinstall <jake.arkinstall@quantinuum.com>"]
 edition = "2024"
-version = "0.2.0-rc.4"
+version = "0.2.0-rc.5"
 repository = "https://github.com/CQCL/selene"
 license = "Apache-2.0"
 
