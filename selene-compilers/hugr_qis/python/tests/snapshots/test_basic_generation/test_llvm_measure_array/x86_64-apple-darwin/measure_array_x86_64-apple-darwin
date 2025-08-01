@@ -11,267 +11,346 @@ target triple = "x86_64-apple-darwin"
 
 define void @__hugr__.main.1() local_unnamed_addr {
 alloca_block:
-  br label %cond_25_case_1
+  %0 = call dereferenceable_or_null(160) i8* @malloc(i64 160)
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(160) %0, i8 0, i64 160, i1 false)
+  %1 = bitcast i8* %0 to { i1, i64 }*
+  br label %loop_body
 
-cond_25_case_1:                                   ; preds = %alloca_block, %cond_exit_25
-  %"20_0.sroa.0.0511" = phi i64 [ 0, %alloca_block ], [ %0, %cond_exit_25 ]
-  %"20_1.sroa.95.0510" = phi i64 [ undef, %alloca_block ], [ %.fca.9.1.extract270, %cond_exit_25 ]
-  %"20_1.sroa.90.0509" = phi i1 [ false, %alloca_block ], [ %.fca.9.0.extract269, %cond_exit_25 ]
-  %"20_1.sroa.85.0508" = phi i64 [ undef, %alloca_block ], [ %.fca.8.1.extract268, %cond_exit_25 ]
-  %"20_1.sroa.80.0507" = phi i1 [ false, %alloca_block ], [ %.fca.8.0.extract267, %cond_exit_25 ]
-  %"20_1.sroa.75.0506" = phi i64 [ undef, %alloca_block ], [ %.fca.7.1.extract266, %cond_exit_25 ]
-  %"20_1.sroa.70.0505" = phi i1 [ false, %alloca_block ], [ %.fca.7.0.extract265, %cond_exit_25 ]
-  %"20_1.sroa.65.0504" = phi i64 [ undef, %alloca_block ], [ %.fca.6.1.extract264, %cond_exit_25 ]
-  %"20_1.sroa.60.0503" = phi i1 [ false, %alloca_block ], [ %.fca.6.0.extract263, %cond_exit_25 ]
-  %"20_1.sroa.55.0502" = phi i64 [ undef, %alloca_block ], [ %.fca.5.1.extract262, %cond_exit_25 ]
-  %"20_1.sroa.50.0501" = phi i1 [ false, %alloca_block ], [ %.fca.5.0.extract261, %cond_exit_25 ]
-  %"20_1.sroa.45.0500" = phi i64 [ undef, %alloca_block ], [ %.fca.4.1.extract260, %cond_exit_25 ]
-  %"20_1.sroa.40.0499" = phi i1 [ false, %alloca_block ], [ %.fca.4.0.extract259, %cond_exit_25 ]
-  %"20_1.sroa.35.0498" = phi i64 [ undef, %alloca_block ], [ %.fca.3.1.extract258, %cond_exit_25 ]
-  %"20_1.sroa.30.0497" = phi i1 [ false, %alloca_block ], [ %.fca.3.0.extract257, %cond_exit_25 ]
-  %"20_1.sroa.25.0496" = phi i64 [ undef, %alloca_block ], [ %.fca.2.1.extract256, %cond_exit_25 ]
-  %"20_1.sroa.20.0495" = phi i1 [ false, %alloca_block ], [ %.fca.2.0.extract255, %cond_exit_25 ]
-  %"20_1.sroa.15.0494" = phi i64 [ undef, %alloca_block ], [ %.fca.1.1.extract254, %cond_exit_25 ]
-  %"20_1.sroa.10.0493" = phi i1 [ false, %alloca_block ], [ %.fca.1.0.extract253, %cond_exit_25 ]
-  %"20_1.sroa.5.0492" = phi i64 [ undef, %alloca_block ], [ %.fca.0.1.extract252, %cond_exit_25 ]
-  %"20_1.sroa.0.0491" = phi i1 [ false, %alloca_block ], [ %.fca.0.0.extract251, %cond_exit_25 ]
-  %0 = add nuw nsw i64 %"20_0.sroa.0.0511", 1
-  %"20_111.fca.0.0.insert" = insertvalue [10 x { i1, i64 }] poison, i1 %"20_1.sroa.0.0491", 0, 0
-  %"20_111.fca.0.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.0.0.insert", i64 %"20_1.sroa.5.0492", 0, 1
-  %"20_111.fca.1.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.0.1.insert", i1 %"20_1.sroa.10.0493", 1, 0
-  %"20_111.fca.1.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.1.0.insert", i64 %"20_1.sroa.15.0494", 1, 1
-  %"20_111.fca.2.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.1.1.insert", i1 %"20_1.sroa.20.0495", 2, 0
-  %"20_111.fca.2.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.2.0.insert", i64 %"20_1.sroa.25.0496", 2, 1
-  %"20_111.fca.3.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.2.1.insert", i1 %"20_1.sroa.30.0497", 3, 0
-  %"20_111.fca.3.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.3.0.insert", i64 %"20_1.sroa.35.0498", 3, 1
-  %"20_111.fca.4.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.3.1.insert", i1 %"20_1.sroa.40.0499", 4, 0
-  %"20_111.fca.4.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.4.0.insert", i64 %"20_1.sroa.45.0500", 4, 1
-  %"20_111.fca.5.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.4.1.insert", i1 %"20_1.sroa.50.0501", 5, 0
-  %"20_111.fca.5.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.5.0.insert", i64 %"20_1.sroa.55.0502", 5, 1
-  %"20_111.fca.6.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.5.1.insert", i1 %"20_1.sroa.60.0503", 6, 0
-  %"20_111.fca.6.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.6.0.insert", i64 %"20_1.sroa.65.0504", 6, 1
-  %"20_111.fca.7.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.6.1.insert", i1 %"20_1.sroa.70.0505", 7, 0
-  %"20_111.fca.7.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.7.0.insert", i64 %"20_1.sroa.75.0506", 7, 1
-  %"20_111.fca.8.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.7.1.insert", i1 %"20_1.sroa.80.0507", 8, 0
-  %"20_111.fca.8.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.8.0.insert", i64 %"20_1.sroa.85.0508", 8, 1
-  %"20_111.fca.9.0.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.8.1.insert", i1 %"20_1.sroa.90.0509", 9, 0
-  %"20_111.fca.9.1.insert" = insertvalue [10 x { i1, i64 }] %"20_111.fca.9.0.insert", i64 %"20_1.sroa.95.0510", 9, 1
-  %qalloc.i = tail call i64 @___qalloc()
+loop_body:                                        ; preds = %alloca_block, %cond_exit_25
+  %"20_2.0" = phi i64 [ %"2.0", %cond_exit_25 ], [ 0, %alloca_block ]
+  %"20_0.sroa.0.0" = phi i64 [ %"0.sroa.3.0", %cond_exit_25 ], [ 0, %alloca_block ]
+  %2 = icmp slt i64 %"20_0.sroa.0.0", 10
+  br i1 %2, label %cond_25_case_1, label %cond_exit_25
+
+cond_25_case_1:                                   ; preds = %loop_body
+  %3 = add i64 %"20_0.sroa.0.0", 1
+  %4 = add i64 %"20_2.0", 1
+  %qalloc.i = call i64 @___qalloc()
   %not_max.not.i = icmp eq i64 %qalloc.i, -1
   br i1 %not_max.not.i, label %id_bb.i, label %reset_bb.i
 
 reset_bb.i:                                       ; preds = %cond_25_case_1
-  tail call void @___reset(i64 %qalloc.i)
+  call void @___reset(i64 %qalloc.i)
   br label %id_bb.i
 
 id_bb.i:                                          ; preds = %reset_bb.i, %cond_25_case_1
-  %1 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc.i, 1
-  %2 = select i1 %not_max.not.i, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %1
-  %.fca.0.extract.i = extractvalue { i1, i64 } %2, 0
-  br i1 %.fca.0.extract.i, label %cond_exit_25, label %cond_279_case_0.i
+  %5 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc.i, 1
+  %6 = select i1 %not_max.not.i, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %5
+  %.fca.0.extract.i = extractvalue { i1, i64 } %6, 0
+  br i1 %.fca.0.extract.i, label %__hugr__.__tk2_qalloc.283.exit, label %cond_279_case_0.i
 
 cond_279_case_0.i:                                ; preds = %id_bb.i
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
+  call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
   unreachable
 
-cond_exit_25:                                     ; preds = %id_bb.i
-  %.fca.1.extract.i = extractvalue { i1, i64 } %2, 1
-  %3 = tail call [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"([10 x { i1, i64 }] %"20_111.fca.9.1.insert", i64 %"20_0.sroa.0.0511", i64 %.fca.1.extract.i)
-  %.fca.0.0.extract251 = extractvalue [10 x { i1, i64 }] %3, 0, 0
-  %.fca.0.1.extract252 = extractvalue [10 x { i1, i64 }] %3, 0, 1
-  %.fca.1.0.extract253 = extractvalue [10 x { i1, i64 }] %3, 1, 0
-  %.fca.1.1.extract254 = extractvalue [10 x { i1, i64 }] %3, 1, 1
-  %.fca.2.0.extract255 = extractvalue [10 x { i1, i64 }] %3, 2, 0
-  %.fca.2.1.extract256 = extractvalue [10 x { i1, i64 }] %3, 2, 1
-  %.fca.3.0.extract257 = extractvalue [10 x { i1, i64 }] %3, 3, 0
-  %.fca.3.1.extract258 = extractvalue [10 x { i1, i64 }] %3, 3, 1
-  %.fca.4.0.extract259 = extractvalue [10 x { i1, i64 }] %3, 4, 0
-  %.fca.4.1.extract260 = extractvalue [10 x { i1, i64 }] %3, 4, 1
-  %.fca.5.0.extract261 = extractvalue [10 x { i1, i64 }] %3, 5, 0
-  %.fca.5.1.extract262 = extractvalue [10 x { i1, i64 }] %3, 5, 1
-  %.fca.6.0.extract263 = extractvalue [10 x { i1, i64 }] %3, 6, 0
-  %.fca.6.1.extract264 = extractvalue [10 x { i1, i64 }] %3, 6, 1
-  %.fca.7.0.extract265 = extractvalue [10 x { i1, i64 }] %3, 7, 0
-  %.fca.7.1.extract266 = extractvalue [10 x { i1, i64 }] %3, 7, 1
-  %.fca.8.0.extract267 = extractvalue [10 x { i1, i64 }] %3, 8, 0
-  %.fca.8.1.extract268 = extractvalue [10 x { i1, i64 }] %3, 8, 1
-  %.fca.9.0.extract269 = extractvalue [10 x { i1, i64 }] %3, 9, 0
-  %.fca.9.1.extract270 = extractvalue [10 x { i1, i64 }] %3, 9, 1
-  %exitcond.not = icmp eq i64 %0, 10
-  br i1 %exitcond.not, label %loop_out, label %cond_25_case_1
+__hugr__.__tk2_qalloc.283.exit:                   ; preds = %id_bb.i
+  %7 = icmp ult i64 %"20_2.0", 10
+  br i1 %7, label %8, label %12
+
+8:                                                ; preds = %__hugr__.__tk2_qalloc.283.exit
+  %.fca.1.extract.i = extractvalue { i1, i64 } %6, 1
+  %"308_05.fca.1.insert.i" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.1.extract.i, 1
+  %9 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 %"20_2.0"
+  %10 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %9, i64 0, i32 0
+  %11 = load i1, i1* %10, align 1
+  store { i1, i64 } %"308_05.fca.1.insert.i", { i1, i64 }* %9, align 4
+  br label %12
+
+12:                                               ; preds = %8, %__hugr__.__tk2_qalloc.283.exit
+  %"06.sroa.9.0.i" = phi i1 [ %11, %8 ], [ true, %__hugr__.__tk2_qalloc.283.exit ]
+  br i1 %7, label %cond_311_case_1.i, label %cond_311_case_0.i
+
+cond_311_case_0.i:                                ; preds = %12
+  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+  unreachable
+
+cond_311_case_1.i:                                ; preds = %12
+  br i1 %"06.sroa.9.0.i", label %cond_321_case_1.i, label %cond_exit_25
+
+cond_321_case_1.i:                                ; preds = %cond_311_case_1.i
+  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  unreachable
+
+cond_exit_25:                                     ; preds = %cond_311_case_1.i, %loop_body
+  %"2.0" = phi i64 [ %"20_2.0", %loop_body ], [ %4, %cond_311_case_1.i ]
+  %"0.sroa.3.0" = phi i64 [ poison, %loop_body ], [ %3, %cond_311_case_1.i ]
+  br i1 %2, label %loop_body, label %loop_out
 
 loop_out:                                         ; preds = %cond_exit_25
-  %4 = tail call { i64, [10 x { i1, i64 }] } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"([10 x { i1, i64 }] %3, i64 0)
-  %5 = extractvalue { i64, [10 x { i1, i64 }] } %4, 0
-  %6 = extractvalue { i64, [10 x { i1, i64 }] } %4, 1
-  tail call void @___rxy(i64 %5, double 0x400921FB54442D18, double 0.000000e+00)
-  %7 = tail call [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"([10 x { i1, i64 }] %6, i64 0, i64 %5)
-  %8 = tail call { i64, [10 x { i1, i64 }] } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"([10 x { i1, i64 }] %7, i64 2)
-  %9 = extractvalue { i64, [10 x { i1, i64 }] } %8, 0
-  %10 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1
-  tail call void @___rxy(i64 %9, double 0x400921FB54442D18, double 0.000000e+00)
-  %11 = tail call [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"([10 x { i1, i64 }] %10, i64 2, i64 %9)
-  %12 = tail call { i64, [10 x { i1, i64 }] } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"([10 x { i1, i64 }] %11, i64 3)
-  %13 = extractvalue { i64, [10 x { i1, i64 }] } %12, 0
-  %14 = extractvalue { i64, [10 x { i1, i64 }] } %12, 1
-  tail call void @___rxy(i64 %13, double 0x400921FB54442D18, double 0.000000e+00)
-  %15 = tail call [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"([10 x { i1, i64 }] %14, i64 3, i64 %13)
-  %16 = tail call { i64, [10 x { i1, i64 }] } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"([10 x { i1, i64 }] %15, i64 9)
-  %17 = extractvalue { i64, [10 x { i1, i64 }] } %16, 0
-  %18 = extractvalue { i64, [10 x { i1, i64 }] } %16, 1
-  tail call void @___rxy(i64 %17, double 0x400921FB54442D18, double 0.000000e+00)
-  %19 = tail call [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"([10 x { i1, i64 }] %18, i64 9, i64 %17)
-  %20 = tail call [10 x { i1, { i1, i64, i1 } }] @"__hugr__.$measure_array$$n(10).359"([10 x { i1, i64 }] %19)
-  %.elt404 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 0
-  %.elt406 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 1
-  %.elt408 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 2
-  %.elt410 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 3
-  %.elt412 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 4
-  %.elt414 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 5
-  %.elt416 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 6
-  %.elt418 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 7
-  %.elt420 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 8
-  %.elt422 = extractvalue [10 x { i1, { i1, i64, i1 } }] %20, 9
-  %.fca.0.extract13.i = extractvalue { i1, { i1, i64, i1 } } %.elt404, 0
+  %"121.fca.0.insert" = insertvalue { { i1, i64 }*, i64 } poison, { i1, i64 }* %1, 0
+  %"121.fca.1.insert" = insertvalue { { i1, i64 }*, i64 } %"121.fca.0.insert", i64 0, 1
+  %13 = load { i1, i64 }, { i1, i64 }* %1, align 4
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %0, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i = extractvalue { i1, i64 } %13, 0
+  %.fca.2.1.extract.i = extractvalue { i1, i64 } %13, 1
+  br i1 %.fca.2.0.extract.i, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit", label %cond_347_case_0.i
+
+cond_347_case_0.i:                                ; preds = %loop_out
+  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit": ; preds = %loop_out
+  call void @___rxy(i64 %.fca.2.1.extract.i, double 0x400921FB54442D18, double 0.000000e+00)
+  %"308_05.fca.1.insert.i153" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i, 1
+  %14 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 0, i32 0
+  %15 = load i1, i1* %14, align 1
+  store { i1, i64 } %"308_05.fca.1.insert.i153", { i1, i64 }* %1, align 4
+  br i1 %15, label %cond_321_case_1.i156, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157"
+
+cond_321_case_1.i156:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
+  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
+  %16 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 2
+  %17 = load { i1, i64 }, { i1, i64 }* %16, align 4
+  %18 = bitcast { i1, i64 }* %16 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %18, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i158 = extractvalue { i1, i64 } %17, 0
+  %.fca.2.1.extract.i159 = extractvalue { i1, i64 } %17, 1
+  br i1 %.fca.2.0.extract.i158, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163", label %cond_347_case_0.i162
+
+cond_347_case_0.i162:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157"
+  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157"
+  call void @___rxy(i64 %.fca.2.1.extract.i159, double 0x400921FB54442D18, double 0.000000e+00)
+  %"308_05.fca.1.insert.i164" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i159, 1
+  %19 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %16, i64 0, i32 0
+  %20 = load i1, i1* %19, align 1
+  store { i1, i64 } %"308_05.fca.1.insert.i164", { i1, i64 }* %16, align 4
+  br i1 %20, label %cond_321_case_1.i169, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170"
+
+cond_321_case_1.i169:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163"
+  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163"
+  %21 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 3
+  %22 = load { i1, i64 }, { i1, i64 }* %21, align 4
+  %23 = bitcast { i1, i64 }* %21 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %23, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i173 = extractvalue { i1, i64 } %22, 0
+  %.fca.2.1.extract.i174 = extractvalue { i1, i64 } %22, 1
+  br i1 %.fca.2.0.extract.i173, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178", label %cond_347_case_0.i177
+
+cond_347_case_0.i177:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170"
+  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170"
+  call void @___rxy(i64 %.fca.2.1.extract.i174, double 0x400921FB54442D18, double 0.000000e+00)
+  %"308_05.fca.1.insert.i179" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i174, 1
+  %24 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %21, i64 0, i32 0
+  %25 = load i1, i1* %24, align 1
+  store { i1, i64 } %"308_05.fca.1.insert.i179", { i1, i64 }* %21, align 4
+  br i1 %25, label %cond_321_case_1.i184, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185"
+
+cond_321_case_1.i184:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178"
+  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178"
+  %26 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 9
+  %27 = load { i1, i64 }, { i1, i64 }* %26, align 4
+  %28 = bitcast { i1, i64 }* %26 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %28, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i188 = extractvalue { i1, i64 } %27, 0
+  %.fca.2.1.extract.i189 = extractvalue { i1, i64 } %27, 1
+  br i1 %.fca.2.0.extract.i188, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193", label %cond_347_case_0.i192
+
+cond_347_case_0.i192:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185"
+  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185"
+  call void @___rxy(i64 %.fca.2.1.extract.i189, double 0x400921FB54442D18, double 0.000000e+00)
+  %"308_05.fca.1.insert.i194" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i189, 1
+  %29 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %26, i64 0, i32 0
+  %30 = load i1, i1* %29, align 1
+  store { i1, i64 } %"308_05.fca.1.insert.i194", { i1, i64 }* %26, align 4
+  br i1 %30, label %cond_321_case_1.i199, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200"
+
+cond_321_case_1.i199:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193"
+  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193"
+  %31 = call { { i1, { i1, i64, i1 } }*, i64 } @"__hugr__.$measure_array$$n(10).359"({ { i1, i64 }*, i64 } %"121.fca.1.insert")
+  %.fca.0.extract92 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %31, 0
+  %.fca.1.extract93 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %31, 1
+  %32 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %.fca.1.extract93
+  %33 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %32, align 4
+  %.fca.0.extract13.i = extractvalue { i1, { i1, i64, i1 } } %33, 0
   br i1 %.fca.0.extract13.i, label %cond_208_case_1.i, label %__hugr__.const_fun_242.211.exit
 
-cond_208_case_1.i:                                ; preds = %loop_out
-  %21 = extractvalue { i1, { i1, i64, i1 } } %.elt404, 1
-  %.fca.0.extract.i424 = extractvalue { i1, i64, i1 } %21, 0
-  br i1 %.fca.0.extract.i424, label %cond_197_case_1.i, label %__hugr__.const_fun_242.211.exit
+cond_208_case_1.i:                                ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200"
+  %34 = extractvalue { i1, { i1, i64, i1 } } %33, 1
+  %.fca.0.extract.i201 = extractvalue { i1, i64, i1 } %34, 0
+  br i1 %.fca.0.extract.i201, label %cond_197_case_1.i, label %__hugr__.const_fun_242.211.exit
 
 cond_197_case_1.i:                                ; preds = %cond_208_case_1.i
-  %.fca.1.extract.i425 = extractvalue { i1, i64, i1 } %21, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425)
+  %.fca.1.extract.i202 = extractvalue { i1, i64, i1 } %34, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202)
   br label %__hugr__.const_fun_242.211.exit
 
-__hugr__.const_fun_242.211.exit:                  ; preds = %loop_out, %cond_208_case_1.i, %cond_197_case_1.i
-  %.fca.0.extract13.i.1 = extractvalue { i1, { i1, i64, i1 } } %.elt406, 0
+__hugr__.const_fun_242.211.exit:                  ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200", %cond_208_case_1.i, %cond_197_case_1.i
+  %35 = add i64 %.fca.1.extract93, 1
+  %36 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %35
+  %37 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %36, align 4
+  %.fca.0.extract13.i.1 = extractvalue { i1, { i1, i64, i1 } } %37, 0
   br i1 %.fca.0.extract13.i.1, label %cond_208_case_1.i.1, label %__hugr__.const_fun_242.211.exit.1
 
 cond_208_case_1.i.1:                              ; preds = %__hugr__.const_fun_242.211.exit
-  %22 = extractvalue { i1, { i1, i64, i1 } } %.elt406, 1
-  %.fca.0.extract.i424.1 = extractvalue { i1, i64, i1 } %22, 0
-  br i1 %.fca.0.extract.i424.1, label %cond_197_case_1.i.1, label %__hugr__.const_fun_242.211.exit.1
+  %38 = extractvalue { i1, { i1, i64, i1 } } %37, 1
+  %.fca.0.extract.i201.1 = extractvalue { i1, i64, i1 } %38, 0
+  br i1 %.fca.0.extract.i201.1, label %cond_197_case_1.i.1, label %__hugr__.const_fun_242.211.exit.1
 
 cond_197_case_1.i.1:                              ; preds = %cond_208_case_1.i.1
-  %.fca.1.extract.i425.1 = extractvalue { i1, i64, i1 } %22, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.1)
+  %.fca.1.extract.i202.1 = extractvalue { i1, i64, i1 } %38, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.1)
   br label %__hugr__.const_fun_242.211.exit.1
 
 __hugr__.const_fun_242.211.exit.1:                ; preds = %cond_197_case_1.i.1, %cond_208_case_1.i.1, %__hugr__.const_fun_242.211.exit
-  %.fca.0.extract13.i.2 = extractvalue { i1, { i1, i64, i1 } } %.elt408, 0
+  %39 = add i64 %.fca.1.extract93, 2
+  %40 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %39
+  %41 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %40, align 4
+  %.fca.0.extract13.i.2 = extractvalue { i1, { i1, i64, i1 } } %41, 0
   br i1 %.fca.0.extract13.i.2, label %cond_208_case_1.i.2, label %__hugr__.const_fun_242.211.exit.2
 
 cond_208_case_1.i.2:                              ; preds = %__hugr__.const_fun_242.211.exit.1
-  %23 = extractvalue { i1, { i1, i64, i1 } } %.elt408, 1
-  %.fca.0.extract.i424.2 = extractvalue { i1, i64, i1 } %23, 0
-  br i1 %.fca.0.extract.i424.2, label %cond_197_case_1.i.2, label %__hugr__.const_fun_242.211.exit.2
+  %42 = extractvalue { i1, { i1, i64, i1 } } %41, 1
+  %.fca.0.extract.i201.2 = extractvalue { i1, i64, i1 } %42, 0
+  br i1 %.fca.0.extract.i201.2, label %cond_197_case_1.i.2, label %__hugr__.const_fun_242.211.exit.2
 
 cond_197_case_1.i.2:                              ; preds = %cond_208_case_1.i.2
-  %.fca.1.extract.i425.2 = extractvalue { i1, i64, i1 } %23, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.2)
+  %.fca.1.extract.i202.2 = extractvalue { i1, i64, i1 } %42, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.2)
   br label %__hugr__.const_fun_242.211.exit.2
 
 __hugr__.const_fun_242.211.exit.2:                ; preds = %cond_197_case_1.i.2, %cond_208_case_1.i.2, %__hugr__.const_fun_242.211.exit.1
-  %.fca.0.extract13.i.3 = extractvalue { i1, { i1, i64, i1 } } %.elt410, 0
+  %43 = add i64 %.fca.1.extract93, 3
+  %44 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %43
+  %45 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %44, align 4
+  %.fca.0.extract13.i.3 = extractvalue { i1, { i1, i64, i1 } } %45, 0
   br i1 %.fca.0.extract13.i.3, label %cond_208_case_1.i.3, label %__hugr__.const_fun_242.211.exit.3
 
 cond_208_case_1.i.3:                              ; preds = %__hugr__.const_fun_242.211.exit.2
-  %24 = extractvalue { i1, { i1, i64, i1 } } %.elt410, 1
-  %.fca.0.extract.i424.3 = extractvalue { i1, i64, i1 } %24, 0
-  br i1 %.fca.0.extract.i424.3, label %cond_197_case_1.i.3, label %__hugr__.const_fun_242.211.exit.3
+  %46 = extractvalue { i1, { i1, i64, i1 } } %45, 1
+  %.fca.0.extract.i201.3 = extractvalue { i1, i64, i1 } %46, 0
+  br i1 %.fca.0.extract.i201.3, label %cond_197_case_1.i.3, label %__hugr__.const_fun_242.211.exit.3
 
 cond_197_case_1.i.3:                              ; preds = %cond_208_case_1.i.3
-  %.fca.1.extract.i425.3 = extractvalue { i1, i64, i1 } %24, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.3)
+  %.fca.1.extract.i202.3 = extractvalue { i1, i64, i1 } %46, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.3)
   br label %__hugr__.const_fun_242.211.exit.3
 
 __hugr__.const_fun_242.211.exit.3:                ; preds = %cond_197_case_1.i.3, %cond_208_case_1.i.3, %__hugr__.const_fun_242.211.exit.2
-  %.fca.0.extract13.i.4 = extractvalue { i1, { i1, i64, i1 } } %.elt412, 0
+  %47 = add i64 %.fca.1.extract93, 4
+  %48 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %47
+  %49 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %48, align 4
+  %.fca.0.extract13.i.4 = extractvalue { i1, { i1, i64, i1 } } %49, 0
   br i1 %.fca.0.extract13.i.4, label %cond_208_case_1.i.4, label %__hugr__.const_fun_242.211.exit.4
 
 cond_208_case_1.i.4:                              ; preds = %__hugr__.const_fun_242.211.exit.3
-  %25 = extractvalue { i1, { i1, i64, i1 } } %.elt412, 1
-  %.fca.0.extract.i424.4 = extractvalue { i1, i64, i1 } %25, 0
-  br i1 %.fca.0.extract.i424.4, label %cond_197_case_1.i.4, label %__hugr__.const_fun_242.211.exit.4
+  %50 = extractvalue { i1, { i1, i64, i1 } } %49, 1
+  %.fca.0.extract.i201.4 = extractvalue { i1, i64, i1 } %50, 0
+  br i1 %.fca.0.extract.i201.4, label %cond_197_case_1.i.4, label %__hugr__.const_fun_242.211.exit.4
 
 cond_197_case_1.i.4:                              ; preds = %cond_208_case_1.i.4
-  %.fca.1.extract.i425.4 = extractvalue { i1, i64, i1 } %25, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.4)
+  %.fca.1.extract.i202.4 = extractvalue { i1, i64, i1 } %50, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.4)
   br label %__hugr__.const_fun_242.211.exit.4
 
 __hugr__.const_fun_242.211.exit.4:                ; preds = %cond_197_case_1.i.4, %cond_208_case_1.i.4, %__hugr__.const_fun_242.211.exit.3
-  %.fca.0.extract13.i.5 = extractvalue { i1, { i1, i64, i1 } } %.elt414, 0
+  %51 = add i64 %.fca.1.extract93, 5
+  %52 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %51
+  %53 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %52, align 4
+  %.fca.0.extract13.i.5 = extractvalue { i1, { i1, i64, i1 } } %53, 0
   br i1 %.fca.0.extract13.i.5, label %cond_208_case_1.i.5, label %__hugr__.const_fun_242.211.exit.5
 
 cond_208_case_1.i.5:                              ; preds = %__hugr__.const_fun_242.211.exit.4
-  %26 = extractvalue { i1, { i1, i64, i1 } } %.elt414, 1
-  %.fca.0.extract.i424.5 = extractvalue { i1, i64, i1 } %26, 0
-  br i1 %.fca.0.extract.i424.5, label %cond_197_case_1.i.5, label %__hugr__.const_fun_242.211.exit.5
+  %54 = extractvalue { i1, { i1, i64, i1 } } %53, 1
+  %.fca.0.extract.i201.5 = extractvalue { i1, i64, i1 } %54, 0
+  br i1 %.fca.0.extract.i201.5, label %cond_197_case_1.i.5, label %__hugr__.const_fun_242.211.exit.5
 
 cond_197_case_1.i.5:                              ; preds = %cond_208_case_1.i.5
-  %.fca.1.extract.i425.5 = extractvalue { i1, i64, i1 } %26, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.5)
+  %.fca.1.extract.i202.5 = extractvalue { i1, i64, i1 } %54, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.5)
   br label %__hugr__.const_fun_242.211.exit.5
 
 __hugr__.const_fun_242.211.exit.5:                ; preds = %cond_197_case_1.i.5, %cond_208_case_1.i.5, %__hugr__.const_fun_242.211.exit.4
-  %.fca.0.extract13.i.6 = extractvalue { i1, { i1, i64, i1 } } %.elt416, 0
+  %55 = add i64 %.fca.1.extract93, 6
+  %56 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %55
+  %57 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %56, align 4
+  %.fca.0.extract13.i.6 = extractvalue { i1, { i1, i64, i1 } } %57, 0
   br i1 %.fca.0.extract13.i.6, label %cond_208_case_1.i.6, label %__hugr__.const_fun_242.211.exit.6
 
 cond_208_case_1.i.6:                              ; preds = %__hugr__.const_fun_242.211.exit.5
-  %27 = extractvalue { i1, { i1, i64, i1 } } %.elt416, 1
-  %.fca.0.extract.i424.6 = extractvalue { i1, i64, i1 } %27, 0
-  br i1 %.fca.0.extract.i424.6, label %cond_197_case_1.i.6, label %__hugr__.const_fun_242.211.exit.6
+  %58 = extractvalue { i1, { i1, i64, i1 } } %57, 1
+  %.fca.0.extract.i201.6 = extractvalue { i1, i64, i1 } %58, 0
+  br i1 %.fca.0.extract.i201.6, label %cond_197_case_1.i.6, label %__hugr__.const_fun_242.211.exit.6
 
 cond_197_case_1.i.6:                              ; preds = %cond_208_case_1.i.6
-  %.fca.1.extract.i425.6 = extractvalue { i1, i64, i1 } %27, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.6)
+  %.fca.1.extract.i202.6 = extractvalue { i1, i64, i1 } %58, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.6)
   br label %__hugr__.const_fun_242.211.exit.6
 
 __hugr__.const_fun_242.211.exit.6:                ; preds = %cond_197_case_1.i.6, %cond_208_case_1.i.6, %__hugr__.const_fun_242.211.exit.5
-  %.fca.0.extract13.i.7 = extractvalue { i1, { i1, i64, i1 } } %.elt418, 0
+  %59 = add i64 %.fca.1.extract93, 7
+  %60 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %59
+  %61 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %60, align 4
+  %.fca.0.extract13.i.7 = extractvalue { i1, { i1, i64, i1 } } %61, 0
   br i1 %.fca.0.extract13.i.7, label %cond_208_case_1.i.7, label %__hugr__.const_fun_242.211.exit.7
 
 cond_208_case_1.i.7:                              ; preds = %__hugr__.const_fun_242.211.exit.6
-  %28 = extractvalue { i1, { i1, i64, i1 } } %.elt418, 1
-  %.fca.0.extract.i424.7 = extractvalue { i1, i64, i1 } %28, 0
-  br i1 %.fca.0.extract.i424.7, label %cond_197_case_1.i.7, label %__hugr__.const_fun_242.211.exit.7
+  %62 = extractvalue { i1, { i1, i64, i1 } } %61, 1
+  %.fca.0.extract.i201.7 = extractvalue { i1, i64, i1 } %62, 0
+  br i1 %.fca.0.extract.i201.7, label %cond_197_case_1.i.7, label %__hugr__.const_fun_242.211.exit.7
 
 cond_197_case_1.i.7:                              ; preds = %cond_208_case_1.i.7
-  %.fca.1.extract.i425.7 = extractvalue { i1, i64, i1 } %28, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.7)
+  %.fca.1.extract.i202.7 = extractvalue { i1, i64, i1 } %62, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.7)
   br label %__hugr__.const_fun_242.211.exit.7
 
 __hugr__.const_fun_242.211.exit.7:                ; preds = %cond_197_case_1.i.7, %cond_208_case_1.i.7, %__hugr__.const_fun_242.211.exit.6
-  %.fca.0.extract13.i.8 = extractvalue { i1, { i1, i64, i1 } } %.elt420, 0
+  %63 = add i64 %.fca.1.extract93, 8
+  %64 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %63
+  %65 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %64, align 4
+  %.fca.0.extract13.i.8 = extractvalue { i1, { i1, i64, i1 } } %65, 0
   br i1 %.fca.0.extract13.i.8, label %cond_208_case_1.i.8, label %__hugr__.const_fun_242.211.exit.8
 
 cond_208_case_1.i.8:                              ; preds = %__hugr__.const_fun_242.211.exit.7
-  %29 = extractvalue { i1, { i1, i64, i1 } } %.elt420, 1
-  %.fca.0.extract.i424.8 = extractvalue { i1, i64, i1 } %29, 0
-  br i1 %.fca.0.extract.i424.8, label %cond_197_case_1.i.8, label %__hugr__.const_fun_242.211.exit.8
+  %66 = extractvalue { i1, { i1, i64, i1 } } %65, 1
+  %.fca.0.extract.i201.8 = extractvalue { i1, i64, i1 } %66, 0
+  br i1 %.fca.0.extract.i201.8, label %cond_197_case_1.i.8, label %__hugr__.const_fun_242.211.exit.8
 
 cond_197_case_1.i.8:                              ; preds = %cond_208_case_1.i.8
-  %.fca.1.extract.i425.8 = extractvalue { i1, i64, i1 } %29, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.8)
+  %.fca.1.extract.i202.8 = extractvalue { i1, i64, i1 } %66, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.8)
   br label %__hugr__.const_fun_242.211.exit.8
 
 __hugr__.const_fun_242.211.exit.8:                ; preds = %cond_197_case_1.i.8, %cond_208_case_1.i.8, %__hugr__.const_fun_242.211.exit.7
-  %.fca.0.extract13.i.9 = extractvalue { i1, { i1, i64, i1 } } %.elt422, 0
+  %67 = add i64 %.fca.1.extract93, 9
+  %68 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %67
+  %69 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %68, align 4
+  %.fca.0.extract13.i.9 = extractvalue { i1, { i1, i64, i1 } } %69, 0
   br i1 %.fca.0.extract13.i.9, label %cond_208_case_1.i.9, label %__hugr__.const_fun_242.211.exit.9
 
 cond_208_case_1.i.9:                              ; preds = %__hugr__.const_fun_242.211.exit.8
-  %30 = extractvalue { i1, { i1, i64, i1 } } %.elt422, 1
-  %.fca.0.extract.i424.9 = extractvalue { i1, i64, i1 } %30, 0
-  br i1 %.fca.0.extract.i424.9, label %cond_197_case_1.i.9, label %__hugr__.const_fun_242.211.exit.9
+  %70 = extractvalue { i1, { i1, i64, i1 } } %69, 1
+  %.fca.0.extract.i201.9 = extractvalue { i1, i64, i1 } %70, 0
+  br i1 %.fca.0.extract.i201.9, label %cond_197_case_1.i.9, label %__hugr__.const_fun_242.211.exit.9
 
 cond_197_case_1.i.9:                              ; preds = %cond_208_case_1.i.9
-  %.fca.1.extract.i425.9 = extractvalue { i1, i64, i1 } %30, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i425.9)
+  %.fca.1.extract.i202.9 = extractvalue { i1, i64, i1 } %70, 1
+  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.9)
   br label %__hugr__.const_fun_242.211.exit.9
 
 __hugr__.const_fun_242.211.exit.9:                ; preds = %cond_197_case_1.i.9, %cond_208_case_1.i.9, %__hugr__.const_fun_242.211.exit.8
+  %71 = bitcast { i1, { i1, i64, i1 } }* %.fca.0.extract92 to i8*
+  call void @free(i8* %71)
   ret void
 }
 
@@ -280,6 +359,9 @@ define { i1, i64 } @"__hugr__.$array.__comprehension.init.6$$t(qubit).301"() loc
 alloca_block:
   ret { i1, i64 } { i1 false, i64 poison }
 }
+
+; Function Attrs: inaccessiblememonly mustprogress nofree nounwind willreturn
+declare noalias noundef i8* @malloc(i64 noundef) local_unnamed_addr #1
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
 define { i1, { { i64, i64 }, i64 } } @__hugr__.__next__.79({ i64, i64 } %0) local_unnamed_addr #0 {
@@ -297,12 +379,12 @@ alloca_block:
 
 define i64 @__hugr__.__tk2_qalloc.283() local_unnamed_addr {
 alloca_block:
-  %qalloc = tail call i64 @___qalloc()
+  %qalloc = call i64 @___qalloc()
   %not_max.not = icmp eq i64 %qalloc, -1
   br i1 %not_max.not, label %id_bb, label %reset_bb
 
 reset_bb:                                         ; preds = %alloca_block
-  tail call void @___reset(i64 %qalloc)
+  call void @___reset(i64 %qalloc)
   br label %id_bb
 
 id_bb:                                            ; preds = %alloca_block, %reset_bb
@@ -316,498 +398,170 @@ cond_279_case_1:                                  ; preds = %id_bb
   ret i64 %.fca.1.extract
 
 cond_279_case_0:                                  ; preds = %id_bb
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
+  call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
   unreachable
 }
 
-define [10 x { i1, i64 }] @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"([10 x { i1, i64 }] %0, i64 %1, i64 %2) local_unnamed_addr {
+define { { i1, i64 }*, i64 } @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"({ { i1, i64 }*, i64 } returned %0, i64 %1, i64 %2) local_unnamed_addr {
 alloca_block:
   %3 = icmp ult i64 %1, 10
+  br i1 %3, label %4, label %9
+
+4:                                                ; preds = %alloca_block
+  %"308_05.fca.1.insert" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %2, 1
+  %.fca.1.extract56 = extractvalue { { i1, i64 }*, i64 } %0, 1
+  %.fca.0.extract55 = extractvalue { { i1, i64 }*, i64 } %0, 0
+  %5 = add i64 %.fca.1.extract56, %1
+  %6 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract55, i64 %5
+  %7 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %6, i64 0, i32 0
+  %8 = load i1, i1* %7, align 1
+  store { i1, i64 } %"308_05.fca.1.insert", { i1, i64 }* %6, align 4
+  br label %9
+
+9:                                                ; preds = %alloca_block, %4
+  %"06.sroa.9.0" = phi i1 [ %8, %4 ], [ true, %alloca_block ]
   br i1 %3, label %cond_311_case_1, label %cond_311_case_0
 
-cond_311_case_0:                                  ; preds = %alloca_block
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+cond_311_case_0:                                  ; preds = %9
+  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
   unreachable
 
-cond_311_case_1:                                  ; preds = %alloca_block
-  %"308_05.fca.1.insert" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %2, 1
-  %4 = alloca [10 x { i1, i64 }], align 8
-  %.repack = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 0
-  %.elt = extractvalue [10 x { i1, i64 }] %0, 0
-  store { i1, i64 } %.elt, { i1, i64 }* %.repack, align 8
-  %.repack129 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 1
-  %.elt130 = extractvalue [10 x { i1, i64 }] %0, 1
-  store { i1, i64 } %.elt130, { i1, i64 }* %.repack129, align 8
-  %.repack131 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 2
-  %.elt132 = extractvalue [10 x { i1, i64 }] %0, 2
-  store { i1, i64 } %.elt132, { i1, i64 }* %.repack131, align 8
-  %.repack133 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 3
-  %.elt134 = extractvalue [10 x { i1, i64 }] %0, 3
-  store { i1, i64 } %.elt134, { i1, i64 }* %.repack133, align 8
-  %.repack135 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 4
-  %.elt136 = extractvalue [10 x { i1, i64 }] %0, 4
-  store { i1, i64 } %.elt136, { i1, i64 }* %.repack135, align 8
-  %.repack137 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 5
-  %.elt138 = extractvalue [10 x { i1, i64 }] %0, 5
-  store { i1, i64 } %.elt138, { i1, i64 }* %.repack137, align 8
-  %.repack139 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 6
-  %.elt140 = extractvalue [10 x { i1, i64 }] %0, 6
-  store { i1, i64 } %.elt140, { i1, i64 }* %.repack139, align 8
-  %.repack141 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 7
-  %.elt142 = extractvalue [10 x { i1, i64 }] %0, 7
-  store { i1, i64 } %.elt142, { i1, i64 }* %.repack141, align 8
-  %.repack143 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 8
-  %.elt144 = extractvalue [10 x { i1, i64 }] %0, 8
-  store { i1, i64 } %.elt144, { i1, i64 }* %.repack143, align 8
-  %.repack145 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 9
-  %.elt146 = extractvalue [10 x { i1, i64 }] %0, 9
-  store { i1, i64 } %.elt146, { i1, i64 }* %.repack145, align 8
-  %5 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %4, i64 0, i64 %1
-  %6 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %5, i64 0, i32 0
-  %7 = load i1, i1* %6, align 8
-  store { i1, i64 } %"308_05.fca.1.insert", { i1, i64 }* %5, align 8
-  %.unpack = load { i1, i64 }, { i1, i64 }* %.repack, align 8
-  %.unpack149 = load { i1, i64 }, { i1, i64 }* %.repack129, align 8
-  %.unpack151 = load { i1, i64 }, { i1, i64 }* %.repack131, align 8
-  %.unpack153 = load { i1, i64 }, { i1, i64 }* %.repack133, align 8
-  %.unpack155 = load { i1, i64 }, { i1, i64 }* %.repack135, align 8
-  %.unpack157 = load { i1, i64 }, { i1, i64 }* %.repack137, align 8
-  %.unpack159 = load { i1, i64 }, { i1, i64 }* %.repack139, align 8
-  %.unpack161 = load { i1, i64 }, { i1, i64 }* %.repack141, align 8
-  %.unpack163 = load { i1, i64 }, { i1, i64 }* %.repack143, align 8
-  %.unpack165 = load { i1, i64 }, { i1, i64 }* %.repack145, align 8
-  br i1 %7, label %cond_321_case_1, label %cond_exit_321
+cond_311_case_1:                                  ; preds = %9
+  br i1 %"06.sroa.9.0", label %cond_321_case_1, label %cond_exit_321
 
 cond_321_case_1:                                  ; preds = %cond_311_case_1
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
 cond_exit_321:                                    ; preds = %cond_311_case_1
-  %.fca.2.9.1.extract = extractvalue { i1, i64 } %.unpack165, 1
-  %.fca.2.9.0.extract = extractvalue { i1, i64 } %.unpack165, 0
-  %.fca.2.8.1.extract = extractvalue { i1, i64 } %.unpack163, 1
-  %.fca.2.8.0.extract = extractvalue { i1, i64 } %.unpack163, 0
-  %.fca.2.7.1.extract = extractvalue { i1, i64 } %.unpack161, 1
-  %.fca.2.7.0.extract = extractvalue { i1, i64 } %.unpack161, 0
-  %.fca.2.6.1.extract = extractvalue { i1, i64 } %.unpack159, 1
-  %.fca.2.6.0.extract = extractvalue { i1, i64 } %.unpack159, 0
-  %.fca.2.5.1.extract = extractvalue { i1, i64 } %.unpack157, 1
-  %.fca.2.5.0.extract = extractvalue { i1, i64 } %.unpack157, 0
-  %.fca.2.4.1.extract = extractvalue { i1, i64 } %.unpack155, 1
-  %.fca.2.4.0.extract = extractvalue { i1, i64 } %.unpack155, 0
-  %.fca.2.3.1.extract = extractvalue { i1, i64 } %.unpack153, 1
-  %.fca.2.3.0.extract = extractvalue { i1, i64 } %.unpack153, 0
-  %.fca.2.2.1.extract = extractvalue { i1, i64 } %.unpack151, 1
-  %.fca.2.2.0.extract = extractvalue { i1, i64 } %.unpack151, 0
-  %.fca.2.1.1.extract = extractvalue { i1, i64 } %.unpack149, 1
-  %.fca.2.1.0.extract = extractvalue { i1, i64 } %.unpack149, 0
-  %.fca.2.0.1.extract = extractvalue { i1, i64 } %.unpack, 1
-  %.fca.2.0.0.extract = extractvalue { i1, i64 } %.unpack, 0
-  %8 = insertvalue [10 x { i1, i64 }] poison, i1 %.fca.2.0.0.extract, 0, 0
-  %9 = insertvalue [10 x { i1, i64 }] %8, i64 %.fca.2.0.1.extract, 0, 1
-  %10 = insertvalue [10 x { i1, i64 }] %9, i1 %.fca.2.1.0.extract, 1, 0
-  %11 = insertvalue [10 x { i1, i64 }] %10, i64 %.fca.2.1.1.extract, 1, 1
-  %12 = insertvalue [10 x { i1, i64 }] %11, i1 %.fca.2.2.0.extract, 2, 0
-  %13 = insertvalue [10 x { i1, i64 }] %12, i64 %.fca.2.2.1.extract, 2, 1
-  %14 = insertvalue [10 x { i1, i64 }] %13, i1 %.fca.2.3.0.extract, 3, 0
-  %15 = insertvalue [10 x { i1, i64 }] %14, i64 %.fca.2.3.1.extract, 3, 1
-  %16 = insertvalue [10 x { i1, i64 }] %15, i1 %.fca.2.4.0.extract, 4, 0
-  %17 = insertvalue [10 x { i1, i64 }] %16, i64 %.fca.2.4.1.extract, 4, 1
-  %18 = insertvalue [10 x { i1, i64 }] %17, i1 %.fca.2.5.0.extract, 5, 0
-  %19 = insertvalue [10 x { i1, i64 }] %18, i64 %.fca.2.5.1.extract, 5, 1
-  %20 = insertvalue [10 x { i1, i64 }] %19, i1 %.fca.2.6.0.extract, 6, 0
-  %21 = insertvalue [10 x { i1, i64 }] %20, i64 %.fca.2.6.1.extract, 6, 1
-  %22 = insertvalue [10 x { i1, i64 }] %21, i1 %.fca.2.7.0.extract, 7, 0
-  %23 = insertvalue [10 x { i1, i64 }] %22, i64 %.fca.2.7.1.extract, 7, 1
-  %24 = insertvalue [10 x { i1, i64 }] %23, i1 %.fca.2.8.0.extract, 8, 0
-  %25 = insertvalue [10 x { i1, i64 }] %24, i64 %.fca.2.8.1.extract, 8, 1
-  %26 = insertvalue [10 x { i1, i64 }] %25, i1 %.fca.2.9.0.extract, 9, 0
-  %27 = insertvalue [10 x { i1, i64 }] %26, i64 %.fca.2.9.1.extract, 9, 1
-  ret [10 x { i1, i64 }] %27
+  ret { { i1, i64 }*, i64 } %0
 }
 
-define { i64, [10 x { i1, i64 }] } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"([10 x { i1, i64 }] %0, i64 %1) local_unnamed_addr {
+define { i64, { { i1, i64 }*, i64 } } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"({ { i1, i64 }*, i64 } %0, i64 %1) local_unnamed_addr {
 alloca_block:
   %2 = icmp ult i64 %1, 10
+  br i1 %2, label %3, label %8
+
+3:                                                ; preds = %alloca_block
+  %.fca.1.extract60 = extractvalue { { i1, i64 }*, i64 } %0, 1
+  %.fca.0.extract59 = extractvalue { { i1, i64 }*, i64 } %0, 0
+  %4 = add i64 %.fca.1.extract60, %1
+  %5 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract59, i64 %4
+  %6 = load { i1, i64 }, { i1, i64 }* %5, align 4
+  %7 = bitcast { i1, i64 }* %5 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %7, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract = extractvalue { i1, i64 } %6, 0
+  %.fca.2.1.extract = extractvalue { i1, i64 } %6, 1
+  br label %8
+
+8:                                                ; preds = %alloca_block, %3
+  %"05.sroa.9.0" = phi i1 [ %.fca.2.0.extract, %3 ], [ false, %alloca_block ]
+  %"05.sroa.12.0" = phi i64 [ %.fca.2.1.extract, %3 ], [ poison, %alloca_block ]
   br i1 %2, label %cond_337_case_1, label %cond_337_case_0
 
-cond_337_case_0:                                  ; preds = %alloca_block
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+cond_337_case_0:                                  ; preds = %8
+  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
   unreachable
 
-cond_337_case_1:                                  ; preds = %alloca_block
-  %3 = alloca [10 x { i1, i64 }], align 8
-  %.repack = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 0
-  %.elt = extractvalue [10 x { i1, i64 }] %0, 0
-  store { i1, i64 } %.elt, { i1, i64 }* %.repack, align 8
-  %.repack133 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 1
-  %.elt134 = extractvalue [10 x { i1, i64 }] %0, 1
-  store { i1, i64 } %.elt134, { i1, i64 }* %.repack133, align 8
-  %.repack135 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 2
-  %.elt136 = extractvalue [10 x { i1, i64 }] %0, 2
-  store { i1, i64 } %.elt136, { i1, i64 }* %.repack135, align 8
-  %.repack137 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 3
-  %.elt138 = extractvalue [10 x { i1, i64 }] %0, 3
-  store { i1, i64 } %.elt138, { i1, i64 }* %.repack137, align 8
-  %.repack139 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 4
-  %.elt140 = extractvalue [10 x { i1, i64 }] %0, 4
-  store { i1, i64 } %.elt140, { i1, i64 }* %.repack139, align 8
-  %.repack141 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 5
-  %.elt142 = extractvalue [10 x { i1, i64 }] %0, 5
-  store { i1, i64 } %.elt142, { i1, i64 }* %.repack141, align 8
-  %.repack143 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 6
-  %.elt144 = extractvalue [10 x { i1, i64 }] %0, 6
-  store { i1, i64 } %.elt144, { i1, i64 }* %.repack143, align 8
-  %.repack145 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 7
-  %.elt146 = extractvalue [10 x { i1, i64 }] %0, 7
-  store { i1, i64 } %.elt146, { i1, i64 }* %.repack145, align 8
-  %.repack147 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 8
-  %.elt148 = extractvalue [10 x { i1, i64 }] %0, 8
-  store { i1, i64 } %.elt148, { i1, i64 }* %.repack147, align 8
-  %.repack149 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 9
-  %.elt150 = extractvalue [10 x { i1, i64 }] %0, 9
-  store { i1, i64 } %.elt150, { i1, i64 }* %.repack149, align 8
-  %4 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 %1
-  %5 = load { i1, i64 }, { i1, i64 }* %4, align 8
-  %6 = bitcast { i1, i64 }* %4 to i8*
-  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 8 dereferenceable(16) %6, i8 0, i64 16, i1 false)
-  %.unpack = load { i1, i64 }, { i1, i64 }* %.repack, align 8
-  %.unpack153 = load { i1, i64 }, { i1, i64 }* %.repack133, align 8
-  %.unpack155 = load { i1, i64 }, { i1, i64 }* %.repack135, align 8
-  %.unpack157 = load { i1, i64 }, { i1, i64 }* %.repack137, align 8
-  %.unpack159 = load { i1, i64 }, { i1, i64 }* %.repack139, align 8
-  %.unpack161 = load { i1, i64 }, { i1, i64 }* %.repack141, align 8
-  %.unpack163 = load { i1, i64 }, { i1, i64 }* %.repack143, align 8
-  %.unpack165 = load { i1, i64 }, { i1, i64 }* %.repack145, align 8
-  %.unpack167 = load { i1, i64 }, { i1, i64 }* %.repack147, align 8
-  %.unpack169 = load { i1, i64 }, { i1, i64 }* %.repack149, align 8
-  %.fca.1.0.extract65 = extractvalue { i1, i64 } %5, 0
-  br i1 %.fca.1.0.extract65, label %cond_347_case_1, label %cond_347_case_0
+cond_337_case_1:                                  ; preds = %8
+  br i1 %"05.sroa.9.0", label %cond_347_case_1, label %cond_347_case_0
 
 cond_347_case_1:                                  ; preds = %cond_337_case_1
-  %.fca.2.9.1.extract = extractvalue { i1, i64 } %.unpack169, 1
-  %.fca.2.9.0.extract = extractvalue { i1, i64 } %.unpack169, 0
-  %.fca.2.8.1.extract = extractvalue { i1, i64 } %.unpack167, 1
-  %.fca.2.8.0.extract = extractvalue { i1, i64 } %.unpack167, 0
-  %.fca.2.7.1.extract = extractvalue { i1, i64 } %.unpack165, 1
-  %.fca.2.7.0.extract = extractvalue { i1, i64 } %.unpack165, 0
-  %.fca.2.6.1.extract = extractvalue { i1, i64 } %.unpack163, 1
-  %.fca.2.6.0.extract = extractvalue { i1, i64 } %.unpack163, 0
-  %.fca.2.5.1.extract = extractvalue { i1, i64 } %.unpack161, 1
-  %.fca.2.5.0.extract = extractvalue { i1, i64 } %.unpack161, 0
-  %.fca.2.4.1.extract = extractvalue { i1, i64 } %.unpack159, 1
-  %.fca.2.4.0.extract = extractvalue { i1, i64 } %.unpack159, 0
-  %.fca.2.3.1.extract = extractvalue { i1, i64 } %.unpack157, 1
-  %.fca.2.3.0.extract = extractvalue { i1, i64 } %.unpack157, 0
-  %.fca.2.2.1.extract = extractvalue { i1, i64 } %.unpack155, 1
-  %.fca.2.2.0.extract = extractvalue { i1, i64 } %.unpack155, 0
-  %.fca.2.1.1.extract = extractvalue { i1, i64 } %.unpack153, 1
-  %.fca.2.1.0.extract = extractvalue { i1, i64 } %.unpack153, 0
-  %.fca.2.0.1.extract = extractvalue { i1, i64 } %.unpack, 1
-  %.fca.2.0.0.extract = extractvalue { i1, i64 } %.unpack, 0
-  %.fca.1.1.extract66 = extractvalue { i1, i64 } %5, 1
-  %7 = insertvalue [10 x { i1, i64 }] poison, i1 %.fca.2.0.0.extract, 0, 0
-  %8 = insertvalue [10 x { i1, i64 }] %7, i64 %.fca.2.0.1.extract, 0, 1
-  %9 = insertvalue [10 x { i1, i64 }] %8, i1 %.fca.2.1.0.extract, 1, 0
-  %10 = insertvalue [10 x { i1, i64 }] %9, i64 %.fca.2.1.1.extract, 1, 1
-  %11 = insertvalue [10 x { i1, i64 }] %10, i1 %.fca.2.2.0.extract, 2, 0
-  %12 = insertvalue [10 x { i1, i64 }] %11, i64 %.fca.2.2.1.extract, 2, 1
-  %13 = insertvalue [10 x { i1, i64 }] %12, i1 %.fca.2.3.0.extract, 3, 0
-  %14 = insertvalue [10 x { i1, i64 }] %13, i64 %.fca.2.3.1.extract, 3, 1
-  %15 = insertvalue [10 x { i1, i64 }] %14, i1 %.fca.2.4.0.extract, 4, 0
-  %16 = insertvalue [10 x { i1, i64 }] %15, i64 %.fca.2.4.1.extract, 4, 1
-  %17 = insertvalue [10 x { i1, i64 }] %16, i1 %.fca.2.5.0.extract, 5, 0
-  %18 = insertvalue [10 x { i1, i64 }] %17, i64 %.fca.2.5.1.extract, 5, 1
-  %19 = insertvalue [10 x { i1, i64 }] %18, i1 %.fca.2.6.0.extract, 6, 0
-  %20 = insertvalue [10 x { i1, i64 }] %19, i64 %.fca.2.6.1.extract, 6, 1
-  %21 = insertvalue [10 x { i1, i64 }] %20, i1 %.fca.2.7.0.extract, 7, 0
-  %22 = insertvalue [10 x { i1, i64 }] %21, i64 %.fca.2.7.1.extract, 7, 1
-  %23 = insertvalue [10 x { i1, i64 }] %22, i1 %.fca.2.8.0.extract, 8, 0
-  %24 = insertvalue [10 x { i1, i64 }] %23, i64 %.fca.2.8.1.extract, 8, 1
-  %25 = insertvalue [10 x { i1, i64 }] %24, i1 %.fca.2.9.0.extract, 9, 0
-  %26 = insertvalue [10 x { i1, i64 }] %25, i64 %.fca.2.9.1.extract, 9, 1
-  %mrv = insertvalue { i64, [10 x { i1, i64 }] } undef, i64 %.fca.1.1.extract66, 0
-  %mrv40 = insertvalue { i64, [10 x { i1, i64 }] } %mrv, [10 x { i1, i64 }] %26, 1
-  ret { i64, [10 x { i1, i64 }] } %mrv40
+  %mrv = insertvalue { i64, { { i1, i64 }*, i64 } } undef, i64 %"05.sroa.12.0", 0
+  %mrv40 = insertvalue { i64, { { i1, i64 }*, i64 } } %mrv, { { i1, i64 }*, i64 } %0, 1
+  ret { i64, { { i1, i64 }*, i64 } } %mrv40
 
 cond_347_case_0:                                  ; preds = %cond_337_case_1
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 }
 
 define i64 @__hugr__.__tk2_x.270(i64 returned %0) local_unnamed_addr {
 alloca_block:
-  tail call void @___rxy(i64 %0, double 0x400921FB54442D18, double 0.000000e+00)
+  call void @___rxy(i64 %0, double 0x400921FB54442D18, double 0.000000e+00)
   ret i64 %0
 }
 
-define [10 x { i1, { i1, i64, i1 } }] @"__hugr__.$measure_array$$n(10).359"([10 x { i1, i64 }] %0) local_unnamed_addr {
+define { { i1, { i1, i64, i1 } }*, i64 } @"__hugr__.$measure_array$$n(10).359"({ { i1, i64 }*, i64 } %0) local_unnamed_addr {
 alloca_block:
-  %1 = tail call { i64, [10 x { i1, i64 }] } @"__hugr__.$__iter__$$t(qubit)$n(10).375"([10 x { i1, i64 }] %0)
-  %2 = tail call { i1, { { i64, [10 x { i1, i64 }] }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ i64, [10 x { i1, i64 }] } %1)
-  %.fca.0.extract196659 = extractvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %2, 0
-  br i1 %.fca.0.extract196659, label %loop_body, label %loop_out
+  %1 = call dereferenceable_or_null(320) i8* @malloc(i64 320)
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(320) %1, i8 0, i64 320, i1 false)
+  %2 = insertvalue { { { i1, i64 }*, i64 }, i64 } poison, { { i1, i64 }*, i64 } %0, 0
+  %3 = bitcast i8* %1 to { i1, { i1, i64, i1 } }*
+  br label %loop_body
 
-loop_body:                                        ; preds = %alloca_block, %loop_body
-  %3 = phi { i1, { { i64, [10 x { i1, i64 }] }, i64 } } [ %8, %loop_body ], [ %2, %alloca_block ]
-  %"390_1.sroa.195.0700" = phi i1 [ %.fca.9.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.190.0699" = phi i64 [ %.fca.9.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.185.0698" = phi i1 [ %.fca.9.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.180.0697" = phi i1 [ %.fca.9.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.175.0696" = phi i1 [ %.fca.8.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.170.0695" = phi i64 [ %.fca.8.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.165.0694" = phi i1 [ %.fca.8.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.160.0693" = phi i1 [ %.fca.8.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.155.0692" = phi i1 [ %.fca.7.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.150.0691" = phi i64 [ %.fca.7.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.145.0690" = phi i1 [ %.fca.7.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.140.0689" = phi i1 [ %.fca.7.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.135.0688" = phi i1 [ %.fca.6.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.130.0687" = phi i64 [ %.fca.6.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.125.0686" = phi i1 [ %.fca.6.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.120.0685" = phi i1 [ %.fca.6.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.115.0684" = phi i1 [ %.fca.5.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.110.0683" = phi i64 [ %.fca.5.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.105.0682" = phi i1 [ %.fca.5.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.100.0681" = phi i1 [ %.fca.5.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.95.0680" = phi i1 [ %.fca.4.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.90.0679" = phi i64 [ %.fca.4.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.85.0678" = phi i1 [ %.fca.4.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.80.0677" = phi i1 [ %.fca.4.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.75.0676" = phi i1 [ %.fca.3.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.70.0675" = phi i64 [ %.fca.3.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.65.0674" = phi i1 [ %.fca.3.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.60.0673" = phi i1 [ %.fca.3.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.55.0672" = phi i1 [ %.fca.2.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.50.0671" = phi i64 [ %.fca.2.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.45.0670" = phi i1 [ %.fca.2.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.40.0669" = phi i1 [ %.fca.2.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.35.0668" = phi i1 [ %.fca.1.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.30.0667" = phi i64 [ %.fca.1.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.25.0666" = phi i1 [ %.fca.1.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.20.0665" = phi i1 [ %.fca.1.0.extract74, %loop_body ], [ false, %alloca_block ]
-  %"390_1.sroa.15.0664" = phi i1 [ %.fca.0.1.2.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.10.0663" = phi i64 [ %.fca.0.1.1.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.5.0662" = phi i1 [ %.fca.0.1.0.extract, %loop_body ], [ undef, %alloca_block ]
-  %"390_1.sroa.0.0661" = phi i1 [ %.fca.0.0.extract, %loop_body ], [ false, %alloca_block ]
-  %"390_2.0660" = phi i64 [ %5, %loop_body ], [ 0, %alloca_block ]
-  %"390_113.fca.0.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] poison, i1 %"390_1.sroa.0.0661", 0, 0
-  %"390_113.fca.0.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.0.0.insert", i1 %"390_1.sroa.5.0662", 0, 1, 0
-  %"390_113.fca.0.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.0.1.0.insert", i64 %"390_1.sroa.10.0663", 0, 1, 1
-  %"390_113.fca.0.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.0.1.1.insert", i1 %"390_1.sroa.15.0664", 0, 1, 2
-  %"390_113.fca.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.0.1.2.insert", i1 %"390_1.sroa.20.0665", 1, 0
-  %"390_113.fca.1.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.1.0.insert", i1 %"390_1.sroa.25.0666", 1, 1, 0
-  %"390_113.fca.1.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.1.1.0.insert", i64 %"390_1.sroa.30.0667", 1, 1, 1
-  %"390_113.fca.1.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.1.1.1.insert", i1 %"390_1.sroa.35.0668", 1, 1, 2
-  %"390_113.fca.2.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.1.1.2.insert", i1 %"390_1.sroa.40.0669", 2, 0
-  %"390_113.fca.2.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.2.0.insert", i1 %"390_1.sroa.45.0670", 2, 1, 0
-  %"390_113.fca.2.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.2.1.0.insert", i64 %"390_1.sroa.50.0671", 2, 1, 1
-  %"390_113.fca.2.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.2.1.1.insert", i1 %"390_1.sroa.55.0672", 2, 1, 2
-  %"390_113.fca.3.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.2.1.2.insert", i1 %"390_1.sroa.60.0673", 3, 0
-  %"390_113.fca.3.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.3.0.insert", i1 %"390_1.sroa.65.0674", 3, 1, 0
-  %"390_113.fca.3.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.3.1.0.insert", i64 %"390_1.sroa.70.0675", 3, 1, 1
-  %"390_113.fca.3.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.3.1.1.insert", i1 %"390_1.sroa.75.0676", 3, 1, 2
-  %"390_113.fca.4.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.3.1.2.insert", i1 %"390_1.sroa.80.0677", 4, 0
-  %"390_113.fca.4.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.4.0.insert", i1 %"390_1.sroa.85.0678", 4, 1, 0
-  %"390_113.fca.4.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.4.1.0.insert", i64 %"390_1.sroa.90.0679", 4, 1, 1
-  %"390_113.fca.4.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.4.1.1.insert", i1 %"390_1.sroa.95.0680", 4, 1, 2
-  %"390_113.fca.5.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.4.1.2.insert", i1 %"390_1.sroa.100.0681", 5, 0
-  %"390_113.fca.5.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.5.0.insert", i1 %"390_1.sroa.105.0682", 5, 1, 0
-  %"390_113.fca.5.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.5.1.0.insert", i64 %"390_1.sroa.110.0683", 5, 1, 1
-  %"390_113.fca.5.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.5.1.1.insert", i1 %"390_1.sroa.115.0684", 5, 1, 2
-  %"390_113.fca.6.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.5.1.2.insert", i1 %"390_1.sroa.120.0685", 6, 0
-  %"390_113.fca.6.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.6.0.insert", i1 %"390_1.sroa.125.0686", 6, 1, 0
-  %"390_113.fca.6.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.6.1.0.insert", i64 %"390_1.sroa.130.0687", 6, 1, 1
-  %"390_113.fca.6.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.6.1.1.insert", i1 %"390_1.sroa.135.0688", 6, 1, 2
-  %"390_113.fca.7.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.6.1.2.insert", i1 %"390_1.sroa.140.0689", 7, 0
-  %"390_113.fca.7.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.7.0.insert", i1 %"390_1.sroa.145.0690", 7, 1, 0
-  %"390_113.fca.7.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.7.1.0.insert", i64 %"390_1.sroa.150.0691", 7, 1, 1
-  %"390_113.fca.7.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.7.1.1.insert", i1 %"390_1.sroa.155.0692", 7, 1, 2
-  %"390_113.fca.8.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.7.1.2.insert", i1 %"390_1.sroa.160.0693", 8, 0
-  %"390_113.fca.8.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.8.0.insert", i1 %"390_1.sroa.165.0694", 8, 1, 0
-  %"390_113.fca.8.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.8.1.0.insert", i64 %"390_1.sroa.170.0695", 8, 1, 1
-  %"390_113.fca.8.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.8.1.1.insert", i1 %"390_1.sroa.175.0696", 8, 1, 2
-  %"390_113.fca.9.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.8.1.2.insert", i1 %"390_1.sroa.180.0697", 9, 0
-  %"390_113.fca.9.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.9.0.insert", i1 %"390_1.sroa.185.0698", 9, 1, 0
-  %"390_113.fca.9.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.9.1.0.insert", i64 %"390_1.sroa.190.0699", 9, 1, 1
-  %"390_113.fca.9.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"390_113.fca.9.1.1.insert", i1 %"390_1.sroa.195.0700", 9, 1, 2
-  %4 = extractvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %3, 1
-  %.fca.1.extract155 = extractvalue { { i64, [10 x { i1, i64 }] }, i64 } %4, 1
-  %5 = add i64 %"390_2.0660", 1
-  %6 = extractvalue { { i64, [10 x { i1, i64 }] }, i64 } %4, 0
-  %lazy_measure = tail call i64 @___lazy_measure(i64 %.fca.1.extract155)
-  tail call void @___qfree(i64 %.fca.1.extract155)
+loop_body:                                        ; preds = %alloca_block, %14
+  %"390_2.0" = phi i64 [ %"2.0", %14 ], [ 0, %alloca_block ]
+  %.pn131 = phi { { { i1, i64 }*, i64 }, i64 } [ %16, %14 ], [ %2, %alloca_block ]
+  %"390_0.sroa.10.0" = phi i64 [ %"022.sroa.9.0", %14 ], [ 0, %alloca_block ]
+  %"390_012.fca.1.insert" = insertvalue { { { i1, i64 }*, i64 }, i64 } %.pn131, i64 %"390_0.sroa.10.0", 1
+  %4 = call { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ { { i1, i64 }*, i64 }, i64 } %"390_012.fca.1.insert")
+  %.fca.0.extract95 = extractvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %4, 0
+  br i1 %.fca.0.extract95, label %cond_447_case_1, label %cond_exit_447
+
+cond_447_case_1:                                  ; preds = %loop_body
+  %5 = extractvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %4, 1
+  %.fca.1.extract92 = extractvalue { { { { i1, i64 }*, i64 }, i64 }, i64 } %5, 1
+  %6 = add i64 %"390_2.0", 1
+  %7 = extractvalue { { { { i1, i64 }*, i64 }, i64 }, i64 } %5, 0
+  %lazy_measure = call i64 @___lazy_measure(i64 %.fca.1.extract92)
+  call void @___qfree(i64 %.fca.1.extract92)
+  %8 = icmp ult i64 %"390_2.0", 10
+  br i1 %8, label %9, label %13
+
+9:                                                ; preds = %cond_447_case_1
   %"461_054.fca.1.insert" = insertvalue { i1, i64, i1 } { i1 true, i64 poison, i1 poison }, i64 %lazy_measure, 1
-  %7 = tail call [10 x { i1, { i1, i64, i1 } }] @"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463"([10 x { i1, { i1, i64, i1 } }] %"390_113.fca.9.1.2.insert", i64 %"390_2.0660", { i1, i64, i1 } %"461_054.fca.1.insert")
-  %.fca.0.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 0
-  %.fca.0.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 1, 0
-  %.fca.0.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 1, 1
-  %.fca.0.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 1, 2
-  %.fca.1.0.extract74 = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 0
-  %.fca.1.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 1, 0
-  %.fca.1.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 1, 1
-  %.fca.1.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 1, 2
-  %.fca.2.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 0
-  %.fca.2.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 1, 0
-  %.fca.2.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 1, 1
-  %.fca.2.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 1, 2
-  %.fca.3.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 0
-  %.fca.3.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 1, 0
-  %.fca.3.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 1, 1
-  %.fca.3.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 1, 2
-  %.fca.4.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 0
-  %.fca.4.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 1, 0
-  %.fca.4.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 1, 1
-  %.fca.4.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 1, 2
-  %.fca.5.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 0
-  %.fca.5.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 1, 0
-  %.fca.5.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 1, 1
-  %.fca.5.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 1, 2
-  %.fca.6.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 0
-  %.fca.6.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 1, 0
-  %.fca.6.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 1, 1
-  %.fca.6.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 1, 2
-  %.fca.7.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 0
-  %.fca.7.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 1, 0
-  %.fca.7.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 1, 1
-  %.fca.7.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 1, 2
-  %.fca.8.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 0
-  %.fca.8.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 1, 0
-  %.fca.8.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 1, 1
-  %.fca.8.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 1, 2
-  %.fca.9.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 0
-  %.fca.9.1.0.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 1, 0
-  %.fca.9.1.1.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 1, 1
-  %.fca.9.1.2.extract = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 1, 2
-  %8 = tail call { i1, { { i64, [10 x { i1, i64 }] }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ i64, [10 x { i1, i64 }] } %6)
-  %.fca.0.extract196 = extractvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %8, 0
-  br i1 %.fca.0.extract196, label %loop_body, label %loop_out.loopexit
+  %10 = insertvalue { i1, { i1, i64, i1 } } { i1 true, { i1, i64, i1 } poison }, { i1, i64, i1 } %"461_054.fca.1.insert", 1
+  %11 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %3, i64 %"390_2.0"
+  %12 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %11, align 4
+  store { i1, { i1, i64, i1 } } %10, { i1, { i1, i64, i1 } }* %11, align 4
+  %.fca.2.0.extract.i = extractvalue { i1, { i1, i64, i1 } } %12, 0
+  %.fca.2.1.0.extract.i = extractvalue { i1, { i1, i64, i1 } } %12, 1, 0
+  %.fca.2.1.1.extract.i = extractvalue { i1, { i1, i64, i1 } } %12, 1, 1
+  %phi.bo.i = xor i1 %.fca.2.0.extract.i, true
+  br label %13
 
-loop_out.loopexit:                                ; preds = %loop_body
-  %.fca.0.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 0
-  %.fca.0.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 1, 0
-  %.fca.0.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 1, 1
-  %.fca.0.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 0, 1, 2
-  %.fca.1.0.extract74.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 0
-  %.fca.1.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 1, 0
-  %.fca.1.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 1, 1
-  %.fca.1.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 1, 1, 2
-  %.fca.2.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 0
-  %.fca.2.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 1, 0
-  %.fca.2.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 1, 1
-  %.fca.2.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 2, 1, 2
-  %.fca.3.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 0
-  %.fca.3.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 1, 0
-  %.fca.3.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 1, 1
-  %.fca.3.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 3, 1, 2
-  %.fca.4.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 0
-  %.fca.4.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 1, 0
-  %.fca.4.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 1, 1
-  %.fca.4.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 4, 1, 2
-  %.fca.5.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 0
-  %.fca.5.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 1, 0
-  %.fca.5.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 1, 1
-  %.fca.5.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 5, 1, 2
-  %.fca.6.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 0
-  %.fca.6.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 1, 0
-  %.fca.6.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 1, 1
-  %.fca.6.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 6, 1, 2
-  %.fca.7.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 0
-  %.fca.7.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 1, 0
-  %.fca.7.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 1, 1
-  %.fca.7.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 7, 1, 2
-  %.fca.8.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 0
-  %.fca.8.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 1, 0
-  %.fca.8.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 1, 1
-  %.fca.8.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 8, 1, 2
-  %.fca.9.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 0
-  %.fca.9.1.0.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 1, 0
-  %.fca.9.1.1.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 1, 1
-  %.fca.9.1.2.extract.le = extractvalue [10 x { i1, { i1, i64, i1 } }] %7, 9, 1, 2
-  br label %loop_out
+13:                                               ; preds = %cond_447_case_1, %9
+  %"06.sroa.9.0.i" = phi i1 [ %phi.bo.i, %9 ], [ false, %cond_447_case_1 ]
+  %"06.sroa.12.0.i" = phi i1 [ %.fca.2.1.0.extract.i, %9 ], [ true, %cond_447_case_1 ]
+  %"06.sroa.15.0.i" = phi i64 [ %.fca.2.1.1.extract.i, %9 ], [ %lazy_measure, %cond_447_case_1 ]
+  br i1 %8, label %cond_469_case_1.i, label %cond_469_case_0.i
 
-loop_out:                                         ; preds = %loop_out.loopexit, %alloca_block
-  %"390_1.sroa.0.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.0.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.5.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.0.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.10.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.0.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.15.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.0.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.20.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.1.0.extract74.le, %loop_out.loopexit ]
-  %"390_1.sroa.25.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.1.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.30.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.1.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.35.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.1.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.40.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.2.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.45.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.2.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.50.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.2.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.55.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.2.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.60.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.3.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.65.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.3.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.70.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.3.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.75.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.3.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.80.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.4.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.85.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.4.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.90.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.4.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.95.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.4.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.100.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.5.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.105.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.5.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.110.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.5.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.115.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.5.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.120.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.6.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.125.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.6.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.130.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.6.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.135.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.6.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.140.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.7.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.145.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.7.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.150.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.7.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.155.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.7.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.160.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.8.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.165.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.8.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.170.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.8.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.175.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.8.1.2.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.180.0.lcssa" = phi i1 [ false, %alloca_block ], [ %.fca.9.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.185.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.9.1.0.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.190.0.lcssa" = phi i64 [ undef, %alloca_block ], [ %.fca.9.1.1.extract.le, %loop_out.loopexit ]
-  %"390_1.sroa.195.0.lcssa" = phi i1 [ undef, %alloca_block ], [ %.fca.9.1.2.extract.le, %loop_out.loopexit ]
-  %"124.fca.0.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] poison, i1 %"390_1.sroa.0.0.lcssa", 0, 0
-  %"124.fca.0.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.0.0.insert", i1 %"390_1.sroa.5.0.lcssa", 0, 1, 0
-  %"124.fca.0.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.0.1.0.insert", i64 %"390_1.sroa.10.0.lcssa", 0, 1, 1
-  %"124.fca.0.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.0.1.1.insert", i1 %"390_1.sroa.15.0.lcssa", 0, 1, 2
-  %"124.fca.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.0.1.2.insert", i1 %"390_1.sroa.20.0.lcssa", 1, 0
-  %"124.fca.1.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.1.0.insert", i1 %"390_1.sroa.25.0.lcssa", 1, 1, 0
-  %"124.fca.1.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.1.1.0.insert", i64 %"390_1.sroa.30.0.lcssa", 1, 1, 1
-  %"124.fca.1.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.1.1.1.insert", i1 %"390_1.sroa.35.0.lcssa", 1, 1, 2
-  %"124.fca.2.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.1.1.2.insert", i1 %"390_1.sroa.40.0.lcssa", 2, 0
-  %"124.fca.2.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.2.0.insert", i1 %"390_1.sroa.45.0.lcssa", 2, 1, 0
-  %"124.fca.2.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.2.1.0.insert", i64 %"390_1.sroa.50.0.lcssa", 2, 1, 1
-  %"124.fca.2.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.2.1.1.insert", i1 %"390_1.sroa.55.0.lcssa", 2, 1, 2
-  %"124.fca.3.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.2.1.2.insert", i1 %"390_1.sroa.60.0.lcssa", 3, 0
-  %"124.fca.3.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.3.0.insert", i1 %"390_1.sroa.65.0.lcssa", 3, 1, 0
-  %"124.fca.3.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.3.1.0.insert", i64 %"390_1.sroa.70.0.lcssa", 3, 1, 1
-  %"124.fca.3.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.3.1.1.insert", i1 %"390_1.sroa.75.0.lcssa", 3, 1, 2
-  %"124.fca.4.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.3.1.2.insert", i1 %"390_1.sroa.80.0.lcssa", 4, 0
-  %"124.fca.4.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.4.0.insert", i1 %"390_1.sroa.85.0.lcssa", 4, 1, 0
-  %"124.fca.4.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.4.1.0.insert", i64 %"390_1.sroa.90.0.lcssa", 4, 1, 1
-  %"124.fca.4.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.4.1.1.insert", i1 %"390_1.sroa.95.0.lcssa", 4, 1, 2
-  %"124.fca.5.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.4.1.2.insert", i1 %"390_1.sroa.100.0.lcssa", 5, 0
-  %"124.fca.5.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.5.0.insert", i1 %"390_1.sroa.105.0.lcssa", 5, 1, 0
-  %"124.fca.5.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.5.1.0.insert", i64 %"390_1.sroa.110.0.lcssa", 5, 1, 1
-  %"124.fca.5.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.5.1.1.insert", i1 %"390_1.sroa.115.0.lcssa", 5, 1, 2
-  %"124.fca.6.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.5.1.2.insert", i1 %"390_1.sroa.120.0.lcssa", 6, 0
-  %"124.fca.6.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.6.0.insert", i1 %"390_1.sroa.125.0.lcssa", 6, 1, 0
-  %"124.fca.6.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.6.1.0.insert", i64 %"390_1.sroa.130.0.lcssa", 6, 1, 1
-  %"124.fca.6.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.6.1.1.insert", i1 %"390_1.sroa.135.0.lcssa", 6, 1, 2
-  %"124.fca.7.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.6.1.2.insert", i1 %"390_1.sroa.140.0.lcssa", 7, 0
-  %"124.fca.7.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.7.0.insert", i1 %"390_1.sroa.145.0.lcssa", 7, 1, 0
-  %"124.fca.7.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.7.1.0.insert", i64 %"390_1.sroa.150.0.lcssa", 7, 1, 1
-  %"124.fca.7.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.7.1.1.insert", i1 %"390_1.sroa.155.0.lcssa", 7, 1, 2
-  %"124.fca.8.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.7.1.2.insert", i1 %"390_1.sroa.160.0.lcssa", 8, 0
-  %"124.fca.8.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.8.0.insert", i1 %"390_1.sroa.165.0.lcssa", 8, 1, 0
-  %"124.fca.8.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.8.1.0.insert", i64 %"390_1.sroa.170.0.lcssa", 8, 1, 1
-  %"124.fca.8.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.8.1.1.insert", i1 %"390_1.sroa.175.0.lcssa", 8, 1, 2
-  %"124.fca.9.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.8.1.2.insert", i1 %"390_1.sroa.180.0.lcssa", 9, 0
-  %"124.fca.9.1.0.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.9.0.insert", i1 %"390_1.sroa.185.0.lcssa", 9, 1, 0
-  %"124.fca.9.1.1.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.9.1.0.insert", i64 %"390_1.sroa.190.0.lcssa", 9, 1, 1
-  %"124.fca.9.1.2.insert" = insertvalue [10 x { i1, { i1, i64, i1 } }] %"124.fca.9.1.1.insert", i1 %"390_1.sroa.195.0.lcssa", 9, 1, 2
-  ret [10 x { i1, { i1, i64, i1 } }] %"124.fca.9.1.2.insert"
+cond_469_case_0.i:                                ; preds = %13
+  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+  unreachable
+
+cond_469_case_1.i:                                ; preds = %13
+  %"06.sroa.12.0.not.i" = xor i1 %"06.sroa.12.0.i", true
+  %brmerge.i = select i1 %"06.sroa.9.0.i", i1 true, i1 %"06.sroa.12.0.not.i"
+  br i1 %brmerge.i, label %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit", label %cond_254_case_1.i
+
+cond_254_case_1.i:                                ; preds = %cond_469_case_1.i
+  call void @___dec_future_refcount(i64 %"06.sroa.15.0.i")
+  br label %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit"
+
+"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit": ; preds = %cond_469_case_1.i, %cond_254_case_1.i
+  %.fca.1.0.0.extract = extractvalue { { { i1, i64 }*, i64 }, i64 } %7, 0, 0
+  %.fca.1.0.1.extract = extractvalue { { { i1, i64 }*, i64 }, i64 } %7, 0, 1
+  %.fca.1.1.extract = extractvalue { { { i1, i64 }*, i64 }, i64 } %7, 1
+  br label %cond_exit_447
+
+cond_exit_447:                                    ; preds = %loop_body, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit"
+  %"2.0" = phi i64 [ %6, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ %"390_2.0", %loop_body ]
+  %"022.sroa.3.0" = phi { i1, i64 }* [ %.fca.1.0.0.extract, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ poison, %loop_body ]
+  %"022.sroa.6.0" = phi i64 [ %.fca.1.0.1.extract, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ poison, %loop_body ]
+  %"022.sroa.9.0" = phi i64 [ %.fca.1.1.extract, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ poison, %loop_body ]
+  br i1 %.fca.0.extract95, label %14, label %loop_out
+
+14:                                               ; preds = %cond_exit_447
+  %15 = insertvalue { { { i1, i64 }*, i64 }, i64 } poison, { i1, i64 }* %"022.sroa.3.0", 0, 0
+  %16 = insertvalue { { { i1, i64 }*, i64 }, i64 } %15, i64 %"022.sroa.6.0", 0, 1
+  br label %loop_body
+
+loop_out:                                         ; preds = %cond_exit_447
+  %"124.fca.0.insert" = insertvalue { { i1, { i1, i64, i1 } }*, i64 } poison, { i1, { i1, i64, i1 } }* %3, 0
+  %"124.fca.1.insert" = insertvalue { { i1, { i1, i64, i1 } }*, i64 } %"124.fca.0.insert", i64 0, 1
+  ret { { i1, { i1, i64, i1 } }*, i64 } %"124.fca.1.insert"
 }
 
 define {} @__hugr__.const_fun_242.211({ i1, { i1, i64, i1 } } %0) local_unnamed_addr {
@@ -822,12 +576,15 @@ cond_208_case_1:                                  ; preds = %alloca_block
 
 cond_197_case_1:                                  ; preds = %cond_208_case_1
   %.fca.1.extract = extractvalue { i1, i64, i1 } %1, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.extract)
+  call void @___dec_future_refcount(i64 %.fca.1.extract)
   br label %cond_exit_208
 
 cond_exit_208:                                    ; preds = %cond_208_case_1, %cond_197_case_1, %alloca_block
   ret {} undef
 }
+
+; Function Attrs: inaccessiblemem_or_argmemonly mustprogress nounwind willreturn
+declare void @free(i8* nocapture noundef) local_unnamed_addr #2
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
 define { i1, { i1, i64, i1 } } @"__hugr__.$array.__comprehension.init.6$$t(bool).367"() local_unnamed_addr #0 {
@@ -838,298 +595,132 @@ alloca_block:
 declare void @___dec_future_refcount(i64) local_unnamed_addr
 
 ; Function Attrs: noreturn
-declare void @panic(i32, i8*) local_unnamed_addr #1
+declare void @panic(i32, i8*) local_unnamed_addr #3
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
-define { i64, [10 x { i1, i64 }] } @"__hugr__.$__iter__$$t(qubit)$n(10).375"([10 x { i1, i64 }] %0) local_unnamed_addr #0 {
+define { { { i1, i64 }*, i64 }, i64 } @"__hugr__.$__iter__$$t(qubit)$n(10).375"({ { i1, i64 }*, i64 } %0) local_unnamed_addr #0 {
 alloca_block:
-  %.fca.1.0.0.extract = extractvalue [10 x { i1, i64 }] %0, 0, 0
-  %.fca.1.0.1.extract = extractvalue [10 x { i1, i64 }] %0, 0, 1
-  %.fca.1.1.0.extract = extractvalue [10 x { i1, i64 }] %0, 1, 0
-  %.fca.1.1.1.extract = extractvalue [10 x { i1, i64 }] %0, 1, 1
-  %.fca.1.2.0.extract = extractvalue [10 x { i1, i64 }] %0, 2, 0
-  %.fca.1.2.1.extract = extractvalue [10 x { i1, i64 }] %0, 2, 1
-  %.fca.1.3.0.extract = extractvalue [10 x { i1, i64 }] %0, 3, 0
-  %.fca.1.3.1.extract = extractvalue [10 x { i1, i64 }] %0, 3, 1
-  %.fca.1.4.0.extract = extractvalue [10 x { i1, i64 }] %0, 4, 0
-  %.fca.1.4.1.extract = extractvalue [10 x { i1, i64 }] %0, 4, 1
-  %.fca.1.5.0.extract = extractvalue [10 x { i1, i64 }] %0, 5, 0
-  %.fca.1.5.1.extract = extractvalue [10 x { i1, i64 }] %0, 5, 1
-  %.fca.1.6.0.extract = extractvalue [10 x { i1, i64 }] %0, 6, 0
-  %.fca.1.6.1.extract = extractvalue [10 x { i1, i64 }] %0, 6, 1
-  %.fca.1.7.0.extract = extractvalue [10 x { i1, i64 }] %0, 7, 0
-  %.fca.1.7.1.extract = extractvalue [10 x { i1, i64 }] %0, 7, 1
-  %.fca.1.8.0.extract = extractvalue [10 x { i1, i64 }] %0, 8, 0
-  %.fca.1.8.1.extract = extractvalue [10 x { i1, i64 }] %0, 8, 1
-  %.fca.1.9.0.extract = extractvalue [10 x { i1, i64 }] %0, 9, 0
-  %.fca.1.9.1.extract = extractvalue [10 x { i1, i64 }] %0, 9, 1
-  %"384_07.fca.1.0.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } { i64 0, [10 x { i1, i64 }] poison }, i1 %.fca.1.0.0.extract, 1, 0, 0
-  %"384_07.fca.1.0.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.0.0.insert", i64 %.fca.1.0.1.extract, 1, 0, 1
-  %"384_07.fca.1.1.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.0.1.insert", i1 %.fca.1.1.0.extract, 1, 1, 0
-  %"384_07.fca.1.1.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.1.0.insert", i64 %.fca.1.1.1.extract, 1, 1, 1
-  %"384_07.fca.1.2.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.1.1.insert", i1 %.fca.1.2.0.extract, 1, 2, 0
-  %"384_07.fca.1.2.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.2.0.insert", i64 %.fca.1.2.1.extract, 1, 2, 1
-  %"384_07.fca.1.3.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.2.1.insert", i1 %.fca.1.3.0.extract, 1, 3, 0
-  %"384_07.fca.1.3.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.3.0.insert", i64 %.fca.1.3.1.extract, 1, 3, 1
-  %"384_07.fca.1.4.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.3.1.insert", i1 %.fca.1.4.0.extract, 1, 4, 0
-  %"384_07.fca.1.4.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.4.0.insert", i64 %.fca.1.4.1.extract, 1, 4, 1
-  %"384_07.fca.1.5.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.4.1.insert", i1 %.fca.1.5.0.extract, 1, 5, 0
-  %"384_07.fca.1.5.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.5.0.insert", i64 %.fca.1.5.1.extract, 1, 5, 1
-  %"384_07.fca.1.6.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.5.1.insert", i1 %.fca.1.6.0.extract, 1, 6, 0
-  %"384_07.fca.1.6.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.6.0.insert", i64 %.fca.1.6.1.extract, 1, 6, 1
-  %"384_07.fca.1.7.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.6.1.insert", i1 %.fca.1.7.0.extract, 1, 7, 0
-  %"384_07.fca.1.7.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.7.0.insert", i64 %.fca.1.7.1.extract, 1, 7, 1
-  %"384_07.fca.1.8.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.7.1.insert", i1 %.fca.1.8.0.extract, 1, 8, 0
-  %"384_07.fca.1.8.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.8.0.insert", i64 %.fca.1.8.1.extract, 1, 8, 1
-  %"384_07.fca.1.9.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.8.1.insert", i1 %.fca.1.9.0.extract, 1, 9, 0
-  %"384_07.fca.1.9.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.9.0.insert", i64 %.fca.1.9.1.extract, 1, 9, 1
-  %"384_09.fca.1.0.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_07.fca.1.9.1.insert", i1 %.fca.1.0.0.extract, 1, 0, 0
-  %"384_09.fca.1.0.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.0.0.insert", i64 %.fca.1.0.1.extract, 1, 0, 1
-  %"384_09.fca.1.1.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.0.1.insert", i1 %.fca.1.1.0.extract, 1, 1, 0
-  %"384_09.fca.1.1.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.1.0.insert", i64 %.fca.1.1.1.extract, 1, 1, 1
-  %"384_09.fca.1.2.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.1.1.insert", i1 %.fca.1.2.0.extract, 1, 2, 0
-  %"384_09.fca.1.2.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.2.0.insert", i64 %.fca.1.2.1.extract, 1, 2, 1
-  %"384_09.fca.1.3.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.2.1.insert", i1 %.fca.1.3.0.extract, 1, 3, 0
-  %"384_09.fca.1.3.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.3.0.insert", i64 %.fca.1.3.1.extract, 1, 3, 1
-  %"384_09.fca.1.4.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.3.1.insert", i1 %.fca.1.4.0.extract, 1, 4, 0
-  %"384_09.fca.1.4.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.4.0.insert", i64 %.fca.1.4.1.extract, 1, 4, 1
-  %"384_09.fca.1.5.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.4.1.insert", i1 %.fca.1.5.0.extract, 1, 5, 0
-  %"384_09.fca.1.5.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.5.0.insert", i64 %.fca.1.5.1.extract, 1, 5, 1
-  %"384_09.fca.1.6.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.5.1.insert", i1 %.fca.1.6.0.extract, 1, 6, 0
-  %"384_09.fca.1.6.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.6.0.insert", i64 %.fca.1.6.1.extract, 1, 6, 1
-  %"384_09.fca.1.7.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.6.1.insert", i1 %.fca.1.7.0.extract, 1, 7, 0
-  %"384_09.fca.1.7.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.7.0.insert", i64 %.fca.1.7.1.extract, 1, 7, 1
-  %"384_09.fca.1.8.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.7.1.insert", i1 %.fca.1.8.0.extract, 1, 8, 0
-  %"384_09.fca.1.8.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.8.0.insert", i64 %.fca.1.8.1.extract, 1, 8, 1
-  %"384_09.fca.1.9.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.8.1.insert", i1 %.fca.1.9.0.extract, 1, 9, 0
-  %"384_09.fca.1.9.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.9.0.insert", i64 %.fca.1.9.1.extract, 1, 9, 1
-  %"010.fca.1.0.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"384_09.fca.1.9.1.insert", i1 %.fca.1.0.0.extract, 1, 0, 0
-  %"010.fca.1.0.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.0.0.insert", i64 %.fca.1.0.1.extract, 1, 0, 1
-  %"010.fca.1.1.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.0.1.insert", i1 %.fca.1.1.0.extract, 1, 1, 0
-  %"010.fca.1.1.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.1.0.insert", i64 %.fca.1.1.1.extract, 1, 1, 1
-  %"010.fca.1.2.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.1.1.insert", i1 %.fca.1.2.0.extract, 1, 2, 0
-  %"010.fca.1.2.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.2.0.insert", i64 %.fca.1.2.1.extract, 1, 2, 1
-  %"010.fca.1.3.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.2.1.insert", i1 %.fca.1.3.0.extract, 1, 3, 0
-  %"010.fca.1.3.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.3.0.insert", i64 %.fca.1.3.1.extract, 1, 3, 1
-  %"010.fca.1.4.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.3.1.insert", i1 %.fca.1.4.0.extract, 1, 4, 0
-  %"010.fca.1.4.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.4.0.insert", i64 %.fca.1.4.1.extract, 1, 4, 1
-  %"010.fca.1.5.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.4.1.insert", i1 %.fca.1.5.0.extract, 1, 5, 0
-  %"010.fca.1.5.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.5.0.insert", i64 %.fca.1.5.1.extract, 1, 5, 1
-  %"010.fca.1.6.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.5.1.insert", i1 %.fca.1.6.0.extract, 1, 6, 0
-  %"010.fca.1.6.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.6.0.insert", i64 %.fca.1.6.1.extract, 1, 6, 1
-  %"010.fca.1.7.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.6.1.insert", i1 %.fca.1.7.0.extract, 1, 7, 0
-  %"010.fca.1.7.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.7.0.insert", i64 %.fca.1.7.1.extract, 1, 7, 1
-  %"010.fca.1.8.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.7.1.insert", i1 %.fca.1.8.0.extract, 1, 8, 0
-  %"010.fca.1.8.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.8.0.insert", i64 %.fca.1.8.1.extract, 1, 8, 1
-  %"010.fca.1.9.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.8.1.insert", i1 %.fca.1.9.0.extract, 1, 9, 0
-  %"010.fca.1.9.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.9.0.insert", i64 %.fca.1.9.1.extract, 1, 9, 1
-  %"378_011.fca.1.0.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"010.fca.1.9.1.insert", i1 %.fca.1.0.0.extract, 1, 0, 0
-  %"378_011.fca.1.0.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.0.0.insert", i64 %.fca.1.0.1.extract, 1, 0, 1
-  %"378_011.fca.1.1.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.0.1.insert", i1 %.fca.1.1.0.extract, 1, 1, 0
-  %"378_011.fca.1.1.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.1.0.insert", i64 %.fca.1.1.1.extract, 1, 1, 1
-  %"378_011.fca.1.2.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.1.1.insert", i1 %.fca.1.2.0.extract, 1, 2, 0
-  %"378_011.fca.1.2.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.2.0.insert", i64 %.fca.1.2.1.extract, 1, 2, 1
-  %"378_011.fca.1.3.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.2.1.insert", i1 %.fca.1.3.0.extract, 1, 3, 0
-  %"378_011.fca.1.3.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.3.0.insert", i64 %.fca.1.3.1.extract, 1, 3, 1
-  %"378_011.fca.1.4.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.3.1.insert", i1 %.fca.1.4.0.extract, 1, 4, 0
-  %"378_011.fca.1.4.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.4.0.insert", i64 %.fca.1.4.1.extract, 1, 4, 1
-  %"378_011.fca.1.5.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.4.1.insert", i1 %.fca.1.5.0.extract, 1, 5, 0
-  %"378_011.fca.1.5.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.5.0.insert", i64 %.fca.1.5.1.extract, 1, 5, 1
-  %"378_011.fca.1.6.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.5.1.insert", i1 %.fca.1.6.0.extract, 1, 6, 0
-  %"378_011.fca.1.6.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.6.0.insert", i64 %.fca.1.6.1.extract, 1, 6, 1
-  %"378_011.fca.1.7.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.6.1.insert", i1 %.fca.1.7.0.extract, 1, 7, 0
-  %"378_011.fca.1.7.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.7.0.insert", i64 %.fca.1.7.1.extract, 1, 7, 1
-  %"378_011.fca.1.8.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.7.1.insert", i1 %.fca.1.8.0.extract, 1, 8, 0
-  %"378_011.fca.1.8.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.8.0.insert", i64 %.fca.1.8.1.extract, 1, 8, 1
-  %"378_011.fca.1.9.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.8.1.insert", i1 %.fca.1.9.0.extract, 1, 9, 0
-  %"378_011.fca.1.9.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.9.0.insert", i64 %.fca.1.9.1.extract, 1, 9, 1
-  %"012.fca.1.0.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"378_011.fca.1.9.1.insert", i1 %.fca.1.0.0.extract, 1, 0, 0
-  %"012.fca.1.0.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.0.0.insert", i64 %.fca.1.0.1.extract, 1, 0, 1
-  %"012.fca.1.1.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.0.1.insert", i1 %.fca.1.1.0.extract, 1, 1, 0
-  %"012.fca.1.1.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.1.0.insert", i64 %.fca.1.1.1.extract, 1, 1, 1
-  %"012.fca.1.2.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.1.1.insert", i1 %.fca.1.2.0.extract, 1, 2, 0
-  %"012.fca.1.2.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.2.0.insert", i64 %.fca.1.2.1.extract, 1, 2, 1
-  %"012.fca.1.3.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.2.1.insert", i1 %.fca.1.3.0.extract, 1, 3, 0
-  %"012.fca.1.3.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.3.0.insert", i64 %.fca.1.3.1.extract, 1, 3, 1
-  %"012.fca.1.4.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.3.1.insert", i1 %.fca.1.4.0.extract, 1, 4, 0
-  %"012.fca.1.4.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.4.0.insert", i64 %.fca.1.4.1.extract, 1, 4, 1
-  %"012.fca.1.5.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.4.1.insert", i1 %.fca.1.5.0.extract, 1, 5, 0
-  %"012.fca.1.5.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.5.0.insert", i64 %.fca.1.5.1.extract, 1, 5, 1
-  %"012.fca.1.6.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.5.1.insert", i1 %.fca.1.6.0.extract, 1, 6, 0
-  %"012.fca.1.6.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.6.0.insert", i64 %.fca.1.6.1.extract, 1, 6, 1
-  %"012.fca.1.7.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.6.1.insert", i1 %.fca.1.7.0.extract, 1, 7, 0
-  %"012.fca.1.7.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.7.0.insert", i64 %.fca.1.7.1.extract, 1, 7, 1
-  %"012.fca.1.8.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.7.1.insert", i1 %.fca.1.8.0.extract, 1, 8, 0
-  %"012.fca.1.8.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.8.0.insert", i64 %.fca.1.8.1.extract, 1, 8, 1
-  %"012.fca.1.9.0.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.8.1.insert", i1 %.fca.1.9.0.extract, 1, 9, 0
-  %"012.fca.1.9.1.insert" = insertvalue { i64, [10 x { i1, i64 }] } %"012.fca.1.9.0.insert", i64 %.fca.1.9.1.extract, 1, 9, 1
-  ret { i64, [10 x { i1, i64 }] } %"012.fca.1.9.1.insert"
+  %1 = insertvalue { { { i1, i64 }*, i64 }, i64 } poison, { { i1, i64 }*, i64 } %0, 0
+  %"012.fca.1.insert" = insertvalue { { { i1, i64 }*, i64 }, i64 } %1, i64 0, 1
+  ret { { { i1, i64 }*, i64 }, i64 } %"012.fca.1.insert"
 }
 
-define { i1, { { i64, [10 x { i1, i64 }] }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ i64, [10 x { i1, i64 }] } %0) local_unnamed_addr {
+define { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ { { i1, i64 }*, i64 }, i64 } %0) local_unnamed_addr {
 alloca_block:
-  %.fca.0.extract217 = extractvalue { i64, [10 x { i1, i64 }] } %0, 0
-  %1 = extractvalue { i64, [10 x { i1, i64 }] } %0, 1
-  %2 = icmp slt i64 %.fca.0.extract217, 10
-  br i1 %2, label %6, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
+  %.fca.1.extract96 = extractvalue { { { i1, i64 }*, i64 }, i64 } %0, 1
+  %1 = extractvalue { { { i1, i64 }*, i64 }, i64 } %0, 0
+  %.fca.0.extract80 = extractvalue { { i1, i64 }*, i64 } %1, 0
+  %.fca.1.extract81 = extractvalue { { i1, i64 }*, i64 } %1, 1
+  %2 = icmp slt i64 %.fca.1.extract96, 10
+  br i1 %2, label %3, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
 
-.loopexit:                                        ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9", %6
-  %"02.sroa.3.0" = phi i64 [ %7, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.6.0" = phi i1 [ %.fca.1.0.0.extract74, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.9.0" = phi i64 [ %.fca.1.0.1.extract75, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.12.0" = phi i1 [ %.fca.1.1.0.extract76, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.15.0" = phi i64 [ %.fca.1.1.1.extract77, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.18.0" = phi i1 [ %.fca.1.2.0.extract78, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.21.0" = phi i64 [ %.fca.1.2.1.extract79, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.24.0" = phi i1 [ %.fca.1.3.0.extract80, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.27.0" = phi i64 [ %.fca.1.3.1.extract81, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.30.0" = phi i1 [ %.fca.1.4.0.extract82, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.33.0" = phi i64 [ %.fca.1.4.1.extract83, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.36.0" = phi i1 [ %.fca.1.5.0.extract84, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.39.0" = phi i64 [ %.fca.1.5.1.extract85, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.42.0" = phi i1 [ %.fca.1.6.0.extract86, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.45.0" = phi i64 [ %.fca.1.6.1.extract87, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.48.0" = phi i1 [ %.fca.1.7.0.extract88, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.51.0" = phi i64 [ %.fca.1.7.1.extract89, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.54.0" = phi i1 [ %.fca.1.8.0.extract90, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.57.0" = phi i64 [ %.fca.1.8.1.extract91, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.60.0" = phi i1 [ %.fca.1.9.0.extract92, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.63.0" = phi i64 [ %.fca.1.9.1.extract93, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"02.sroa.66.0" = phi i64 [ %9, %6 ], [ poison, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9" ]
-  %"029.fca.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } poison, i1 %2, 0
-  %"029.fca.1.0.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.0.insert", i64 %"02.sroa.3.0", 1, 0, 0
-  %"029.fca.1.0.1.0.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.0.insert", i1 %"02.sroa.6.0", 1, 0, 1, 0, 0
-  %"029.fca.1.0.1.0.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.0.0.insert", i64 %"02.sroa.9.0", 1, 0, 1, 0, 1
-  %"029.fca.1.0.1.1.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.0.1.insert", i1 %"02.sroa.12.0", 1, 0, 1, 1, 0
-  %"029.fca.1.0.1.1.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.1.0.insert", i64 %"02.sroa.15.0", 1, 0, 1, 1, 1
-  %"029.fca.1.0.1.2.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.1.1.insert", i1 %"02.sroa.18.0", 1, 0, 1, 2, 0
-  %"029.fca.1.0.1.2.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.2.0.insert", i64 %"02.sroa.21.0", 1, 0, 1, 2, 1
-  %"029.fca.1.0.1.3.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.2.1.insert", i1 %"02.sroa.24.0", 1, 0, 1, 3, 0
-  %"029.fca.1.0.1.3.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.3.0.insert", i64 %"02.sroa.27.0", 1, 0, 1, 3, 1
-  %"029.fca.1.0.1.4.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.3.1.insert", i1 %"02.sroa.30.0", 1, 0, 1, 4, 0
-  %"029.fca.1.0.1.4.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.4.0.insert", i64 %"02.sroa.33.0", 1, 0, 1, 4, 1
-  %"029.fca.1.0.1.5.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.4.1.insert", i1 %"02.sroa.36.0", 1, 0, 1, 5, 0
-  %"029.fca.1.0.1.5.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.5.0.insert", i64 %"02.sroa.39.0", 1, 0, 1, 5, 1
-  %"029.fca.1.0.1.6.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.5.1.insert", i1 %"02.sroa.42.0", 1, 0, 1, 6, 0
-  %"029.fca.1.0.1.6.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.6.0.insert", i64 %"02.sroa.45.0", 1, 0, 1, 6, 1
-  %"029.fca.1.0.1.7.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.6.1.insert", i1 %"02.sroa.48.0", 1, 0, 1, 7, 0
-  %"029.fca.1.0.1.7.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.7.0.insert", i64 %"02.sroa.51.0", 1, 0, 1, 7, 1
-  %"029.fca.1.0.1.8.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.7.1.insert", i1 %"02.sroa.54.0", 1, 0, 1, 8, 0
-  %"029.fca.1.0.1.8.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.8.0.insert", i64 %"02.sroa.57.0", 1, 0, 1, 8, 1
-  %"029.fca.1.0.1.9.0.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.8.1.insert", i1 %"02.sroa.60.0", 1, 0, 1, 9, 0
-  %"029.fca.1.0.1.9.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.9.0.insert", i64 %"02.sroa.63.0", 1, 0, 1, 9, 1
-  %"029.fca.1.1.insert" = insertvalue { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.0.1.9.1.insert", i64 %"02.sroa.66.0", 1, 1
-  ret { i1, { { i64, [10 x { i1, i64 }] }, i64 } } %"029.fca.1.1.insert"
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit": ; preds = %cond_337_case_1.i, %39
+  %"02.sroa.9.0" = phi i64 [ poison, %39 ], [ %4, %cond_337_case_1.i ]
+  %"02.sroa.12.0" = phi i64 [ poison, %39 ], [ %"05.sroa.12.0.i", %cond_337_case_1.i ]
+  %"029.fca.0.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } poison, i1 %2, 0
+  %"029.fca.1.0.0.0.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.0.insert", { i1, i64 }* %.fca.0.extract80, 1, 0, 0, 0
+  %"029.fca.1.0.0.1.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.1.0.0.0.insert", i64 %.fca.1.extract81, 1, 0, 0, 1
+  %"029.fca.1.0.1.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.1.0.0.1.insert", i64 %"02.sroa.9.0", 1, 0, 1
+  %"029.fca.1.1.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.1.0.1.insert", i64 %"02.sroa.12.0", 1, 1
+  ret { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.1.1.insert"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit": ; preds = %alloca_block
-  %3 = alloca [10 x { i1, i64 }], align 8
-  %.repack = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 0
-  %.elt = extractvalue [10 x { i1, i64 }] %1, 0
-  store { i1, i64 } %.elt, { i1, i64 }* %.repack, align 8
-  %.repack238 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 1
-  %.elt239 = extractvalue [10 x { i1, i64 }] %1, 1
-  store { i1, i64 } %.elt239, { i1, i64 }* %.repack238, align 8
-  %.repack240 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 2
-  %.elt241 = extractvalue [10 x { i1, i64 }] %1, 2
-  store { i1, i64 } %.elt241, { i1, i64 }* %.repack240, align 8
-  %.repack242 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 3
-  %.elt243 = extractvalue [10 x { i1, i64 }] %1, 3
-  store { i1, i64 } %.elt243, { i1, i64 }* %.repack242, align 8
-  %.repack244 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 4
-  %.elt245 = extractvalue [10 x { i1, i64 }] %1, 4
-  store { i1, i64 } %.elt245, { i1, i64 }* %.repack244, align 8
-  %.repack246 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 5
-  %.elt247 = extractvalue [10 x { i1, i64 }] %1, 5
-  store { i1, i64 } %.elt247, { i1, i64 }* %.repack246, align 8
-  %.repack248 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 6
-  %.elt249 = extractvalue [10 x { i1, i64 }] %1, 6
-  store { i1, i64 } %.elt249, { i1, i64 }* %.repack248, align 8
-  %.repack250 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 7
-  %.elt251 = extractvalue [10 x { i1, i64 }] %1, 7
-  store { i1, i64 } %.elt251, { i1, i64 }* %.repack250, align 8
-  %.repack252 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 8
-  %.elt253 = extractvalue [10 x { i1, i64 }] %1, 8
-  store { i1, i64 } %.elt253, { i1, i64 }* %.repack252, align 8
-  %.repack254 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 9
-  %.elt255 = extractvalue [10 x { i1, i64 }] %1, 9
-  store { i1, i64 } %.elt255, { i1, i64 }* %.repack254, align 8
-  %4 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 0, i32 0
-  %5 = load i1, i1* %4, align 8
-  br i1 %5, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1"
+3:                                                ; preds = %alloca_block
+  %4 = add i64 %.fca.1.extract96, 1
+  %5 = icmp ult i64 %.fca.1.extract96, 10
+  br i1 %5, label %6, label %11
 
-6:                                                ; preds = %alloca_block
-  %7 = add nsw i64 %.fca.0.extract217, 1
-  %8 = tail call { i64, [10 x { i1, i64 }] } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"([10 x { i1, i64 }] %1, i64 %.fca.0.extract217)
-  %9 = extractvalue { i64, [10 x { i1, i64 }] } %8, 0
-  %.fca.1.0.0.extract74 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 0, 0
-  %.fca.1.0.1.extract75 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 0, 1
-  %.fca.1.1.0.extract76 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 1, 0
-  %.fca.1.1.1.extract77 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 1, 1
-  %.fca.1.2.0.extract78 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 2, 0
-  %.fca.1.2.1.extract79 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 2, 1
-  %.fca.1.3.0.extract80 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 3, 0
-  %.fca.1.3.1.extract81 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 3, 1
-  %.fca.1.4.0.extract82 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 4, 0
-  %.fca.1.4.1.extract83 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 4, 1
-  %.fca.1.5.0.extract84 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 5, 0
-  %.fca.1.5.1.extract85 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 5, 1
-  %.fca.1.6.0.extract86 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 6, 0
-  %.fca.1.6.1.extract87 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 6, 1
-  %.fca.1.7.0.extract88 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 7, 0
-  %.fca.1.7.1.extract89 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 7, 1
-  %.fca.1.8.0.extract90 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 8, 0
-  %.fca.1.8.1.extract91 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 8, 1
-  %.fca.1.9.0.extract92 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 9, 0
-  %.fca.1.9.1.extract93 = extractvalue { i64, [10 x { i1, i64 }] } %8, 1, 9, 1
-  br label %.loopexit
+6:                                                ; preds = %3
+  %7 = add i64 %.fca.1.extract81, %.fca.1.extract96
+  %8 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %7
+  %9 = load { i1, i64 }, { i1, i64 }* %8, align 4
+  %10 = bitcast { i1, i64 }* %8 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %10, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i = extractvalue { i1, i64 } %9, 0
+  %.fca.2.1.extract.i = extractvalue { i1, i64 } %9, 1
+  br label %11
+
+11:                                               ; preds = %6, %3
+  %"05.sroa.9.0.i" = phi i1 [ %.fca.2.0.extract.i, %6 ], [ false, %3 ]
+  %"05.sroa.12.0.i" = phi i64 [ %.fca.2.1.extract.i, %6 ], [ poison, %3 ]
+  br i1 %5, label %cond_337_case_1.i, label %cond_337_case_0.i
+
+cond_337_case_0.i:                                ; preds = %11
+  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+  unreachable
+
+cond_337_case_1.i:                                ; preds = %11
+  br i1 %"05.sroa.9.0.i", label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit", label %cond_347_case_0.i
+
+cond_347_case_0.i:                                ; preds = %cond_337_case_1.i
+  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  unreachable
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
-  %10 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 1, i32 0
-  %11 = load i1, i1* %10, align 8
-  br i1 %11, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2"
+  %12 = add i64 %.fca.1.extract81, 1
+  %13 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %12, i32 0
+  %14 = load i1, i1* %13, align 1
+  br i1 %14, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1"
-  %12 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 2, i32 0
-  %13 = load i1, i1* %12, align 8
-  br i1 %13, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3"
+  %15 = add i64 %.fca.1.extract81, 2
+  %16 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %15, i32 0
+  %17 = load i1, i1* %16, align 1
+  br i1 %17, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2"
-  %14 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 3, i32 0
-  %15 = load i1, i1* %14, align 8
-  br i1 %15, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4"
+  %18 = add i64 %.fca.1.extract81, 3
+  %19 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %18, i32 0
+  %20 = load i1, i1* %19, align 1
+  br i1 %20, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3"
-  %16 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 4, i32 0
-  %17 = load i1, i1* %16, align 8
-  br i1 %17, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5"
+  %21 = add i64 %.fca.1.extract81, 4
+  %22 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %21, i32 0
+  %23 = load i1, i1* %22, align 1
+  br i1 %23, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4"
-  %18 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 5, i32 0
-  %19 = load i1, i1* %18, align 8
-  br i1 %19, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6"
+  %24 = add i64 %.fca.1.extract81, 5
+  %25 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %24, i32 0
+  %26 = load i1, i1* %25, align 1
+  br i1 %26, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5"
-  %20 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 6, i32 0
-  %21 = load i1, i1* %20, align 8
-  br i1 %21, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7"
+  %27 = add i64 %.fca.1.extract81, 6
+  %28 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %27, i32 0
+  %29 = load i1, i1* %28, align 1
+  br i1 %29, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6"
-  %22 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 7, i32 0
-  %23 = load i1, i1* %22, align 8
-  br i1 %23, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8"
+  %30 = add i64 %.fca.1.extract81, 7
+  %31 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %30, i32 0
+  %32 = load i1, i1* %31, align 1
+  br i1 %32, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7"
-  %24 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 8, i32 0
-  %25 = load i1, i1* %24, align 8
-  br i1 %25, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9"
+  %33 = add i64 %.fca.1.extract81, 8
+  %34 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %33, i32 0
+  %35 = load i1, i1* %34, align 1
+  br i1 %35, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8"
-  %26 = getelementptr inbounds [10 x { i1, i64 }], [10 x { i1, i64 }]* %3, i64 0, i64 9, i32 0
-  %27 = load i1, i1* %26, align 8
-  br i1 %27, label %cond_428_case_1.i, label %.loopexit
+  %36 = add i64 %.fca.1.extract81, 9
+  %37 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %36, i32 0
+  %38 = load i1, i1* %37, align 1
+  br i1 %38, label %cond_428_case_1.i, label %39
+
+39:                                               ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9"
+  %40 = bitcast { i1, i64 }* %.fca.0.extract80 to i8*
+  call void @free(i8* %40)
+  br label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
+
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit": ; preds = %alloca_block
+  %41 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %.fca.1.extract81, i32 0
+  %42 = load i1, i1* %41, align 1
+  br i1 %42, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1"
 
 cond_428_case_1.i:                                ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
+  call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
   unreachable
 }
 
@@ -1137,153 +728,51 @@ declare i64 @___lazy_measure(i64) local_unnamed_addr
 
 declare void @___qfree(i64) local_unnamed_addr
 
-define [10 x { i1, { i1, i64, i1 } }] @"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463"([10 x { i1, { i1, i64, i1 } }] %0, i64 %1, { i1, i64, i1 } %2) local_unnamed_addr {
+define { { i1, { i1, i64, i1 } }*, i64 } @"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463"({ { i1, { i1, i64, i1 } }*, i64 } returned %0, i64 %1, { i1, i64, i1 } %2) local_unnamed_addr {
 alloca_block:
   %3 = icmp ult i64 %1, 10
+  br i1 %3, label %5, label %4
+
+4:                                                ; preds = %alloca_block
+  %.fca.2.1.0.extract60 = extractvalue { i1, i64, i1 } %2, 0
+  %.fca.2.1.1.extract62 = extractvalue { i1, i64, i1 } %2, 1
+  br label %10
+
+5:                                                ; preds = %alloca_block
+  %6 = insertvalue { i1, { i1, i64, i1 } } { i1 true, { i1, i64, i1 } poison }, { i1, i64, i1 } %2, 1
+  %.fca.1.extract74 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %0, 1
+  %.fca.0.extract73 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %0, 0
+  %7 = add i64 %.fca.1.extract74, %1
+  %8 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract73, i64 %7
+  %9 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %8, align 4
+  store { i1, { i1, i64, i1 } } %6, { i1, { i1, i64, i1 } }* %8, align 4
+  %.fca.2.0.extract = extractvalue { i1, { i1, i64, i1 } } %9, 0
+  %.fca.2.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %9, 1, 0
+  %.fca.2.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %9, 1, 1
+  %phi.bo = xor i1 %.fca.2.0.extract, true
+  br label %10
+
+10:                                               ; preds = %4, %5
+  %"06.sroa.9.0" = phi i1 [ %phi.bo, %5 ], [ false, %4 ]
+  %"06.sroa.12.0" = phi i1 [ %.fca.2.1.0.extract, %5 ], [ %.fca.2.1.0.extract60, %4 ]
+  %"06.sroa.15.0" = phi i64 [ %.fca.2.1.1.extract, %5 ], [ %.fca.2.1.1.extract62, %4 ]
   br i1 %3, label %cond_469_case_1, label %cond_469_case_0
 
-cond_469_case_0:                                  ; preds = %alloca_block
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+cond_469_case_0:                                  ; preds = %10
+  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
   unreachable
 
-cond_469_case_1:                                  ; preds = %alloca_block
-  %4 = insertvalue { i1, { i1, i64, i1 } } { i1 true, { i1, i64, i1 } poison }, { i1, i64, i1 } %2, 1
-  %5 = alloca [10 x { i1, { i1, i64, i1 } }], align 8
-  %.repack = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 0
-  %.elt = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 0
-  store { i1, { i1, i64, i1 } } %.elt, { i1, { i1, i64, i1 } }* %.repack, align 8
-  %.repack229 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 1
-  %.elt230 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 1
-  store { i1, { i1, i64, i1 } } %.elt230, { i1, { i1, i64, i1 } }* %.repack229, align 8
-  %.repack231 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 2
-  %.elt232 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 2
-  store { i1, { i1, i64, i1 } } %.elt232, { i1, { i1, i64, i1 } }* %.repack231, align 8
-  %.repack233 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 3
-  %.elt234 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 3
-  store { i1, { i1, i64, i1 } } %.elt234, { i1, { i1, i64, i1 } }* %.repack233, align 8
-  %.repack235 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 4
-  %.elt236 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 4
-  store { i1, { i1, i64, i1 } } %.elt236, { i1, { i1, i64, i1 } }* %.repack235, align 8
-  %.repack237 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 5
-  %.elt238 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 5
-  store { i1, { i1, i64, i1 } } %.elt238, { i1, { i1, i64, i1 } }* %.repack237, align 8
-  %.repack239 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 6
-  %.elt240 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 6
-  store { i1, { i1, i64, i1 } } %.elt240, { i1, { i1, i64, i1 } }* %.repack239, align 8
-  %.repack241 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 7
-  %.elt242 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 7
-  store { i1, { i1, i64, i1 } } %.elt242, { i1, { i1, i64, i1 } }* %.repack241, align 8
-  %.repack243 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 8
-  %.elt244 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 8
-  store { i1, { i1, i64, i1 } } %.elt244, { i1, { i1, i64, i1 } }* %.repack243, align 8
-  %.repack245 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 9
-  %.elt246 = extractvalue [10 x { i1, { i1, i64, i1 } }] %0, 9
-  store { i1, { i1, i64, i1 } } %.elt246, { i1, { i1, i64, i1 } }* %.repack245, align 8
-  %6 = getelementptr inbounds [10 x { i1, { i1, i64, i1 } }], [10 x { i1, { i1, i64, i1 } }]* %5, i64 0, i64 %1
-  %7 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %6, align 8
-  store { i1, { i1, i64, i1 } } %4, { i1, { i1, i64, i1 } }* %6, align 8
-  %.unpack = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack, align 8
-  %.unpack249 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack229, align 8
-  %.unpack251 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack231, align 8
-  %.unpack253 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack233, align 8
-  %.unpack255 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack235, align 8
-  %.unpack257 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack237, align 8
-  %.unpack259 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack239, align 8
-  %.unpack261 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack241, align 8
-  %.unpack263 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack243, align 8
-  %.unpack265 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.repack245, align 8
-  %.fca.1.0.extract87 = extractvalue { i1, { i1, i64, i1 } } %7, 0
-  %.fca.1.1.0.extract88 = extractvalue { i1, { i1, i64, i1 } } %7, 1, 0
-  %8 = select i1 %.fca.1.0.extract87, i1 %.fca.1.1.0.extract88, i1 false
-  br i1 %8, label %cond_254_case_1, label %cond_exit_261
+cond_469_case_1:                                  ; preds = %10
+  %"06.sroa.12.0.not" = xor i1 %"06.sroa.12.0", true
+  %brmerge = select i1 %"06.sroa.9.0", i1 true, i1 %"06.sroa.12.0.not"
+  br i1 %brmerge, label %cond_exit_261, label %cond_254_case_1
 
 cond_254_case_1:                                  ; preds = %cond_469_case_1
-  %.fca.1.1.1.extract89 = extractvalue { i1, { i1, i64, i1 } } %7, 1, 1
-  tail call void @___dec_future_refcount(i64 %.fca.1.1.1.extract89)
+  call void @___dec_future_refcount(i64 %"06.sroa.15.0")
   br label %cond_exit_261
 
 cond_exit_261:                                    ; preds = %cond_469_case_1, %cond_254_case_1
-  %.fca.2.9.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack265, 1, 2
-  %.fca.2.9.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack265, 1, 1
-  %.fca.2.9.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack265, 1, 0
-  %.fca.2.9.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack265, 0
-  %.fca.2.8.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack263, 1, 2
-  %.fca.2.8.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack263, 1, 1
-  %.fca.2.8.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack263, 1, 0
-  %.fca.2.8.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack263, 0
-  %.fca.2.7.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack261, 1, 2
-  %.fca.2.7.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack261, 1, 1
-  %.fca.2.7.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack261, 1, 0
-  %.fca.2.7.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack261, 0
-  %.fca.2.6.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack259, 1, 2
-  %.fca.2.6.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack259, 1, 1
-  %.fca.2.6.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack259, 1, 0
-  %.fca.2.6.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack259, 0
-  %.fca.2.5.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack257, 1, 2
-  %.fca.2.5.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack257, 1, 1
-  %.fca.2.5.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack257, 1, 0
-  %.fca.2.5.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack257, 0
-  %.fca.2.4.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack255, 1, 2
-  %.fca.2.4.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack255, 1, 1
-  %.fca.2.4.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack255, 1, 0
-  %.fca.2.4.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack255, 0
-  %.fca.2.3.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack253, 1, 2
-  %.fca.2.3.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack253, 1, 1
-  %.fca.2.3.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack253, 1, 0
-  %.fca.2.3.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack253, 0
-  %.fca.2.2.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack251, 1, 2
-  %.fca.2.2.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack251, 1, 1
-  %.fca.2.2.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack251, 1, 0
-  %.fca.2.2.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack251, 0
-  %.fca.2.1.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack249, 1, 2
-  %.fca.2.1.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack249, 1, 1
-  %.fca.2.1.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack249, 1, 0
-  %.fca.2.1.0.extract91 = extractvalue { i1, { i1, i64, i1 } } %.unpack249, 0
-  %.fca.2.0.1.2.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack, 1, 2
-  %.fca.2.0.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack, 1, 1
-  %.fca.2.0.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack, 1, 0
-  %.fca.2.0.0.extract = extractvalue { i1, { i1, i64, i1 } } %.unpack, 0
-  %9 = insertvalue [10 x { i1, { i1, i64, i1 } }] poison, i1 %.fca.2.0.0.extract, 0, 0
-  %10 = insertvalue [10 x { i1, { i1, i64, i1 } }] %9, i1 %.fca.2.0.1.0.extract, 0, 1, 0
-  %11 = insertvalue [10 x { i1, { i1, i64, i1 } }] %10, i64 %.fca.2.0.1.1.extract, 0, 1, 1
-  %12 = insertvalue [10 x { i1, { i1, i64, i1 } }] %11, i1 %.fca.2.0.1.2.extract, 0, 1, 2
-  %13 = insertvalue [10 x { i1, { i1, i64, i1 } }] %12, i1 %.fca.2.1.0.extract91, 1, 0
-  %14 = insertvalue [10 x { i1, { i1, i64, i1 } }] %13, i1 %.fca.2.1.1.0.extract, 1, 1, 0
-  %15 = insertvalue [10 x { i1, { i1, i64, i1 } }] %14, i64 %.fca.2.1.1.1.extract, 1, 1, 1
-  %16 = insertvalue [10 x { i1, { i1, i64, i1 } }] %15, i1 %.fca.2.1.1.2.extract, 1, 1, 2
-  %17 = insertvalue [10 x { i1, { i1, i64, i1 } }] %16, i1 %.fca.2.2.0.extract, 2, 0
-  %18 = insertvalue [10 x { i1, { i1, i64, i1 } }] %17, i1 %.fca.2.2.1.0.extract, 2, 1, 0
-  %19 = insertvalue [10 x { i1, { i1, i64, i1 } }] %18, i64 %.fca.2.2.1.1.extract, 2, 1, 1
-  %20 = insertvalue [10 x { i1, { i1, i64, i1 } }] %19, i1 %.fca.2.2.1.2.extract, 2, 1, 2
-  %21 = insertvalue [10 x { i1, { i1, i64, i1 } }] %20, i1 %.fca.2.3.0.extract, 3, 0
-  %22 = insertvalue [10 x { i1, { i1, i64, i1 } }] %21, i1 %.fca.2.3.1.0.extract, 3, 1, 0
-  %23 = insertvalue [10 x { i1, { i1, i64, i1 } }] %22, i64 %.fca.2.3.1.1.extract, 3, 1, 1
-  %24 = insertvalue [10 x { i1, { i1, i64, i1 } }] %23, i1 %.fca.2.3.1.2.extract, 3, 1, 2
-  %25 = insertvalue [10 x { i1, { i1, i64, i1 } }] %24, i1 %.fca.2.4.0.extract, 4, 0
-  %26 = insertvalue [10 x { i1, { i1, i64, i1 } }] %25, i1 %.fca.2.4.1.0.extract, 4, 1, 0
-  %27 = insertvalue [10 x { i1, { i1, i64, i1 } }] %26, i64 %.fca.2.4.1.1.extract, 4, 1, 1
-  %28 = insertvalue [10 x { i1, { i1, i64, i1 } }] %27, i1 %.fca.2.4.1.2.extract, 4, 1, 2
-  %29 = insertvalue [10 x { i1, { i1, i64, i1 } }] %28, i1 %.fca.2.5.0.extract, 5, 0
-  %30 = insertvalue [10 x { i1, { i1, i64, i1 } }] %29, i1 %.fca.2.5.1.0.extract, 5, 1, 0
-  %31 = insertvalue [10 x { i1, { i1, i64, i1 } }] %30, i64 %.fca.2.5.1.1.extract, 5, 1, 1
-  %32 = insertvalue [10 x { i1, { i1, i64, i1 } }] %31, i1 %.fca.2.5.1.2.extract, 5, 1, 2
-  %33 = insertvalue [10 x { i1, { i1, i64, i1 } }] %32, i1 %.fca.2.6.0.extract, 6, 0
-  %34 = insertvalue [10 x { i1, { i1, i64, i1 } }] %33, i1 %.fca.2.6.1.0.extract, 6, 1, 0
-  %35 = insertvalue [10 x { i1, { i1, i64, i1 } }] %34, i64 %.fca.2.6.1.1.extract, 6, 1, 1
-  %36 = insertvalue [10 x { i1, { i1, i64, i1 } }] %35, i1 %.fca.2.6.1.2.extract, 6, 1, 2
-  %37 = insertvalue [10 x { i1, { i1, i64, i1 } }] %36, i1 %.fca.2.7.0.extract, 7, 0
-  %38 = insertvalue [10 x { i1, { i1, i64, i1 } }] %37, i1 %.fca.2.7.1.0.extract, 7, 1, 0
-  %39 = insertvalue [10 x { i1, { i1, i64, i1 } }] %38, i64 %.fca.2.7.1.1.extract, 7, 1, 1
-  %40 = insertvalue [10 x { i1, { i1, i64, i1 } }] %39, i1 %.fca.2.7.1.2.extract, 7, 1, 2
-  %41 = insertvalue [10 x { i1, { i1, i64, i1 } }] %40, i1 %.fca.2.8.0.extract, 8, 0
-  %42 = insertvalue [10 x { i1, { i1, i64, i1 } }] %41, i1 %.fca.2.8.1.0.extract, 8, 1, 0
-  %43 = insertvalue [10 x { i1, { i1, i64, i1 } }] %42, i64 %.fca.2.8.1.1.extract, 8, 1, 1
-  %44 = insertvalue [10 x { i1, { i1, i64, i1 } }] %43, i1 %.fca.2.8.1.2.extract, 8, 1, 2
-  %45 = insertvalue [10 x { i1, { i1, i64, i1 } }] %44, i1 %.fca.2.9.0.extract, 9, 0
-  %46 = insertvalue [10 x { i1, { i1, i64, i1 } }] %45, i1 %.fca.2.9.1.0.extract, 9, 1, 0
-  %47 = insertvalue [10 x { i1, { i1, i64, i1 } }] %46, i64 %.fca.2.9.1.1.extract, 9, 1, 1
-  %48 = insertvalue [10 x { i1, { i1, i64, i1 } }] %47, i1 %.fca.2.9.1.2.extract, 9, 1, 2
-  ret [10 x { i1, { i1, i64, i1 } }] %48
+  ret { { i1, { i1, i64, i1 } }*, i64 } %0
 }
 
 define {} @"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425"({ i1, i64 } %0) local_unnamed_addr {
@@ -1292,7 +781,7 @@ alloca_block:
   br i1 %.fca.0.extract, label %cond_428_case_1, label %cond_exit_428
 
 cond_428_case_1:                                  ; preds = %alloca_block
-  tail call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
+  call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
   unreachable
 
 cond_exit_428:                                    ; preds = %alloca_block
@@ -1307,9 +796,9 @@ declare void @___rxy(i64, double, double) local_unnamed_addr
 
 define i64 @qmain(i64 %0) local_unnamed_addr {
 entry:
-  tail call void @setup(i64 %0)
-  tail call void @__hugr__.main.1()
-  %1 = tail call i64 @teardown()
+  call void @setup(i64 %0)
+  call void @__hugr__.main.1()
+  %1 = call i64 @teardown()
   ret i64 %1
 }
 
@@ -1318,11 +807,13 @@ declare void @setup(i64) local_unnamed_addr
 declare i64 @teardown() local_unnamed_addr
 
 ; Function Attrs: argmemonly nofree nounwind willreturn writeonly
-declare void @llvm.memset.p0i8.i64(i8* nocapture writeonly, i8, i64, i1 immarg) #2
+declare void @llvm.memset.p0i8.i64(i8* nocapture writeonly, i8, i64, i1 immarg) #4
 
 attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn }
-attributes #1 = { noreturn }
-attributes #2 = { argmemonly nofree nounwind willreturn writeonly }
+attributes #1 = { inaccessiblememonly mustprogress nofree nounwind willreturn }
+attributes #2 = { inaccessiblemem_or_argmemonly mustprogress nounwind willreturn }
+attributes #3 = { noreturn }
+attributes #4 = { argmemonly nofree nounwind willreturn writeonly }
 
 !name = !{!0}
 

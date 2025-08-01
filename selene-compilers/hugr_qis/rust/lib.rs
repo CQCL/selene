@@ -41,7 +41,7 @@ use tket::hugr::{Hugr, HugrView, Node};
 use tket::llvm::rotation::RotationCodegenExtension;
 use tket_qsystem::QSystemPass;
 use tket_qsystem::extension::{futures as qsystem_futures, qsystem, result as qsystem_result};
-use tket_qsystem::llvm::array_utils::{ArrayLowering, DEFAULT_STACK_ARRAY_LOWERING};
+use tket_qsystem::llvm::array_utils::{ArrayLowering, DEFAULT_HEAP_ARRAY_LOWERING};
 pub use tket_qsystem::llvm::futures::FuturesCodegenExtension;
 use tket_qsystem::llvm::{
     debug::DebugCodegenExtension, prelude::QISPreludeCodegen, qsystem::QSystemCodegenExtension,
@@ -151,16 +151,15 @@ fn codegen_extensions() -> CodegenExtsMap<'static, Hugr> {
         .add_float_extensions()
         .add_conversion_extensions()
         .add_logic_extensions()
-        // TODO: Replace with heap array lowering
-        .add_extension(DEFAULT_STACK_ARRAY_LOWERING.codegen_extension())
+        .add_extension(DEFAULT_HEAP_ARRAY_LOWERING.codegen_extension())
         .add_default_static_array_extensions()
         .add_extension(FuturesCodegenExtension)
         .add_extension(QSystemCodegenExtension::from(pcg.clone()))
         .add_extension(RandomCodegenExtension)
-        .add_extension(ResultsCodegenExtension::new(DEFAULT_STACK_ARRAY_LOWERING))
+        .add_extension(ResultsCodegenExtension::new(DEFAULT_HEAP_ARRAY_LOWERING))
         .add_extension(RotationCodegenExtension::new(pcg))
         .add_extension(UtilsCodegenExtension)
-        .add_extension(DebugCodegenExtension::new(DEFAULT_STACK_ARRAY_LOWERING))
+        .add_extension(DebugCodegenExtension::new(DEFAULT_HEAP_ARRAY_LOWERING))
         .finish()
 }
 
@@ -423,7 +422,7 @@ mod selene_hugr_qis_compiler {
 
     /// Compile HUGR package to LLVM IR string
     #[pyfunction]
-    #[pyo3(signature = (pkg_bytes, opt_level=2, target_triple="native"))]
+    #[pyo3(signature = (pkg_bytes, opt_level=1, target_triple="native"))]
     pub fn compile_to_llvm_ir(
         pkg_bytes: &[u8],
         opt_level: u32,
@@ -447,7 +446,7 @@ mod selene_hugr_qis_compiler {
 
     /// Compile HUGR package to LLVM bitcode
     #[pyfunction]
-    #[pyo3(signature = (pkg_bytes, opt_level=2, target_triple="native"))]
+    #[pyo3(signature = (pkg_bytes, opt_level=1, target_triple="native"))]
     pub fn compile_to_bitcode(
         pkg_bytes: &[u8],
         opt_level: u32,
