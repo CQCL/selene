@@ -20,7 +20,7 @@ def test_simple_vs_softrz():
         result("c1", measure(q1))
         result("c2", measure(q2))
 
-    runner = build(guppy.compile(main), "runtime_diff")
+    runner = build(main.compile(), "runtime_diff")
     simulator = Quest(random_seed=561278)
 
     simple_metric_store = MetricStore()

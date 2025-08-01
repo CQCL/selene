@@ -35,7 +35,7 @@ def test_recursive_condition_successful_cases_single_process():
     def main() -> None:
         recursive_condition()
 
-    runner = build(guppy.compile(main), "recursive_condition")
+    runner = build(main.compile(), "recursive_condition")
 
     valid_measurements = [
         [False],
@@ -69,7 +69,7 @@ def test_recursive_condition_successful_cases_multi_process():
     def main() -> None:
         recursive_condition()
 
-    runner = build(guppy.compile(main), "recursive_condition")
+    runner = build(main.compile(), "recursive_condition")
 
     valid_measurements = [
         [False],
@@ -105,7 +105,7 @@ def test_recursive_condition_invalid_cases_single_process():
     def main() -> None:
         recursive_condition()
 
-    runner = build(guppy.compile(main), "recursive_condition")
+    runner = build(main.compile(), "recursive_condition")
 
     invalid_measurements = [
         [],  # no outputs at all
@@ -143,7 +143,7 @@ def test_recursive_condition_invalid_cases_multi_process():
     def main() -> None:
         recursive_condition()
 
-    runner = build(guppy.compile(main), "recursive_condition")
+    runner = build(main.compile(), "recursive_condition")
 
     invalid_measurements = [
         [],  # no outputs at all
@@ -190,7 +190,7 @@ def test_quantum_replay(underlying_simulator_class):
         # this the results should either be (0,0,1,1) or (1,1,0,0)
         # we can use quantum replay to verify this.
 
-    runner = build(guppy.compile(main), "quantum_replay_quest")
+    runner = build(main.compile(), "quantum_replay_quest")
     underlying_simulator = underlying_simulator_class(random_seed=0)
     # run full replay - no measurements allowed, just postselection.
     # if the user program requires more measurements, this is an error.

@@ -35,7 +35,7 @@ def test_check() -> None:
         q = qubit()
         discard(q)
 
-    package = guppy.compile(foo).package
+    package = foo.compile().package
     hugr_envelope = package.to_bytes()
 
     check_hugr(hugr_envelope)  # guppy produces a valid HUGR envelope!
@@ -62,7 +62,7 @@ def test_llvm_no_results(snapshot, target_triple):
         h(q0)
         m = measure(q0)
 
-    hugr_envelope = guppy.compile(bar).package.to_bytes()
+    hugr_envelope = bar.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"no_results_{target_triple}")
 
@@ -83,7 +83,7 @@ def test_llvm_flip_some(snapshot, target_triple):
         result("c2", measure(q2))
         result("c3", measure(q3))
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"flip_some_{target_triple}")
 
@@ -95,7 +95,7 @@ def test_llvm_discard_array(snapshot, target_triple):
         qs = array(qubit() for _ in range(10))
         discard_array(qs)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"discard_array_{target_triple}")
 
@@ -111,7 +111,7 @@ def test_llvm_measure_array(snapshot, target_triple):
         x(qs[9])
         cs = measure_array(qs)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"measure_array_{target_triple}")
 
@@ -130,7 +130,7 @@ def test_llvm_print_array(snapshot, target_triple):
         result("is", array(i for i in range(100)))
         result("fs", array(i * 0.0625 for i in range(100)))
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"print_array_{target_triple}")
 
@@ -152,7 +152,7 @@ def test_llvm_exit(snapshot, target_triple):
             exit("Postselection failed", 42)
         result("c", outcome)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"exit_{target_triple}")
 
@@ -175,7 +175,7 @@ def test_llvm_panic(snapshot, target_triple):
             panic("Postselection failed")
         result("c", outcome)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"panic_{target_triple}")
 
@@ -215,7 +215,7 @@ def test_llvm_rus(snapshot, target_triple):
         rus(q)
         result("result", measure(q))
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"rus_{target_triple}")
 
@@ -226,7 +226,7 @@ def test_llvm_get_current_shot(snapshot, target_triple):
     def main() -> None:
         result("shot", get_current_shot())
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"current_shot_{target_triple}")
 
@@ -254,6 +254,6 @@ def test_llvm_rng(snapshot, target_triple):
         result("rfloat2", rfloat)
         result("rint_bnd2", rint_bnd)
 
-    hugr_envelope = guppy.compile(main).package.to_bytes()
+    hugr_envelope = main.compile().package.to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"rng_{target_triple}")

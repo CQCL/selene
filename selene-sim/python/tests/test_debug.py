@@ -17,7 +17,7 @@ def test_initial_state():
         state_result("initial_state", q0)
         discard(q0)
 
-    runner = build(guppy.compile(main), "initial_state")
+    runner = build(main.compile(), "initial_state")
     got = runner.run(Quest(), n_qubits=1)
     state = Quest.extract_states_dict(got)["initial_state"]
     assert state.get_dirac_notation()[0].probability == 1
@@ -32,7 +32,7 @@ def test_array_state():
         state_result("array_state", qs)
         discard_array(qs)
 
-    runner = build(guppy.compile(main), "array_state")
+    runner = build(main.compile(), "array_state")
     plugin = Quest()
     shots = QsysResult(
         runner.run_shots(
@@ -56,7 +56,7 @@ def test_array_subscript_state():
         state_result("array_state", qs[0])
         discard_array(qs)
 
-    runner = build(guppy.compile(main), "array_state")
+    runner = build(main.compile(), "array_state")
     plugin = Quest()
     shots = QsysResult(
         runner.run_shots(
@@ -81,7 +81,7 @@ def test_state_cleanup(cleanup_param):
         state_result("array_state", qs[0])
         discard_array(qs)
 
-    runner = build(guppy.compile(main), "array_state")
+    runner = build(main.compile(), "array_state")
     plugin = Quest()
     shots = QsysResult(
         runner.run_shots(

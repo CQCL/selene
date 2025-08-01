@@ -86,7 +86,7 @@ cache-keys = [
 ]
 
 [tool.uv.sources]
-guppylang = { git = "https://github.com/CQCL/guppylang.git", branch = "ss/hugr-py-v0.13" }
+guppylang = { git = "https://github.com/CQCL/guppylang.git", rev = "bf57ef8" }
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -101,7 +101,7 @@ manylinux-aarch64-image = "manylinux_2_28"
 test-requires = [
     "pytest",
     "pytest-snapshot",
-    "git+https://github.com/cqcl/guppylang@ss/hugr-py-v0.13",
+    "git+https://github.com/cqcl/guppylang@bf57ef8",
 ]
 test-command = "pytest -vv {package}"
 

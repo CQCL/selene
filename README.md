@@ -58,7 +58,7 @@ def main() -> None:
     # report measurements to the results stream
     result("measurements", ms)
 
-compiled_hugr = guppy.compile(main)
+compiled_hugr = main.compile()
 
 ################################
 # Building the selene instance #

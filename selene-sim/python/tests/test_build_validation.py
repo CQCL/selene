@@ -60,6 +60,6 @@ def test_strict_builds(build_config, snapshot):
         q0 = qubit()
         discard(q0)
 
-    runner = build(guppy.compile(main), strict=True, **build_config["kwargs"])
+    runner = build(main.compile(), strict=True, **build_config["kwargs"])
     got = list(runner.run(Quest(), n_qubits=1))
     assert len(got) == 0
