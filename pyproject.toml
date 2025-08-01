@@ -64,7 +64,7 @@ dev = [
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
 selene-hugr-qis-compiler = { workspace = true }
-guppylang = { git = "https://github.com/CQCL/guppylang.git", branch = "ss/hugr-py-v0.13" }
+guppylang = { git = "https://github.com/CQCL/guppylang.git", rev = "bf57ef8" }
 
 [tool.uv.workspace]
 members = ["selene-core", "selene-compilers/hugr_qis"]
@@ -144,7 +144,7 @@ environment-pass = [
 test-requires = [
     "pytest",
     "pytest-snapshot",
-    "git+https://github.com/cqcl/guppylang@ss/hugr-py-v0.13",
+    "git+https://github.com/cqcl/guppylang@bf57ef8",
 ]
 test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
 [tool.cibuildwheel.linux]

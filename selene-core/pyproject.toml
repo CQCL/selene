@@ -5,7 +5,7 @@ requires-python = ">=3.10"
 description = "The core interop library for Selene python interfaces"
 readme = "python/selene_core/README.md"
 dependencies = [
-  "networkx~=3.4",
+  "networkx>=2.6,<4",
   "pyyaml~=6.0",
   "pydot>=4.0.0",
   "typing_extensions>=4",
@@ -28,7 +28,7 @@ path = "hatch_build.py"
 
 [tool.uv]
 cache-keys = [
-    { file = "examples/**/*.rs" },
-    { file = "examples/**/Cargo.lock" },
-    { file = "examples/**/Cargo.toml" },
+  { file = "examples/**/*.rs" },
+  { file = "examples/**/Cargo.lock" },
+  { file = "examples/**/Cargo.toml" },
 ]

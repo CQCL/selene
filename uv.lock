@@ -197,13 +197,10 @@ wheels = [
 [[package]]
 name = "guppylang"
 version = "0.20.0"
-source = { git = "https://github.com/CQCL/guppylang.git?branch=ss%2Fhugr-py-v0.13#1bab7da1151b887e69b74bde3d2495180285409b" }
+source = { git = "https://github.com/CQCL/guppylang.git?rev=bf57ef8#bf57ef8c0e5435589ed5dee26784ae855ed41ae3" }
 dependencies = [
-    { name = "graphviz" },
     { name = "hugr" },
-    { name = "networkx", version = "3.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "networkx", version = "3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "pydantic" },
+    { name = "selene-sim" },
     { name = "tket-exts" },
     { name = "typing-extensions" },
 ]
@@ -484,26 +481,11 @@ wheels = [
 
 [[package]]
 name = "networkx"
-version = "3.4.2"
+version = "2.8.8"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version < '3.11'",
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/1d/06475e1cd5264c0b870ea2cc6fdb3e37177c1e565c43f56ff17a10e3937f/networkx-3.4.2.tar.gz", hash = "sha256:307c3669428c5362aab27c8a1260aa8f47c4e91d3891f48be0141738d8d053e1", size = 2151368, upload-time = "2024-10-21T12:39:38.695Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/16/c44e8550012735b8f21b3df7f39e8ba5a987fb764ac017ad5f3589735889/networkx-2.8.8.tar.gz", hash = "sha256:230d388117af870fce5647a3c52401fcf753e94720e6ea6b4197a5355648885e", size = 1960828, upload-time = "2022-11-01T20:31:52.02Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/54/dd730b32ea14ea797530a4479b2ed46a6fb250f682a9cfb997e968bf0261/networkx-3.4.2-py3-none-any.whl", hash = "sha256:df5d4365b724cf81b8c6a7312509d0c22386097011ad1abe274afd5e9d3bbc5f", size = 1723263, upload-time = "2024-10-21T12:39:36.247Z" },
-]
-
-[[package]]
-name = "networkx"
-version = "3.5"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.11'",
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6c/4f/ccdb8ad3a38e583f214547fd2f7ff1fc160c43a75af88e6aec213404b96a/networkx-3.5.tar.gz", hash = "sha256:d4c6f9cf81f52d69230866796b82afbccdec3db7ae4fbd1b65ea750feed50037", size = 2471065, upload-time = "2025-05-29T11:35:07.804Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/8d/776adee7bbf76365fdd7f2552710282c79a4ead5d2a46408c9043a2b70ba/networkx-3.5-py3-none-any.whl", hash = "sha256:0030d386a9a06dee3565298b4a734b68589749a544acbb6c412dc9e2489ec6ec", size = 2034406, upload-time = "2025-05-29T11:35:04.961Z" },
+    { url = "https://files.pythonhosted.org/packages/42/31/d2f89f1ae42718f8c8a9e440ebe38d7d5fe1e0d9eb9178ce779e365b3ab0/networkx-2.8.8-py3-none-any.whl", hash = "sha256:e435dfa75b1d7195c7b8378c3859f0445cd88c6b0375c181ed66823a9ceb7524", size = 2025192, upload-time = "2022-11-01T20:31:49.035Z" },
 ]
 
 [[package]]
@@ -926,8 +908,7 @@ dependencies = [
     { name = "graphviz" },
     { name = "jinja2" },
     { name = "lark" },
-    { name = "networkx", version = "3.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "networkx", version = "3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "networkx" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.3.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "qwasm" },
@@ -1250,8 +1231,7 @@ name = "selene-core"
 version = "0.2.0rc4"
 source = { editable = "selene-core" }
 dependencies = [
-    { name = "networkx", version = "3.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "networkx", version = "3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "networkx" },
     { name = "pydot" },
     { name = "pyyaml" },
     { name = "typing-extensions" },
@@ -1259,7 +1239,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "networkx", specifier = "~=3.4" },
+    { name = "networkx", specifier = ">=2.6,<4" },
     { name = "pydot", specifier = ">=4.0.0" },
     { name = "pyyaml", specifier = "~=6.0" },
     { name = "typing-extensions", specifier = ">=4" },
@@ -1287,7 +1267,7 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "cibuildwheel", specifier = ">=2.23.2" },
-    { name = "guppylang", git = "https://github.com/CQCL/guppylang.git?branch=ss%2Fhugr-py-v0.13" },
+    { name = "guppylang", git = "https://github.com/CQCL/guppylang.git?rev=bf57ef8" },
     { name = "maturin", specifier = ">=1.7.4,<2.0" },
     { name = "pip", specifier = ">=25" },
     { name = "pre-commit", specifier = "==4.0.1" },
@@ -1345,7 +1325,7 @@ requires-dist = [
 dev = [
     { name = "auditwheel", specifier = ">=6.3.0" },
     { name = "cibuildwheel", specifier = ">=2.23.3" },
-    { name = "guppylang", git = "https://github.com/CQCL/guppylang.git?branch=ss%2Fhugr-py-v0.13" },
+    { name = "guppylang", git = "https://github.com/CQCL/guppylang.git?rev=bf57ef8" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "pip", specifier = ">=24.2" },
     { name = "pytest", specifier = ">=8.3.5" },
@@ -1387,10 +1367,14 @@ wheels = [
 
 [[package]]
 name = "tket-exts"
-version = "0.9.2"
-source = { git = "https://github.com/CQCL/tket2?subdirectory=tket-exts&rev=1bf4c70#1bf4c70788693d357b3cb2dcdbe2c721951da2a5" }
+version = "0.10.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "hugr" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/65/6f/01ed6e9c4549b51d1fb07e73efc8dd0206ee86a25ba47d2bcf0015c05e68/tket_exts-0.10.0.tar.gz", hash = "sha256:6306c30c2bfae19e558676c1877c5c8195e03b7035a52d4c2180d9baa69a6c46", size = 12965, upload-time = "2025-07-29T13:44:27.088Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/17/00/6c546b76dac7a89784eb6809ad2ce006551e9bebba125ffe51d7d0c38864/tket_exts-0.10.0-py3-none-any.whl", hash = "sha256:74cf395f2952fa79fe127b8a90f6e265cfb4428569b96c0f9b2af1c80f91b3c2", size = 18759, upload-time = "2025-07-29T13:44:25.699Z" },
 ]
 
 [[package]]
