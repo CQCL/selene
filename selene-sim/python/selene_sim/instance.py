@@ -331,6 +331,8 @@ class SeleneInstance:
 
         processes = SeleneProcessList()
         library_search_dirs = self.library_search_dirs.copy()
+        for component in (simulator, error_model, runtime):
+            library_search_dirs.extend(component.library_search_dirs)
         global_configuration = {
             "event_hooks": {flag: True for flag in event_hook.get_selene_flags()},
             "n_qubits": n_qubits,
