@@ -13,33 +13,33 @@ target triple = "x86_64-unknown-linux-gnu"
 
 define void @__hugr__.main.1() local_unnamed_addr {
 alloca_block:
-  call void @random_seed(i64 42)
-  %rint = call i32 @random_int()
-  %rint20 = call i32 @random_int()
-  %rfloat = call double @random_float()
-  %rintb = call i32 @random_rng(i32 100)
+  tail call void @random_seed(i64 42)
+  %rint = tail call i32 @random_int()
+  %rint20 = tail call i32 @random_int()
+  %rfloat = tail call double @random_float()
+  %rintb = tail call i32 @random_rng(i32 100)
   %0 = sext i32 %rintb to i64
   %1 = sext i32 %rint20 to i64
   %2 = sext i32 %rint to i64
-  call void @print_int(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @res_rint.B928E41E.0, i64 0, i64 0), i64 13, i64 %2)
-  call void @print_int(i8* getelementptr inbounds ([15 x i8], [15 x i8]* @res_rint1.0884EC03.0, i64 0, i64 0), i64 14, i64 %1)
-  call void @print_float(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @res_rfloat.F0E4DD2C.0, i64 0, i64 0), i64 17, double %rfloat)
-  call void @print_int(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @res_rint_bnd.CB1E6B0D.0, i64 0, i64 0), i64 17, i64 %0)
-  call void @random_seed(i64 84)
-  %rint53 = call i32 @random_int()
-  %rfloat55 = call double @random_float()
-  %rintb58 = call i32 @random_rng(i32 200)
+  tail call void @print_int(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @res_rint.B928E41E.0, i64 0, i64 0), i64 13, i64 %2)
+  tail call void @print_int(i8* getelementptr inbounds ([15 x i8], [15 x i8]* @res_rint1.0884EC03.0, i64 0, i64 0), i64 14, i64 %1)
+  tail call void @print_float(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @res_rfloat.F0E4DD2C.0, i64 0, i64 0), i64 17, double %rfloat)
+  tail call void @print_int(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @res_rint_bnd.CB1E6B0D.0, i64 0, i64 0), i64 17, i64 %0)
+  tail call void @random_seed(i64 84)
+  %rint53 = tail call i32 @random_int()
+  %rfloat55 = tail call double @random_float()
+  %rintb58 = tail call i32 @random_rng(i32 200)
   %3 = sext i32 %rintb58 to i64
   %4 = sext i32 %rint53 to i64
-  call void @print_int(i8* getelementptr inbounds ([15 x i8], [15 x i8]* @res_rint2.F0335598.0, i64 0, i64 0), i64 14, i64 %4)
-  call void @print_float(i8* getelementptr inbounds ([19 x i8], [19 x i8]* @res_rfloat2.4DAB941F.0, i64 0, i64 0), i64 18, double %rfloat55)
-  call void @print_int(i8* getelementptr inbounds ([19 x i8], [19 x i8]* @res_rint_bnd2.169DE399.0, i64 0, i64 0), i64 18, i64 %3)
+  tail call void @print_int(i8* getelementptr inbounds ([15 x i8], [15 x i8]* @res_rint2.F0335598.0, i64 0, i64 0), i64 14, i64 %4)
+  tail call void @print_float(i8* getelementptr inbounds ([19 x i8], [19 x i8]* @res_rfloat2.4DAB941F.0, i64 0, i64 0), i64 18, double %rfloat55)
+  tail call void @print_int(i8* getelementptr inbounds ([19 x i8], [19 x i8]* @res_rint_bnd2.169DE399.0, i64 0, i64 0), i64 18, i64 %3)
   ret void
 }
 
 define {} @__hugr__.__new__.72(i64 %0) local_unnamed_addr {
 alloca_block:
-  call void @random_seed(i64 %0)
+  tail call void @random_seed(i64 %0)
   ret {} undef
 }
 
@@ -57,9 +57,9 @@ declare void @random_seed(i64) local_unnamed_addr
 
 define i64 @qmain(i64 %0) local_unnamed_addr {
 entry:
-  call void @setup(i64 %0)
-  call void @__hugr__.main.1()
-  %1 = call i64 @teardown()
+  tail call void @setup(i64 %0)
+  tail call void @__hugr__.main.1()
+  %1 = tail call i64 @teardown()
   ret i64 %1
 }
 
