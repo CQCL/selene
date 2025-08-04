@@ -113,4 +113,4 @@ class QuantumReplayPlugin(Simulator):
 
     @property
     def library_search_dirs(self):
-        return self.wrapper.library_search_dirs
+        return self.simulator.library_search_dirs
