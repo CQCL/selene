@@ -11,346 +11,326 @@ target triple = "x86_64-apple-darwin"
 
 define void @__hugr__.main.1() local_unnamed_addr {
 alloca_block:
-  %0 = call dereferenceable_or_null(160) i8* @malloc(i64 160)
+  %0 = tail call i8* @heap_alloc(i64 160)
   call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(160) %0, i8 0, i64 160, i1 false)
   %1 = bitcast i8* %0 to { i1, i64 }*
   br label %loop_body
 
-loop_body:                                        ; preds = %alloca_block, %cond_exit_25
-  %"20_2.0" = phi i64 [ %"2.0", %cond_exit_25 ], [ 0, %alloca_block ]
-  %"20_0.sroa.0.0" = phi i64 [ %"0.sroa.3.0", %cond_exit_25 ], [ 0, %alloca_block ]
-  %2 = icmp slt i64 %"20_0.sroa.0.0", 10
-  br i1 %2, label %cond_25_case_1, label %cond_exit_25
+loop_body:                                        ; preds = %alloca_block, %cond_311_case_1.i
+  %"20_2.0" = phi i64 [ %2, %cond_311_case_1.i ], [ 0, %alloca_block ]
+  %exitcond.not = icmp eq i64 %"20_2.0", 10
+  br i1 %exitcond.not, label %loop_out, label %cond_25_case_1
 
 cond_25_case_1:                                   ; preds = %loop_body
-  %3 = add i64 %"20_0.sroa.0.0", 1
-  %4 = add i64 %"20_2.0", 1
-  %qalloc.i = call i64 @___qalloc()
+  %2 = add nuw nsw i64 %"20_2.0", 1
+  %qalloc.i = tail call i64 @___qalloc()
   %not_max.not.i = icmp eq i64 %qalloc.i, -1
   br i1 %not_max.not.i, label %id_bb.i, label %reset_bb.i
 
 reset_bb.i:                                       ; preds = %cond_25_case_1
-  call void @___reset(i64 %qalloc.i)
+  tail call void @___reset(i64 %qalloc.i)
   br label %id_bb.i
 
 id_bb.i:                                          ; preds = %reset_bb.i, %cond_25_case_1
-  %5 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc.i, 1
-  %6 = select i1 %not_max.not.i, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %5
-  %.fca.0.extract.i = extractvalue { i1, i64 } %6, 0
-  br i1 %.fca.0.extract.i, label %__hugr__.__tk2_qalloc.283.exit, label %cond_279_case_0.i
+  %3 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc.i, 1
+  %4 = select i1 %not_max.not.i, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %3
+  %.fca.0.extract.i = extractvalue { i1, i64 } %4, 0
+  br i1 %.fca.0.extract.i, label %cond_311_case_1.i, label %cond_279_case_0.i
 
 cond_279_case_0.i:                                ; preds = %id_bb.i
-  call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
   unreachable
 
-__hugr__.__tk2_qalloc.283.exit:                   ; preds = %id_bb.i
-  %7 = icmp ult i64 %"20_2.0", 10
-  br i1 %7, label %8, label %12
-
-8:                                                ; preds = %__hugr__.__tk2_qalloc.283.exit
-  %.fca.1.extract.i = extractvalue { i1, i64 } %6, 1
+cond_311_case_1.i:                                ; preds = %id_bb.i
+  %.fca.1.extract.i = extractvalue { i1, i64 } %4, 1
   %"308_05.fca.1.insert.i" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.1.extract.i, 1
-  %9 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 %"20_2.0"
-  %10 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %9, i64 0, i32 0
-  %11 = load i1, i1* %10, align 1
-  store { i1, i64 } %"308_05.fca.1.insert.i", { i1, i64 }* %9, align 4
-  br label %12
-
-12:                                               ; preds = %8, %__hugr__.__tk2_qalloc.283.exit
-  %"06.sroa.9.0.i" = phi i1 [ %11, %8 ], [ true, %__hugr__.__tk2_qalloc.283.exit ]
-  br i1 %7, label %cond_311_case_1.i, label %cond_311_case_0.i
-
-cond_311_case_0.i:                                ; preds = %12
-  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
-  unreachable
-
-cond_311_case_1.i:                                ; preds = %12
-  br i1 %"06.sroa.9.0.i", label %cond_321_case_1.i, label %cond_exit_25
+  %5 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 %"20_2.0"
+  %6 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %5, i64 0, i32 0
+  %7 = load i1, i1* %6, align 1
+  store { i1, i64 } %"308_05.fca.1.insert.i", { i1, i64 }* %5, align 4
+  br i1 %7, label %cond_321_case_1.i, label %loop_body
 
 cond_321_case_1.i:                                ; preds = %cond_311_case_1.i
-  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
-cond_exit_25:                                     ; preds = %cond_311_case_1.i, %loop_body
-  %"2.0" = phi i64 [ %"20_2.0", %loop_body ], [ %4, %cond_311_case_1.i ]
-  %"0.sroa.3.0" = phi i64 [ poison, %loop_body ], [ %3, %cond_311_case_1.i ]
-  br i1 %2, label %loop_body, label %loop_out
-
-loop_out:                                         ; preds = %cond_exit_25
+loop_out:                                         ; preds = %loop_body
   %"121.fca.0.insert" = insertvalue { { i1, i64 }*, i64 } poison, { i1, i64 }* %1, 0
   %"121.fca.1.insert" = insertvalue { { i1, i64 }*, i64 } %"121.fca.0.insert", i64 0, 1
-  %13 = load { i1, i64 }, { i1, i64 }* %1, align 4
-  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %0, i8 0, i64 16, i1 false)
-  %.fca.2.0.extract.i = extractvalue { i1, i64 } %13, 0
-  %.fca.2.1.extract.i = extractvalue { i1, i64 } %13, 1
+  %8 = load { i1, i64 }, { i1, i64 }* %1, align 4
+  tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %0, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i = extractvalue { i1, i64 } %8, 0
   br i1 %.fca.2.0.extract.i, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit", label %cond_347_case_0.i
 
 cond_347_case_0.i:                                ; preds = %loop_out
-  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 
 "__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit": ; preds = %loop_out
-  call void @___rxy(i64 %.fca.2.1.extract.i, double 0x400921FB54442D18, double 0.000000e+00)
+  %.fca.2.1.extract.i = extractvalue { i1, i64 } %8, 1
+  tail call void @___rxy(i64 %.fca.2.1.extract.i, double 0x400921FB54442D18, double 0.000000e+00)
   %"308_05.fca.1.insert.i153" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i, 1
-  %14 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 0, i32 0
-  %15 = load i1, i1* %14, align 1
+  %9 = bitcast i8* %0 to i1*
+  %10 = load i1, i1* %9, align 1
   store { i1, i64 } %"308_05.fca.1.insert.i153", { i1, i64 }* %1, align 4
-  br i1 %15, label %cond_321_case_1.i156, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157"
+  br i1 %10, label %cond_321_case_1.i155, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit156"
 
-cond_321_case_1.i156:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+cond_321_case_1.i155:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
-"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
-  %16 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 2
-  %17 = load { i1, i64 }, { i1, i64 }* %16, align 4
-  %18 = bitcast { i1, i64 }* %16 to i8*
-  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %18, i8 0, i64 16, i1 false)
-  %.fca.2.0.extract.i158 = extractvalue { i1, i64 } %17, 0
-  %.fca.2.1.extract.i159 = extractvalue { i1, i64 } %17, 1
-  br i1 %.fca.2.0.extract.i158, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163", label %cond_347_case_0.i162
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit156": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
+  %11 = getelementptr inbounds i8, i8* %0, i64 32
+  %12 = bitcast i8* %11 to { i1, i64 }*
+  %13 = load { i1, i64 }, { i1, i64 }* %12, align 4
+  tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %11, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i157 = extractvalue { i1, i64 } %13, 0
+  br i1 %.fca.2.0.extract.i157, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit162", label %cond_347_case_0.i161
 
-cond_347_case_0.i162:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+cond_347_case_0.i161:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit156"
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 
-"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit157"
-  call void @___rxy(i64 %.fca.2.1.extract.i159, double 0x400921FB54442D18, double 0.000000e+00)
-  %"308_05.fca.1.insert.i164" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i159, 1
-  %19 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %16, i64 0, i32 0
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit162": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit156"
+  %.fca.2.1.extract.i158 = extractvalue { i1, i64 } %13, 1
+  tail call void @___rxy(i64 %.fca.2.1.extract.i158, double 0x400921FB54442D18, double 0.000000e+00)
+  %"308_05.fca.1.insert.i163" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i158, 1
+  %14 = bitcast i8* %11 to i1*
+  %15 = load i1, i1* %14, align 1
+  store { i1, i64 } %"308_05.fca.1.insert.i163", { i1, i64 }* %12, align 4
+  br i1 %15, label %cond_321_case_1.i167, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit168"
+
+cond_321_case_1.i167:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit162"
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit168": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit162"
+  %16 = getelementptr inbounds i8, i8* %0, i64 48
+  %17 = bitcast i8* %16 to { i1, i64 }*
+  %18 = load { i1, i64 }, { i1, i64 }* %17, align 4
+  tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %16, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i171 = extractvalue { i1, i64 } %18, 0
+  br i1 %.fca.2.0.extract.i171, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit176", label %cond_347_case_0.i175
+
+cond_347_case_0.i175:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit168"
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  unreachable
+
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit176": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit168"
+  %.fca.2.1.extract.i172 = extractvalue { i1, i64 } %18, 1
+  tail call void @___rxy(i64 %.fca.2.1.extract.i172, double 0x400921FB54442D18, double 0.000000e+00)
+  %"308_05.fca.1.insert.i177" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i172, 1
+  %19 = bitcast i8* %16 to i1*
   %20 = load i1, i1* %19, align 1
-  store { i1, i64 } %"308_05.fca.1.insert.i164", { i1, i64 }* %16, align 4
-  br i1 %20, label %cond_321_case_1.i169, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170"
+  store { i1, i64 } %"308_05.fca.1.insert.i177", { i1, i64 }* %17, align 4
+  br i1 %20, label %cond_321_case_1.i181, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit182"
 
-cond_321_case_1.i169:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+cond_321_case_1.i181:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit176"
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
-"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit163"
-  %21 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 3
-  %22 = load { i1, i64 }, { i1, i64 }* %21, align 4
-  %23 = bitcast { i1, i64 }* %21 to i8*
-  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %23, i8 0, i64 16, i1 false)
-  %.fca.2.0.extract.i173 = extractvalue { i1, i64 } %22, 0
-  %.fca.2.1.extract.i174 = extractvalue { i1, i64 } %22, 1
-  br i1 %.fca.2.0.extract.i173, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178", label %cond_347_case_0.i177
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit182": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit176"
+  %21 = getelementptr inbounds i8, i8* %0, i64 144
+  %22 = bitcast i8* %21 to { i1, i64 }*
+  %23 = load { i1, i64 }, { i1, i64 }* %22, align 4
+  tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %21, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i185 = extractvalue { i1, i64 } %23, 0
+  br i1 %.fca.2.0.extract.i185, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit190", label %cond_347_case_0.i189
 
-cond_347_case_0.i177:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+cond_347_case_0.i189:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit182"
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 
-"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit170"
-  call void @___rxy(i64 %.fca.2.1.extract.i174, double 0x400921FB54442D18, double 0.000000e+00)
-  %"308_05.fca.1.insert.i179" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i174, 1
-  %24 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %21, i64 0, i32 0
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit190": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit182"
+  %.fca.2.1.extract.i186 = extractvalue { i1, i64 } %23, 1
+  tail call void @___rxy(i64 %.fca.2.1.extract.i186, double 0x400921FB54442D18, double 0.000000e+00)
+  %"308_05.fca.1.insert.i191" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i186, 1
+  %24 = bitcast i8* %21 to i1*
   %25 = load i1, i1* %24, align 1
-  store { i1, i64 } %"308_05.fca.1.insert.i179", { i1, i64 }* %21, align 4
-  br i1 %25, label %cond_321_case_1.i184, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185"
+  store { i1, i64 } %"308_05.fca.1.insert.i191", { i1, i64 }* %22, align 4
+  br i1 %25, label %cond_321_case_1.i195, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit196"
 
-cond_321_case_1.i184:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+cond_321_case_1.i195:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit190"
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
-"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit178"
-  %26 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %1, i64 9
-  %27 = load { i1, i64 }, { i1, i64 }* %26, align 4
-  %28 = bitcast { i1, i64 }* %26 to i8*
-  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %28, i8 0, i64 16, i1 false)
-  %.fca.2.0.extract.i188 = extractvalue { i1, i64 } %27, 0
-  %.fca.2.1.extract.i189 = extractvalue { i1, i64 } %27, 1
-  br i1 %.fca.2.0.extract.i188, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193", label %cond_347_case_0.i192
-
-cond_347_case_0.i192:                             ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
-  unreachable
-
-"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193": ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit185"
-  call void @___rxy(i64 %.fca.2.1.extract.i189, double 0x400921FB54442D18, double 0.000000e+00)
-  %"308_05.fca.1.insert.i194" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.2.1.extract.i189, 1
-  %29 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %26, i64 0, i32 0
-  %30 = load i1, i1* %29, align 1
-  store { i1, i64 } %"308_05.fca.1.insert.i194", { i1, i64 }* %26, align 4
-  br i1 %30, label %cond_321_case_1.i199, label %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200"
-
-cond_321_case_1.i199:                             ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
-  unreachable
-
-"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit193"
-  %31 = call { { i1, { i1, i64, i1 } }*, i64 } @"__hugr__.$measure_array$$n(10).359"({ { i1, i64 }*, i64 } %"121.fca.1.insert")
-  %.fca.0.extract92 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %31, 0
-  %.fca.1.extract93 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %31, 1
-  %32 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %.fca.1.extract93
-  %33 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %32, align 4
-  %.fca.0.extract13.i = extractvalue { i1, { i1, i64, i1 } } %33, 0
+"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit196": ; preds = %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit190"
+  %26 = tail call { { i1, { i1, i64, i1 } }*, i64 } @"__hugr__.$measure_array$$n(10).359"({ { i1, i64 }*, i64 } %"121.fca.1.insert")
+  %.fca.0.extract92 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %26, 0
+  %.fca.1.extract93 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %26, 1
+  %27 = tail call i8* @heap_alloc(i64 0)
+  %28 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %.fca.1.extract93
+  %29 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %28, align 4
+  %.fca.0.extract13.i = extractvalue { i1, { i1, i64, i1 } } %29, 0
   br i1 %.fca.0.extract13.i, label %cond_208_case_1.i, label %__hugr__.const_fun_242.211.exit
 
-cond_208_case_1.i:                                ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200"
-  %34 = extractvalue { i1, { i1, i64, i1 } } %33, 1
-  %.fca.0.extract.i201 = extractvalue { i1, i64, i1 } %34, 0
-  br i1 %.fca.0.extract.i201, label %cond_197_case_1.i, label %__hugr__.const_fun_242.211.exit
+cond_208_case_1.i:                                ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit196"
+  %30 = extractvalue { i1, { i1, i64, i1 } } %29, 1
+  %.fca.0.extract.i197 = extractvalue { i1, i64, i1 } %30, 0
+  br i1 %.fca.0.extract.i197, label %cond_197_case_1.i, label %__hugr__.const_fun_242.211.exit
 
 cond_197_case_1.i:                                ; preds = %cond_208_case_1.i
-  %.fca.1.extract.i202 = extractvalue { i1, i64, i1 } %34, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202)
+  %.fca.1.extract.i198 = extractvalue { i1, i64, i1 } %30, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198)
   br label %__hugr__.const_fun_242.211.exit
 
-__hugr__.const_fun_242.211.exit:                  ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit200", %cond_208_case_1.i, %cond_197_case_1.i
-  %35 = add i64 %.fca.1.extract93, 1
-  %36 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %35
-  %37 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %36, align 4
-  %.fca.0.extract13.i.1 = extractvalue { i1, { i1, i64, i1 } } %37, 0
+__hugr__.const_fun_242.211.exit:                  ; preds = %"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305.exit196", %cond_208_case_1.i, %cond_197_case_1.i
+  %31 = add i64 %.fca.1.extract93, 1
+  %32 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %31
+  %33 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %32, align 4
+  %.fca.0.extract13.i.1 = extractvalue { i1, { i1, i64, i1 } } %33, 0
   br i1 %.fca.0.extract13.i.1, label %cond_208_case_1.i.1, label %__hugr__.const_fun_242.211.exit.1
 
 cond_208_case_1.i.1:                              ; preds = %__hugr__.const_fun_242.211.exit
-  %38 = extractvalue { i1, { i1, i64, i1 } } %37, 1
-  %.fca.0.extract.i201.1 = extractvalue { i1, i64, i1 } %38, 0
-  br i1 %.fca.0.extract.i201.1, label %cond_197_case_1.i.1, label %__hugr__.const_fun_242.211.exit.1
+  %34 = extractvalue { i1, { i1, i64, i1 } } %33, 1
+  %.fca.0.extract.i197.1 = extractvalue { i1, i64, i1 } %34, 0
+  br i1 %.fca.0.extract.i197.1, label %cond_197_case_1.i.1, label %__hugr__.const_fun_242.211.exit.1
 
 cond_197_case_1.i.1:                              ; preds = %cond_208_case_1.i.1
-  %.fca.1.extract.i202.1 = extractvalue { i1, i64, i1 } %38, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.1)
+  %.fca.1.extract.i198.1 = extractvalue { i1, i64, i1 } %34, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.1)
   br label %__hugr__.const_fun_242.211.exit.1
 
 __hugr__.const_fun_242.211.exit.1:                ; preds = %cond_197_case_1.i.1, %cond_208_case_1.i.1, %__hugr__.const_fun_242.211.exit
-  %39 = add i64 %.fca.1.extract93, 2
-  %40 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %39
-  %41 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %40, align 4
-  %.fca.0.extract13.i.2 = extractvalue { i1, { i1, i64, i1 } } %41, 0
+  %35 = add i64 %.fca.1.extract93, 2
+  %36 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %35
+  %37 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %36, align 4
+  %.fca.0.extract13.i.2 = extractvalue { i1, { i1, i64, i1 } } %37, 0
   br i1 %.fca.0.extract13.i.2, label %cond_208_case_1.i.2, label %__hugr__.const_fun_242.211.exit.2
 
 cond_208_case_1.i.2:                              ; preds = %__hugr__.const_fun_242.211.exit.1
-  %42 = extractvalue { i1, { i1, i64, i1 } } %41, 1
-  %.fca.0.extract.i201.2 = extractvalue { i1, i64, i1 } %42, 0
-  br i1 %.fca.0.extract.i201.2, label %cond_197_case_1.i.2, label %__hugr__.const_fun_242.211.exit.2
+  %38 = extractvalue { i1, { i1, i64, i1 } } %37, 1
+  %.fca.0.extract.i197.2 = extractvalue { i1, i64, i1 } %38, 0
+  br i1 %.fca.0.extract.i197.2, label %cond_197_case_1.i.2, label %__hugr__.const_fun_242.211.exit.2
 
 cond_197_case_1.i.2:                              ; preds = %cond_208_case_1.i.2
-  %.fca.1.extract.i202.2 = extractvalue { i1, i64, i1 } %42, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.2)
+  %.fca.1.extract.i198.2 = extractvalue { i1, i64, i1 } %38, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.2)
   br label %__hugr__.const_fun_242.211.exit.2
 
 __hugr__.const_fun_242.211.exit.2:                ; preds = %cond_197_case_1.i.2, %cond_208_case_1.i.2, %__hugr__.const_fun_242.211.exit.1
-  %43 = add i64 %.fca.1.extract93, 3
-  %44 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %43
-  %45 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %44, align 4
-  %.fca.0.extract13.i.3 = extractvalue { i1, { i1, i64, i1 } } %45, 0
+  %39 = add i64 %.fca.1.extract93, 3
+  %40 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %39
+  %41 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %40, align 4
+  %.fca.0.extract13.i.3 = extractvalue { i1, { i1, i64, i1 } } %41, 0
   br i1 %.fca.0.extract13.i.3, label %cond_208_case_1.i.3, label %__hugr__.const_fun_242.211.exit.3
 
 cond_208_case_1.i.3:                              ; preds = %__hugr__.const_fun_242.211.exit.2
-  %46 = extractvalue { i1, { i1, i64, i1 } } %45, 1
-  %.fca.0.extract.i201.3 = extractvalue { i1, i64, i1 } %46, 0
-  br i1 %.fca.0.extract.i201.3, label %cond_197_case_1.i.3, label %__hugr__.const_fun_242.211.exit.3
+  %42 = extractvalue { i1, { i1, i64, i1 } } %41, 1
+  %.fca.0.extract.i197.3 = extractvalue { i1, i64, i1 } %42, 0
+  br i1 %.fca.0.extract.i197.3, label %cond_197_case_1.i.3, label %__hugr__.const_fun_242.211.exit.3
 
 cond_197_case_1.i.3:                              ; preds = %cond_208_case_1.i.3
-  %.fca.1.extract.i202.3 = extractvalue { i1, i64, i1 } %46, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.3)
+  %.fca.1.extract.i198.3 = extractvalue { i1, i64, i1 } %42, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.3)
   br label %__hugr__.const_fun_242.211.exit.3
 
 __hugr__.const_fun_242.211.exit.3:                ; preds = %cond_197_case_1.i.3, %cond_208_case_1.i.3, %__hugr__.const_fun_242.211.exit.2
-  %47 = add i64 %.fca.1.extract93, 4
-  %48 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %47
-  %49 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %48, align 4
-  %.fca.0.extract13.i.4 = extractvalue { i1, { i1, i64, i1 } } %49, 0
+  %43 = add i64 %.fca.1.extract93, 4
+  %44 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %43
+  %45 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %44, align 4
+  %.fca.0.extract13.i.4 = extractvalue { i1, { i1, i64, i1 } } %45, 0
   br i1 %.fca.0.extract13.i.4, label %cond_208_case_1.i.4, label %__hugr__.const_fun_242.211.exit.4
 
 cond_208_case_1.i.4:                              ; preds = %__hugr__.const_fun_242.211.exit.3
-  %50 = extractvalue { i1, { i1, i64, i1 } } %49, 1
-  %.fca.0.extract.i201.4 = extractvalue { i1, i64, i1 } %50, 0
-  br i1 %.fca.0.extract.i201.4, label %cond_197_case_1.i.4, label %__hugr__.const_fun_242.211.exit.4
+  %46 = extractvalue { i1, { i1, i64, i1 } } %45, 1
+  %.fca.0.extract.i197.4 = extractvalue { i1, i64, i1 } %46, 0
+  br i1 %.fca.0.extract.i197.4, label %cond_197_case_1.i.4, label %__hugr__.const_fun_242.211.exit.4
 
 cond_197_case_1.i.4:                              ; preds = %cond_208_case_1.i.4
-  %.fca.1.extract.i202.4 = extractvalue { i1, i64, i1 } %50, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.4)
+  %.fca.1.extract.i198.4 = extractvalue { i1, i64, i1 } %46, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.4)
   br label %__hugr__.const_fun_242.211.exit.4
 
 __hugr__.const_fun_242.211.exit.4:                ; preds = %cond_197_case_1.i.4, %cond_208_case_1.i.4, %__hugr__.const_fun_242.211.exit.3
-  %51 = add i64 %.fca.1.extract93, 5
-  %52 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %51
-  %53 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %52, align 4
-  %.fca.0.extract13.i.5 = extractvalue { i1, { i1, i64, i1 } } %53, 0
+  %47 = add i64 %.fca.1.extract93, 5
+  %48 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %47
+  %49 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %48, align 4
+  %.fca.0.extract13.i.5 = extractvalue { i1, { i1, i64, i1 } } %49, 0
   br i1 %.fca.0.extract13.i.5, label %cond_208_case_1.i.5, label %__hugr__.const_fun_242.211.exit.5
 
 cond_208_case_1.i.5:                              ; preds = %__hugr__.const_fun_242.211.exit.4
-  %54 = extractvalue { i1, { i1, i64, i1 } } %53, 1
-  %.fca.0.extract.i201.5 = extractvalue { i1, i64, i1 } %54, 0
-  br i1 %.fca.0.extract.i201.5, label %cond_197_case_1.i.5, label %__hugr__.const_fun_242.211.exit.5
+  %50 = extractvalue { i1, { i1, i64, i1 } } %49, 1
+  %.fca.0.extract.i197.5 = extractvalue { i1, i64, i1 } %50, 0
+  br i1 %.fca.0.extract.i197.5, label %cond_197_case_1.i.5, label %__hugr__.const_fun_242.211.exit.5
 
 cond_197_case_1.i.5:                              ; preds = %cond_208_case_1.i.5
-  %.fca.1.extract.i202.5 = extractvalue { i1, i64, i1 } %54, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.5)
+  %.fca.1.extract.i198.5 = extractvalue { i1, i64, i1 } %50, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.5)
   br label %__hugr__.const_fun_242.211.exit.5
 
 __hugr__.const_fun_242.211.exit.5:                ; preds = %cond_197_case_1.i.5, %cond_208_case_1.i.5, %__hugr__.const_fun_242.211.exit.4
-  %55 = add i64 %.fca.1.extract93, 6
-  %56 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %55
-  %57 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %56, align 4
-  %.fca.0.extract13.i.6 = extractvalue { i1, { i1, i64, i1 } } %57, 0
+  %51 = add i64 %.fca.1.extract93, 6
+  %52 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %51
+  %53 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %52, align 4
+  %.fca.0.extract13.i.6 = extractvalue { i1, { i1, i64, i1 } } %53, 0
   br i1 %.fca.0.extract13.i.6, label %cond_208_case_1.i.6, label %__hugr__.const_fun_242.211.exit.6
 
 cond_208_case_1.i.6:                              ; preds = %__hugr__.const_fun_242.211.exit.5
-  %58 = extractvalue { i1, { i1, i64, i1 } } %57, 1
-  %.fca.0.extract.i201.6 = extractvalue { i1, i64, i1 } %58, 0
-  br i1 %.fca.0.extract.i201.6, label %cond_197_case_1.i.6, label %__hugr__.const_fun_242.211.exit.6
+  %54 = extractvalue { i1, { i1, i64, i1 } } %53, 1
+  %.fca.0.extract.i197.6 = extractvalue { i1, i64, i1 } %54, 0
+  br i1 %.fca.0.extract.i197.6, label %cond_197_case_1.i.6, label %__hugr__.const_fun_242.211.exit.6
 
 cond_197_case_1.i.6:                              ; preds = %cond_208_case_1.i.6
-  %.fca.1.extract.i202.6 = extractvalue { i1, i64, i1 } %58, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.6)
+  %.fca.1.extract.i198.6 = extractvalue { i1, i64, i1 } %54, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.6)
   br label %__hugr__.const_fun_242.211.exit.6
 
 __hugr__.const_fun_242.211.exit.6:                ; preds = %cond_197_case_1.i.6, %cond_208_case_1.i.6, %__hugr__.const_fun_242.211.exit.5
-  %59 = add i64 %.fca.1.extract93, 7
-  %60 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %59
-  %61 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %60, align 4
-  %.fca.0.extract13.i.7 = extractvalue { i1, { i1, i64, i1 } } %61, 0
+  %55 = add i64 %.fca.1.extract93, 7
+  %56 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %55
+  %57 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %56, align 4
+  %.fca.0.extract13.i.7 = extractvalue { i1, { i1, i64, i1 } } %57, 0
   br i1 %.fca.0.extract13.i.7, label %cond_208_case_1.i.7, label %__hugr__.const_fun_242.211.exit.7
 
 cond_208_case_1.i.7:                              ; preds = %__hugr__.const_fun_242.211.exit.6
-  %62 = extractvalue { i1, { i1, i64, i1 } } %61, 1
-  %.fca.0.extract.i201.7 = extractvalue { i1, i64, i1 } %62, 0
-  br i1 %.fca.0.extract.i201.7, label %cond_197_case_1.i.7, label %__hugr__.const_fun_242.211.exit.7
+  %58 = extractvalue { i1, { i1, i64, i1 } } %57, 1
+  %.fca.0.extract.i197.7 = extractvalue { i1, i64, i1 } %58, 0
+  br i1 %.fca.0.extract.i197.7, label %cond_197_case_1.i.7, label %__hugr__.const_fun_242.211.exit.7
 
 cond_197_case_1.i.7:                              ; preds = %cond_208_case_1.i.7
-  %.fca.1.extract.i202.7 = extractvalue { i1, i64, i1 } %62, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.7)
+  %.fca.1.extract.i198.7 = extractvalue { i1, i64, i1 } %58, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.7)
   br label %__hugr__.const_fun_242.211.exit.7
 
 __hugr__.const_fun_242.211.exit.7:                ; preds = %cond_197_case_1.i.7, %cond_208_case_1.i.7, %__hugr__.const_fun_242.211.exit.6
-  %63 = add i64 %.fca.1.extract93, 8
-  %64 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %63
-  %65 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %64, align 4
-  %.fca.0.extract13.i.8 = extractvalue { i1, { i1, i64, i1 } } %65, 0
+  %59 = add i64 %.fca.1.extract93, 8
+  %60 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %59
+  %61 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %60, align 4
+  %.fca.0.extract13.i.8 = extractvalue { i1, { i1, i64, i1 } } %61, 0
   br i1 %.fca.0.extract13.i.8, label %cond_208_case_1.i.8, label %__hugr__.const_fun_242.211.exit.8
 
 cond_208_case_1.i.8:                              ; preds = %__hugr__.const_fun_242.211.exit.7
-  %66 = extractvalue { i1, { i1, i64, i1 } } %65, 1
-  %.fca.0.extract.i201.8 = extractvalue { i1, i64, i1 } %66, 0
-  br i1 %.fca.0.extract.i201.8, label %cond_197_case_1.i.8, label %__hugr__.const_fun_242.211.exit.8
+  %62 = extractvalue { i1, { i1, i64, i1 } } %61, 1
+  %.fca.0.extract.i197.8 = extractvalue { i1, i64, i1 } %62, 0
+  br i1 %.fca.0.extract.i197.8, label %cond_197_case_1.i.8, label %__hugr__.const_fun_242.211.exit.8
 
 cond_197_case_1.i.8:                              ; preds = %cond_208_case_1.i.8
-  %.fca.1.extract.i202.8 = extractvalue { i1, i64, i1 } %66, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.8)
+  %.fca.1.extract.i198.8 = extractvalue { i1, i64, i1 } %62, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.8)
   br label %__hugr__.const_fun_242.211.exit.8
 
 __hugr__.const_fun_242.211.exit.8:                ; preds = %cond_197_case_1.i.8, %cond_208_case_1.i.8, %__hugr__.const_fun_242.211.exit.7
-  %67 = add i64 %.fca.1.extract93, 9
-  %68 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %67
-  %69 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %68, align 4
-  %.fca.0.extract13.i.9 = extractvalue { i1, { i1, i64, i1 } } %69, 0
+  %63 = add i64 %.fca.1.extract93, 9
+  %64 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract92, i64 %63
+  %65 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %64, align 4
+  %.fca.0.extract13.i.9 = extractvalue { i1, { i1, i64, i1 } } %65, 0
   br i1 %.fca.0.extract13.i.9, label %cond_208_case_1.i.9, label %__hugr__.const_fun_242.211.exit.9
 
 cond_208_case_1.i.9:                              ; preds = %__hugr__.const_fun_242.211.exit.8
-  %70 = extractvalue { i1, { i1, i64, i1 } } %69, 1
-  %.fca.0.extract.i201.9 = extractvalue { i1, i64, i1 } %70, 0
-  br i1 %.fca.0.extract.i201.9, label %cond_197_case_1.i.9, label %__hugr__.const_fun_242.211.exit.9
+  %66 = extractvalue { i1, { i1, i64, i1 } } %65, 1
+  %.fca.0.extract.i197.9 = extractvalue { i1, i64, i1 } %66, 0
+  br i1 %.fca.0.extract.i197.9, label %cond_197_case_1.i.9, label %__hugr__.const_fun_242.211.exit.9
 
 cond_197_case_1.i.9:                              ; preds = %cond_208_case_1.i.9
-  %.fca.1.extract.i202.9 = extractvalue { i1, i64, i1 } %70, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract.i202.9)
+  %.fca.1.extract.i198.9 = extractvalue { i1, i64, i1 } %66, 1
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract.i198.9)
   br label %__hugr__.const_fun_242.211.exit.9
 
 __hugr__.const_fun_242.211.exit.9:                ; preds = %cond_197_case_1.i.9, %cond_208_case_1.i.9, %__hugr__.const_fun_242.211.exit.8
-  %71 = bitcast { i1, { i1, i64, i1 } }* %.fca.0.extract92 to i8*
-  call void @free(i8* %71)
+  %67 = bitcast { i1, { i1, i64, i1 } }* %.fca.0.extract92 to i8*
+  tail call void @heap_free(i8* %67)
+  tail call void @heap_free(i8* %27)
   ret void
 }
 
@@ -360,8 +340,7 @@ alloca_block:
   ret { i1, i64 } { i1 false, i64 poison }
 }
 
-; Function Attrs: inaccessiblememonly mustprogress nofree nounwind willreturn
-declare noalias noundef i8* @malloc(i64 noundef) local_unnamed_addr #1
+declare i8* @heap_alloc(i64) local_unnamed_addr
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
 define { i1, { { i64, i64 }, i64 } } @__hugr__.__next__.79({ i64, i64 } %0) local_unnamed_addr #0 {
@@ -379,12 +358,12 @@ alloca_block:
 
 define i64 @__hugr__.__tk2_qalloc.283() local_unnamed_addr {
 alloca_block:
-  %qalloc = call i64 @___qalloc()
+  %qalloc = tail call i64 @___qalloc()
   %not_max.not = icmp eq i64 %qalloc, -1
   br i1 %not_max.not, label %id_bb, label %reset_bb
 
 reset_bb:                                         ; preds = %alloca_block
-  call void @___reset(i64 %qalloc)
+  tail call void @___reset(i64 %qalloc)
   br label %id_bb
 
 id_bb:                                            ; preds = %alloca_block, %reset_bb
@@ -398,39 +377,32 @@ cond_279_case_1:                                  ; preds = %id_bb
   ret i64 %.fca.1.extract
 
 cond_279_case_0:                                  ; preds = %id_bb
-  call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
   unreachable
 }
 
 define { { i1, i64 }*, i64 } @"__hugr__.$array.__setitem__.linear.4$$t(qubit)$n(10).305"({ { i1, i64 }*, i64 } returned %0, i64 %1, i64 %2) local_unnamed_addr {
 alloca_block:
   %3 = icmp ult i64 %1, 10
-  br i1 %3, label %4, label %9
+  br i1 %3, label %cond_311_case_1, label %cond_311_case_0
 
-4:                                                ; preds = %alloca_block
+cond_311_case_0:                                  ; preds = %alloca_block
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+  unreachable
+
+cond_311_case_1:                                  ; preds = %alloca_block
   %"308_05.fca.1.insert" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %2, 1
   %.fca.1.extract56 = extractvalue { { i1, i64 }*, i64 } %0, 1
   %.fca.0.extract55 = extractvalue { { i1, i64 }*, i64 } %0, 0
-  %5 = add i64 %.fca.1.extract56, %1
-  %6 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract55, i64 %5
-  %7 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %6, i64 0, i32 0
-  %8 = load i1, i1* %7, align 1
-  store { i1, i64 } %"308_05.fca.1.insert", { i1, i64 }* %6, align 4
-  br label %9
-
-9:                                                ; preds = %alloca_block, %4
-  %"06.sroa.9.0" = phi i1 [ %8, %4 ], [ true, %alloca_block ]
-  br i1 %3, label %cond_311_case_1, label %cond_311_case_0
-
-cond_311_case_0:                                  ; preds = %9
-  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
-  unreachable
-
-cond_311_case_1:                                  ; preds = %9
-  br i1 %"06.sroa.9.0", label %cond_321_case_1, label %cond_exit_321
+  %4 = add i64 %.fca.1.extract56, %1
+  %5 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract55, i64 %4
+  %6 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %5, i64 0, i32 0
+  %7 = load i1, i1* %6, align 1
+  store { i1, i64 } %"308_05.fca.1.insert", { i1, i64 }* %5, align 4
+  br i1 %7, label %cond_321_case_1, label %cond_exit_321
 
 cond_321_case_1:                                  ; preds = %cond_311_case_1
-  call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
 cond_exit_321:                                    ; preds = %cond_311_case_1
@@ -440,125 +412,89 @@ cond_exit_321:                                    ; preds = %cond_311_case_1
 define { i64, { { i1, i64 }*, i64 } } @"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331"({ { i1, i64 }*, i64 } %0, i64 %1) local_unnamed_addr {
 alloca_block:
   %2 = icmp ult i64 %1, 10
-  br i1 %2, label %3, label %8
-
-3:                                                ; preds = %alloca_block
-  %.fca.1.extract60 = extractvalue { { i1, i64 }*, i64 } %0, 1
-  %.fca.0.extract59 = extractvalue { { i1, i64 }*, i64 } %0, 0
-  %4 = add i64 %.fca.1.extract60, %1
-  %5 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract59, i64 %4
-  %6 = load { i1, i64 }, { i1, i64 }* %5, align 4
-  %7 = bitcast { i1, i64 }* %5 to i8*
-  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %7, i8 0, i64 16, i1 false)
-  %.fca.2.0.extract = extractvalue { i1, i64 } %6, 0
-  %.fca.2.1.extract = extractvalue { i1, i64 } %6, 1
-  br label %8
-
-8:                                                ; preds = %alloca_block, %3
-  %"05.sroa.9.0" = phi i1 [ %.fca.2.0.extract, %3 ], [ false, %alloca_block ]
-  %"05.sroa.12.0" = phi i64 [ %.fca.2.1.extract, %3 ], [ poison, %alloca_block ]
   br i1 %2, label %cond_337_case_1, label %cond_337_case_0
 
-cond_337_case_0:                                  ; preds = %8
-  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+cond_337_case_0:                                  ; preds = %alloca_block
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
   unreachable
 
-cond_337_case_1:                                  ; preds = %8
-  br i1 %"05.sroa.9.0", label %cond_347_case_1, label %cond_347_case_0
+cond_337_case_1:                                  ; preds = %alloca_block
+  %.fca.1.extract60 = extractvalue { { i1, i64 }*, i64 } %0, 1
+  %.fca.0.extract59 = extractvalue { { i1, i64 }*, i64 } %0, 0
+  %3 = add i64 %.fca.1.extract60, %1
+  %4 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract59, i64 %3
+  %5 = load { i1, i64 }, { i1, i64 }* %4, align 4
+  %6 = bitcast { i1, i64 }* %4 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %6, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract = extractvalue { i1, i64 } %5, 0
+  br i1 %.fca.2.0.extract, label %cond_347_case_1, label %cond_347_case_0
 
 cond_347_case_1:                                  ; preds = %cond_337_case_1
-  %mrv = insertvalue { i64, { { i1, i64 }*, i64 } } undef, i64 %"05.sroa.12.0", 0
+  %.fca.2.1.extract = extractvalue { i1, i64 } %5, 1
+  %mrv = insertvalue { i64, { { i1, i64 }*, i64 } } undef, i64 %.fca.2.1.extract, 0
   %mrv40 = insertvalue { i64, { { i1, i64 }*, i64 } } %mrv, { { i1, i64 }*, i64 } %0, 1
   ret { i64, { { i1, i64 }*, i64 } } %mrv40
 
 cond_347_case_0:                                  ; preds = %cond_337_case_1
-  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 }
 
 define i64 @__hugr__.__tk2_x.270(i64 returned %0) local_unnamed_addr {
 alloca_block:
-  call void @___rxy(i64 %0, double 0x400921FB54442D18, double 0.000000e+00)
+  tail call void @___rxy(i64 %0, double 0x400921FB54442D18, double 0.000000e+00)
   ret i64 %0
 }
 
 define { { i1, { i1, i64, i1 } }*, i64 } @"__hugr__.$measure_array$$n(10).359"({ { i1, i64 }*, i64 } %0) local_unnamed_addr {
 alloca_block:
-  %1 = call dereferenceable_or_null(320) i8* @malloc(i64 320)
+  %1 = tail call i8* @heap_alloc(i64 320)
   call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(320) %1, i8 0, i64 320, i1 false)
   %2 = insertvalue { { { i1, i64 }*, i64 }, i64 } poison, { { i1, i64 }*, i64 } %0, 0
   %3 = bitcast i8* %1 to { i1, { i1, i64, i1 } }*
-  br label %loop_body
+  %"390_012.fca.1.insert141" = insertvalue { { { i1, i64 }*, i64 }, i64 } %2, i64 0, 1
+  %4 = tail call { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ { { i1, i64 }*, i64 }, i64 } %"390_012.fca.1.insert141")
+  %.fca.0.extract95142 = extractvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %4, 0
+  br i1 %.fca.0.extract95142, label %cond_447_case_1, label %loop_out
 
-loop_body:                                        ; preds = %alloca_block, %14
-  %"390_2.0" = phi i64 [ %"2.0", %14 ], [ 0, %alloca_block ]
-  %.pn131 = phi { { { i1, i64 }*, i64 }, i64 } [ %16, %14 ], [ %2, %alloca_block ]
-  %"390_0.sroa.10.0" = phi i64 [ %"022.sroa.9.0", %14 ], [ 0, %alloca_block ]
-  %"390_012.fca.1.insert" = insertvalue { { { i1, i64 }*, i64 }, i64 } %.pn131, i64 %"390_0.sroa.10.0", 1
-  %4 = call { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ { { i1, i64 }*, i64 }, i64 } %"390_012.fca.1.insert")
-  %.fca.0.extract95 = extractvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %4, 0
-  br i1 %.fca.0.extract95, label %cond_447_case_1, label %cond_exit_447
+cond_447_case_1:                                  ; preds = %alloca_block, %loop_body
+  %5 = phi { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } [ %13, %loop_body ], [ %4, %alloca_block ]
+  %"390_2.0143" = phi i64 [ %7, %loop_body ], [ 0, %alloca_block ]
+  %6 = extractvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %5, 1
+  %.fca.1.extract92 = extractvalue { { { { i1, i64 }*, i64 }, i64 }, i64 } %6, 1
+  %7 = add nuw nsw i64 %"390_2.0143", 1
+  %8 = extractvalue { { { { i1, i64 }*, i64 }, i64 }, i64 } %6, 0
+  %lazy_measure = tail call i64 @___lazy_measure(i64 %.fca.1.extract92)
+  tail call void @___qfree(i64 %.fca.1.extract92)
+  %exitcond.not = icmp eq i64 %"390_2.0143", 10
+  br i1 %exitcond.not, label %cond_469_case_0.i, label %cond_469_case_1.i
 
-cond_447_case_1:                                  ; preds = %loop_body
-  %5 = extractvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %4, 1
-  %.fca.1.extract92 = extractvalue { { { { i1, i64 }*, i64 }, i64 }, i64 } %5, 1
-  %6 = add i64 %"390_2.0", 1
-  %7 = extractvalue { { { { i1, i64 }*, i64 }, i64 }, i64 } %5, 0
-  %lazy_measure = call i64 @___lazy_measure(i64 %.fca.1.extract92)
-  call void @___qfree(i64 %.fca.1.extract92)
-  %8 = icmp ult i64 %"390_2.0", 10
-  br i1 %8, label %9, label %13
-
-9:                                                ; preds = %cond_447_case_1
-  %"461_054.fca.1.insert" = insertvalue { i1, i64, i1 } { i1 true, i64 poison, i1 poison }, i64 %lazy_measure, 1
-  %10 = insertvalue { i1, { i1, i64, i1 } } { i1 true, { i1, i64, i1 } poison }, { i1, i64, i1 } %"461_054.fca.1.insert", 1
-  %11 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %3, i64 %"390_2.0"
-  %12 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %11, align 4
-  store { i1, { i1, i64, i1 } } %10, { i1, { i1, i64, i1 } }* %11, align 4
-  %.fca.2.0.extract.i = extractvalue { i1, { i1, i64, i1 } } %12, 0
-  %.fca.2.1.0.extract.i = extractvalue { i1, { i1, i64, i1 } } %12, 1, 0
-  %.fca.2.1.1.extract.i = extractvalue { i1, { i1, i64, i1 } } %12, 1, 1
-  %phi.bo.i = xor i1 %.fca.2.0.extract.i, true
-  br label %13
-
-13:                                               ; preds = %cond_447_case_1, %9
-  %"06.sroa.9.0.i" = phi i1 [ %phi.bo.i, %9 ], [ false, %cond_447_case_1 ]
-  %"06.sroa.12.0.i" = phi i1 [ %.fca.2.1.0.extract.i, %9 ], [ true, %cond_447_case_1 ]
-  %"06.sroa.15.0.i" = phi i64 [ %.fca.2.1.1.extract.i, %9 ], [ %lazy_measure, %cond_447_case_1 ]
-  br i1 %8, label %cond_469_case_1.i, label %cond_469_case_0.i
-
-cond_469_case_0.i:                                ; preds = %13
-  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+cond_469_case_0.i:                                ; preds = %cond_447_case_1
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
   unreachable
 
-cond_469_case_1.i:                                ; preds = %13
-  %"06.sroa.12.0.not.i" = xor i1 %"06.sroa.12.0.i", true
-  %brmerge.i = select i1 %"06.sroa.9.0.i", i1 true, i1 %"06.sroa.12.0.not.i"
-  br i1 %brmerge.i, label %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit", label %cond_254_case_1.i
+cond_469_case_1.i:                                ; preds = %cond_447_case_1
+  %"461_054.fca.1.insert" = insertvalue { i1, i64, i1 } { i1 true, i64 poison, i1 poison }, i64 %lazy_measure, 1
+  %9 = insertvalue { i1, { i1, i64, i1 } } { i1 true, { i1, i64, i1 } poison }, { i1, i64, i1 } %"461_054.fca.1.insert", 1
+  %10 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %3, i64 %"390_2.0143"
+  %11 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %10, align 4
+  store { i1, { i1, i64, i1 } } %9, { i1, { i1, i64, i1 } }* %10, align 4
+  %.fca.2.0.extract.i = extractvalue { i1, { i1, i64, i1 } } %11, 0
+  %.fca.2.1.0.extract.i = extractvalue { i1, { i1, i64, i1 } } %11, 1, 0
+  %12 = select i1 %.fca.2.0.extract.i, i1 %.fca.2.1.0.extract.i, i1 false
+  br i1 %12, label %cond_254_case_1.i, label %loop_body
 
 cond_254_case_1.i:                                ; preds = %cond_469_case_1.i
-  call void @___dec_future_refcount(i64 %"06.sroa.15.0.i")
-  br label %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit"
-
-"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit": ; preds = %cond_469_case_1.i, %cond_254_case_1.i
-  %.fca.1.0.0.extract = extractvalue { { { i1, i64 }*, i64 }, i64 } %7, 0, 0
-  %.fca.1.0.1.extract = extractvalue { { { i1, i64 }*, i64 }, i64 } %7, 0, 1
-  %.fca.1.1.extract = extractvalue { { { i1, i64 }*, i64 }, i64 } %7, 1
-  br label %cond_exit_447
-
-cond_exit_447:                                    ; preds = %loop_body, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit"
-  %"2.0" = phi i64 [ %6, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ %"390_2.0", %loop_body ]
-  %"022.sroa.3.0" = phi { i1, i64 }* [ %.fca.1.0.0.extract, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ poison, %loop_body ]
-  %"022.sroa.6.0" = phi i64 [ %.fca.1.0.1.extract, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ poison, %loop_body ]
-  %"022.sroa.9.0" = phi i64 [ %.fca.1.1.extract, %"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463.exit" ], [ poison, %loop_body ]
-  br i1 %.fca.0.extract95, label %14, label %loop_out
-
-14:                                               ; preds = %cond_exit_447
-  %15 = insertvalue { { { i1, i64 }*, i64 }, i64 } poison, { i1, i64 }* %"022.sroa.3.0", 0, 0
-  %16 = insertvalue { { { i1, i64 }*, i64 }, i64 } %15, i64 %"022.sroa.6.0", 0, 1
+  %.fca.2.1.1.extract.i = extractvalue { i1, { i1, i64, i1 } } %11, 1, 1
+  tail call void @___dec_future_refcount(i64 %.fca.2.1.1.extract.i)
   br label %loop_body
 
-loop_out:                                         ; preds = %cond_exit_447
+loop_body:                                        ; preds = %cond_254_case_1.i, %cond_469_case_1.i
+  %13 = tail call { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } @"__hugr__.$__next__$$t(qubit)$n(10).395"({ { { i1, i64 }*, i64 }, i64 } %8)
+  %.fca.0.extract95 = extractvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %13, 0
+  br i1 %.fca.0.extract95, label %cond_447_case_1, label %loop_out
+
+loop_out:                                         ; preds = %loop_body, %alloca_block
   %"124.fca.0.insert" = insertvalue { { i1, { i1, i64, i1 } }*, i64 } poison, { i1, { i1, i64, i1 } }* %3, 0
   %"124.fca.1.insert" = insertvalue { { i1, { i1, i64, i1 } }*, i64 } %"124.fca.0.insert", i64 0, 1
   ret { { i1, { i1, i64, i1 } }*, i64 } %"124.fca.1.insert"
@@ -576,15 +512,14 @@ cond_208_case_1:                                  ; preds = %alloca_block
 
 cond_197_case_1:                                  ; preds = %cond_208_case_1
   %.fca.1.extract = extractvalue { i1, i64, i1 } %1, 1
-  call void @___dec_future_refcount(i64 %.fca.1.extract)
+  tail call void @___dec_future_refcount(i64 %.fca.1.extract)
   br label %cond_exit_208
 
 cond_exit_208:                                    ; preds = %cond_208_case_1, %cond_197_case_1, %alloca_block
   ret {} undef
 }
 
-; Function Attrs: inaccessiblemem_or_argmemonly mustprogress nounwind willreturn
-declare void @free(i8* nocapture noundef) local_unnamed_addr #2
+declare void @heap_free(i8*) local_unnamed_addr
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
 define { i1, { i1, i64, i1 } } @"__hugr__.$array.__comprehension.init.6$$t(bool).367"() local_unnamed_addr #0 {
@@ -595,7 +530,7 @@ alloca_block:
 declare void @___dec_future_refcount(i64) local_unnamed_addr
 
 ; Function Attrs: noreturn
-declare void @panic(i32, i8*) local_unnamed_addr #3
+declare void @panic(i32, i8*) local_unnamed_addr #1
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone willreturn
 define { { { i1, i64 }*, i64 }, i64 } @"__hugr__.$__iter__$$t(qubit)$n(10).375"({ { i1, i64 }*, i64 } %0) local_unnamed_addr #0 {
@@ -612,11 +547,11 @@ alloca_block:
   %.fca.0.extract80 = extractvalue { { i1, i64 }*, i64 } %1, 0
   %.fca.1.extract81 = extractvalue { { i1, i64 }*, i64 } %1, 1
   %2 = icmp slt i64 %.fca.1.extract96, 10
-  br i1 %2, label %3, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
+  br i1 %2, label %7, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
 
-"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit": ; preds = %cond_337_case_1.i, %39
-  %"02.sroa.9.0" = phi i64 [ poison, %39 ], [ %4, %cond_337_case_1.i ]
-  %"02.sroa.12.0" = phi i64 [ poison, %39 ], [ %"05.sroa.12.0.i", %cond_337_case_1.i ]
+3:                                                ; preds = %41, %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
+  %"02.sroa.9.0" = phi i64 [ %8, %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit" ], [ poison, %41 ]
+  %"02.sroa.12.0" = phi i64 [ %.fca.2.1.extract.i, %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit" ], [ poison, %41 ]
   %"029.fca.0.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } poison, i1 %2, 0
   %"029.fca.1.0.0.0.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.0.insert", { i1, i64 }* %.fca.0.extract80, 1, 0, 0, 0
   %"029.fca.1.0.0.1.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.1.0.0.0.insert", i64 %.fca.1.extract81, 1, 0, 0, 1
@@ -624,103 +559,100 @@ alloca_block:
   %"029.fca.1.1.insert" = insertvalue { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.1.0.1.insert", i64 %"02.sroa.12.0", 1, 1
   ret { i1, { { { { i1, i64 }*, i64 }, i64 }, i64 } } %"029.fca.1.1.insert"
 
-3:                                                ; preds = %alloca_block
-  %4 = add i64 %.fca.1.extract96, 1
-  %5 = icmp ult i64 %.fca.1.extract96, 10
-  br i1 %5, label %6, label %11
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit": ; preds = %alloca_block
+  %4 = tail call i8* @heap_alloc(i64 0)
+  %5 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %.fca.1.extract81, i32 0
+  %6 = load i1, i1* %5, align 1
+  br i1 %6, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1"
 
-6:                                                ; preds = %3
-  %7 = add i64 %.fca.1.extract81, %.fca.1.extract96
-  %8 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %7
-  %9 = load { i1, i64 }, { i1, i64 }* %8, align 4
-  %10 = bitcast { i1, i64 }* %8 to i8*
-  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %10, i8 0, i64 16, i1 false)
-  %.fca.2.0.extract.i = extractvalue { i1, i64 } %9, 0
-  %.fca.2.1.extract.i = extractvalue { i1, i64 } %9, 1
-  br label %11
+7:                                                ; preds = %alloca_block
+  %8 = add nsw i64 %.fca.1.extract96, 1
+  %9 = icmp ult i64 %.fca.1.extract96, 10
+  br i1 %9, label %cond_337_case_1.i, label %cond_337_case_0.i
 
-11:                                               ; preds = %6, %3
-  %"05.sroa.9.0.i" = phi i1 [ %.fca.2.0.extract.i, %6 ], [ false, %3 ]
-  %"05.sroa.12.0.i" = phi i64 [ %.fca.2.1.extract.i, %6 ], [ poison, %3 ]
-  br i1 %5, label %cond_337_case_1.i, label %cond_337_case_0.i
-
-cond_337_case_0.i:                                ; preds = %11
-  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+cond_337_case_0.i:                                ; preds = %7
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
   unreachable
 
-cond_337_case_1.i:                                ; preds = %11
-  br i1 %"05.sroa.9.0.i", label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit", label %cond_347_case_0.i
+cond_337_case_1.i:                                ; preds = %7
+  %10 = add i64 %.fca.1.extract81, %.fca.1.extract96
+  %11 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %10
+  %12 = load { i1, i64 }, { i1, i64 }* %11, align 4
+  %13 = bitcast { i1, i64 }* %11 to i8*
+  tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %13, i8 0, i64 16, i1 false)
+  %.fca.2.0.extract.i = extractvalue { i1, i64 } %12, 0
+  br i1 %.fca.2.0.extract.i, label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit", label %cond_347_case_0.i
 
 cond_347_case_0.i:                                ; preds = %cond_337_case_1.i
-  call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 
+"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit": ; preds = %cond_337_case_1.i
+  %.fca.2.1.extract.i = extractvalue { i1, i64 } %12, 1
+  br label %3
+
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
-  %12 = add i64 %.fca.1.extract81, 1
-  %13 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %12, i32 0
-  %14 = load i1, i1* %13, align 1
-  br i1 %14, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2"
+  %14 = add i64 %.fca.1.extract81, 1
+  %15 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %14, i32 0
+  %16 = load i1, i1* %15, align 1
+  br i1 %16, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1"
-  %15 = add i64 %.fca.1.extract81, 2
-  %16 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %15, i32 0
-  %17 = load i1, i1* %16, align 1
-  br i1 %17, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3"
+  %17 = add i64 %.fca.1.extract81, 2
+  %18 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %17, i32 0
+  %19 = load i1, i1* %18, align 1
+  br i1 %19, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2"
-  %18 = add i64 %.fca.1.extract81, 3
-  %19 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %18, i32 0
-  %20 = load i1, i1* %19, align 1
-  br i1 %20, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4"
+  %20 = add i64 %.fca.1.extract81, 3
+  %21 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %20, i32 0
+  %22 = load i1, i1* %21, align 1
+  br i1 %22, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3"
-  %21 = add i64 %.fca.1.extract81, 4
-  %22 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %21, i32 0
-  %23 = load i1, i1* %22, align 1
-  br i1 %23, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5"
+  %23 = add i64 %.fca.1.extract81, 4
+  %24 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %23, i32 0
+  %25 = load i1, i1* %24, align 1
+  br i1 %25, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4"
-  %24 = add i64 %.fca.1.extract81, 5
-  %25 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %24, i32 0
-  %26 = load i1, i1* %25, align 1
-  br i1 %26, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6"
+  %26 = add i64 %.fca.1.extract81, 5
+  %27 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %26, i32 0
+  %28 = load i1, i1* %27, align 1
+  br i1 %28, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5"
-  %27 = add i64 %.fca.1.extract81, 6
-  %28 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %27, i32 0
-  %29 = load i1, i1* %28, align 1
-  br i1 %29, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7"
+  %29 = add i64 %.fca.1.extract81, 6
+  %30 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %29, i32 0
+  %31 = load i1, i1* %30, align 1
+  br i1 %31, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6"
-  %30 = add i64 %.fca.1.extract81, 7
-  %31 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %30, i32 0
-  %32 = load i1, i1* %31, align 1
-  br i1 %32, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8"
+  %32 = add i64 %.fca.1.extract81, 7
+  %33 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %32, i32 0
+  %34 = load i1, i1* %33, align 1
+  br i1 %34, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7"
-  %33 = add i64 %.fca.1.extract81, 8
-  %34 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %33, i32 0
-  %35 = load i1, i1* %34, align 1
-  br i1 %35, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9"
+  %35 = add i64 %.fca.1.extract81, 8
+  %36 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %35, i32 0
+  %37 = load i1, i1* %36, align 1
+  br i1 %37, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9"
 
 "__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8"
-  %36 = add i64 %.fca.1.extract81, 9
-  %37 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %36, i32 0
-  %38 = load i1, i1* %37, align 1
-  br i1 %38, label %cond_428_case_1.i, label %39
+  %38 = add i64 %.fca.1.extract81, 9
+  %39 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %38, i32 0
+  %40 = load i1, i1* %39, align 1
+  br i1 %40, label %cond_428_case_1.i, label %41
 
-39:                                               ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9"
-  %40 = bitcast { i1, i64 }* %.fca.0.extract80 to i8*
-  call void @free(i8* %40)
-  br label %"__hugr__.$array.__getitem__.linear.2$$t(qubit)$n(10).331.exit"
-
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit": ; preds = %alloca_block
-  %41 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %.fca.0.extract80, i64 %.fca.1.extract81, i32 0
-  %42 = load i1, i1* %41, align 1
-  br i1 %42, label %cond_428_case_1.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1"
+41:                                               ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9"
+  %42 = bitcast { i1, i64 }* %.fca.0.extract80 to i8*
+  tail call void @heap_free(i8* %42)
+  tail call void @heap_free(i8* %4)
+  br label %3
 
 cond_428_case_1.i:                                ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.9", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.8", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.7", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.6", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.5", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.4", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.3", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.2", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit.1", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).425.exit"
-  call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
   unreachable
 }
 
@@ -731,44 +663,28 @@ declare void @___qfree(i64) local_unnamed_addr
 define { { i1, { i1, i64, i1 } }*, i64 } @"__hugr__.$array.__setitem__.classical.3$$t(bool)$n(10).463"({ { i1, { i1, i64, i1 } }*, i64 } returned %0, i64 %1, { i1, i64, i1 } %2) local_unnamed_addr {
 alloca_block:
   %3 = icmp ult i64 %1, 10
-  br i1 %3, label %5, label %4
-
-4:                                                ; preds = %alloca_block
-  %.fca.2.1.0.extract60 = extractvalue { i1, i64, i1 } %2, 0
-  %.fca.2.1.1.extract62 = extractvalue { i1, i64, i1 } %2, 1
-  br label %10
-
-5:                                                ; preds = %alloca_block
-  %6 = insertvalue { i1, { i1, i64, i1 } } { i1 true, { i1, i64, i1 } poison }, { i1, i64, i1 } %2, 1
-  %.fca.1.extract74 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %0, 1
-  %.fca.0.extract73 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %0, 0
-  %7 = add i64 %.fca.1.extract74, %1
-  %8 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract73, i64 %7
-  %9 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %8, align 4
-  store { i1, { i1, i64, i1 } } %6, { i1, { i1, i64, i1 } }* %8, align 4
-  %.fca.2.0.extract = extractvalue { i1, { i1, i64, i1 } } %9, 0
-  %.fca.2.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %9, 1, 0
-  %.fca.2.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %9, 1, 1
-  %phi.bo = xor i1 %.fca.2.0.extract, true
-  br label %10
-
-10:                                               ; preds = %4, %5
-  %"06.sroa.9.0" = phi i1 [ %phi.bo, %5 ], [ false, %4 ]
-  %"06.sroa.12.0" = phi i1 [ %.fca.2.1.0.extract, %5 ], [ %.fca.2.1.0.extract60, %4 ]
-  %"06.sroa.15.0" = phi i64 [ %.fca.2.1.1.extract, %5 ], [ %.fca.2.1.1.extract62, %4 ]
   br i1 %3, label %cond_469_case_1, label %cond_469_case_0
 
-cond_469_case_0:                                  ; preds = %10
-  call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
+cond_469_case_0:                                  ; preds = %alloca_block
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @"e_Array inde.2A1CB845.0", i64 0, i64 0))
   unreachable
 
-cond_469_case_1:                                  ; preds = %10
-  %"06.sroa.12.0.not" = xor i1 %"06.sroa.12.0", true
-  %brmerge = select i1 %"06.sroa.9.0", i1 true, i1 %"06.sroa.12.0.not"
-  br i1 %brmerge, label %cond_exit_261, label %cond_254_case_1
+cond_469_case_1:                                  ; preds = %alloca_block
+  %4 = insertvalue { i1, { i1, i64, i1 } } { i1 true, { i1, i64, i1 } poison }, { i1, i64, i1 } %2, 1
+  %.fca.1.extract74 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %0, 1
+  %.fca.0.extract73 = extractvalue { { i1, { i1, i64, i1 } }*, i64 } %0, 0
+  %5 = add i64 %.fca.1.extract74, %1
+  %6 = getelementptr inbounds { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %.fca.0.extract73, i64 %5
+  %7 = load { i1, { i1, i64, i1 } }, { i1, { i1, i64, i1 } }* %6, align 4
+  store { i1, { i1, i64, i1 } } %4, { i1, { i1, i64, i1 } }* %6, align 4
+  %.fca.2.0.extract = extractvalue { i1, { i1, i64, i1 } } %7, 0
+  %.fca.2.1.0.extract = extractvalue { i1, { i1, i64, i1 } } %7, 1, 0
+  %8 = select i1 %.fca.2.0.extract, i1 %.fca.2.1.0.extract, i1 false
+  br i1 %8, label %cond_254_case_1, label %cond_exit_261
 
 cond_254_case_1:                                  ; preds = %cond_469_case_1
-  call void @___dec_future_refcount(i64 %"06.sroa.15.0")
+  %.fca.2.1.1.extract = extractvalue { i1, { i1, i64, i1 } } %7, 1, 1
+  tail call void @___dec_future_refcount(i64 %.fca.2.1.1.extract)
   br label %cond_exit_261
 
 cond_exit_261:                                    ; preds = %cond_469_case_1, %cond_254_case_1
@@ -781,7 +697,7 @@ alloca_block:
   br i1 %.fca.0.extract, label %cond_428_case_1, label %cond_exit_428
 
 cond_428_case_1:                                  ; preds = %alloca_block
-  call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
+  tail call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
   unreachable
 
 cond_exit_428:                                    ; preds = %alloca_block
@@ -796,9 +712,9 @@ declare void @___rxy(i64, double, double) local_unnamed_addr
 
 define i64 @qmain(i64 %0) local_unnamed_addr {
 entry:
-  call void @setup(i64 %0)
-  call void @__hugr__.main.1()
-  %1 = call i64 @teardown()
+  tail call void @setup(i64 %0)
+  tail call void @__hugr__.main.1()
+  %1 = tail call i64 @teardown()
   ret i64 %1
 }
 
@@ -807,13 +723,11 @@ declare void @setup(i64) local_unnamed_addr
 declare i64 @teardown() local_unnamed_addr
 
 ; Function Attrs: argmemonly nofree nounwind willreturn writeonly
-declare void @llvm.memset.p0i8.i64(i8* nocapture writeonly, i8, i64, i1 immarg) #4
+declare void @llvm.memset.p0i8.i64(i8* nocapture writeonly, i8, i64, i1 immarg) #2
 
 attributes #0 = { mustprogress nofree norecurse nosync nounwind readnone willreturn }
-attributes #1 = { inaccessiblememonly mustprogress nofree nounwind willreturn }
-attributes #2 = { inaccessiblemem_or_argmemonly mustprogress nounwind willreturn }
-attributes #3 = { noreturn }
-attributes #4 = { argmemonly nofree nounwind willreturn writeonly }
+attributes #1 = { noreturn }
+attributes #2 = { argmemonly nofree nounwind willreturn writeonly }
 
 !name = !{!0}
 
