@@ -1246,7 +1246,7 @@ wheels = [
 
 [[package]]
 name = "selene-core"
-version = "0.2.0rc6"
+version = "0.2.0"
 source = { editable = "selene-core" }
 dependencies = [
     { name = "networkx" },
@@ -1296,7 +1296,7 @@ dev = [
 
 [[package]]
 name = "selene-sim"
-version = "0.2.0rc6"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "hugr" },
