@@ -17,7 +17,6 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  CARGO_NET_GIT_FETCH_WITH_CLI: true
   CACHE_CARGO: true
 jobs:
   build_selene_core:
@@ -294,17 +293,29 @@ jobs:
         with:
           path: wheelhouse
           merge-multiple: true
+
       - name: GH Release
         uses: softprops/action-gh-release@v2
         with:
           files: wheelhouse/*.whl
           generate_release_notes: true
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
+
       - name: Install twine
         run: python -m pip install twine
+
+      - name: Upload to jfrog
+        run: |
+          twine upload --verbose --non-interactive wheelhouse/*.whl
+        env:
+          TWINE_REPOSITORY_URL: ${{ secrets.JFROG_URL }}
+          TWINE_USERNAME: ${{ secrets.JFROG_USER }}
+          TWINE_PASSWORD: ${{ secrets.JFROG_TOKEN }}
+
       - name: Upload to pypi
         run: |
           twine upload --verbose --non-interactive wheelhouse/*.whl

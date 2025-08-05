@@ -20,7 +20,6 @@
     '';
 
     env = {
-      CARGO_NET_GIT_FETCH_WITH_CLI = "true";
       LIBCLANG_PATH = "${pkgs.libclang.lib}";
       LLVM_SYS_140_PREFIX = "${pkgs.llvmPackages_14.libllvm.dev}";
     };
