@@ -196,13 +196,31 @@ wheels = [
 
 [[package]]
 name = "guppylang"
-version = "0.20.0"
-source = { git = "https://github.com/CQCL/guppylang.git?rev=bf57ef8#bf57ef8c0e5435589ed5dee26784ae855ed41ae3" }
+version = "0.21.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "guppylang-internals" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.3.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "selene-sim" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b6/5a/e9fc975bf298a654843be0b79f8dc44d52d18baab3900674167a5f3d5a90/guppylang-0.21.1.tar.gz", hash = "sha256:0383d9e5d85ce9200b8de0eda3684baaf866d58b345a098409135f9777cc139a", size = 545444, upload-time = "2025-08-05T13:07:33.922Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/8b/baf7f371ce74db4a90331f0508e6125c98e7b5c148c3e7bce98ed7c2b5af/guppylang-0.21.1-py3-none-any.whl", hash = "sha256:73878731bc337fc6d4314540d2227395a225abe56b73c10926e4da29390b2557", size = 51754, upload-time = "2025-08-05T13:07:32.081Z" },
+]
+
+[[package]]
+name = "guppylang-internals"
+version = "0.21.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "hugr" },
-    { name = "selene-sim" },
     { name = "tket-exts" },
     { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/b8/43c990a112da5f3d5a8856c5ba5eb4223e5a68b04f7d964c1be673ca1925/guppylang_internals-0.21.1.tar.gz", hash = "sha256:f10fcd9e47b0ca6f73fc46aceb20e276ff73f128c31d1ff86bc6f30f3f1ff840", size = 167883, upload-time = "2025-08-05T12:52:13.232Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5b/e6/a674ac6966e0177569736b206e33da369dba2e0f9c991b947184333ff46c/guppylang_internals-0.21.1-py3-none-any.whl", hash = "sha256:3028e1ba9e470702b4677b1f9ecd502f5169758f462984387fedf0fbb1db849b", size = 222509, upload-time = "2025-08-05T12:52:11.666Z" },
 ]
 
 [[package]]
@@ -1267,7 +1285,7 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "cibuildwheel", specifier = ">=2.23.2" },
-    { name = "guppylang", git = "https://github.com/CQCL/guppylang.git?rev=bf57ef8" },
+    { name = "guppylang", specifier = "~=0.21.0" },
     { name = "maturin", specifier = ">=1.7.4,<2.0" },
     { name = "pip", specifier = ">=25" },
     { name = "pre-commit", specifier = "==4.0.1" },
@@ -1325,7 +1343,7 @@ requires-dist = [
 dev = [
     { name = "auditwheel", specifier = ">=6.3.0" },
     { name = "cibuildwheel", specifier = ">=2.23.3" },
-    { name = "guppylang", git = "https://github.com/CQCL/guppylang.git?rev=bf57ef8" },
+    { name = "guppylang", specifier = "~=0.21.0" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "pip", specifier = ">=24.2" },
     { name = "pytest", specifier = ">=8.3.5" },

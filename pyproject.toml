@@ -49,7 +49,7 @@ repository = "https://github.com/CQCL/selene"
 [dependency-groups]
 dev = [
     "cibuildwheel>=2.23.3",
-    "guppylang~=0.20.0",
+    "guppylang~=0.21.0",
     "pip>=24.2",
     "pytest>=8.3.5",
     "pytest-snapshot~=0.9.0",
@@ -64,7 +64,6 @@ dev = [
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
 selene-hugr-qis-compiler = { workspace = true }
-guppylang = { git = "https://github.com/CQCL/guppylang.git", rev = "bf57ef8" }
 
 [tool.uv.workspace]
 members = ["selene-core", "selene-compilers/hugr_qis"]
@@ -141,11 +140,7 @@ environment-pass = [
     "SELENE_CORE_WHL",
     "SELENE_HUGR_QIS_WHL",
 ]
-test-requires = [
-    "pytest",
-    "pytest-snapshot",
-    "git+https://github.com/cqcl/guppylang@bf57ef8",
-]
+test-requires = ["pytest", "pytest-snapshot", "guppylang~=0.21.0"]
 test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
 [tool.cibuildwheel.linux]
 environment = { PATH = "$PATH:$HOME/.cargo/bin" }

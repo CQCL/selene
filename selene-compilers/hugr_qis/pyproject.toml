@@ -65,7 +65,7 @@ ignore = ["F403", "F405", "PYI021", "PYI048"]
 
 [dependency-groups]
 dev = [
-    "guppylang~=0.20.0",
+    "guppylang~=0.21.0",
     "maturin>=1.7.4,<2.0",
     # required for `maturin develop`
     "pip>=25",
@@ -86,7 +86,6 @@ cache-keys = [
 ]
 
 [tool.uv.sources]
-guppylang = { git = "https://github.com/CQCL/guppylang.git", rev = "bf57ef8" }
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -98,11 +97,7 @@ build = "cp310-*"
 skip = "*-win32 *-manylinux_i686 *-musllinux*"
 manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
-test-requires = [
-    "pytest",
-    "pytest-snapshot",
-    "git+https://github.com/cqcl/guppylang@bf57ef8",
-]
+test-requires = ["pytest", "pytest-snapshot", "guppylang~=0.21.0"]
 test-command = "pytest -vv {package}"
 
 [tool.cibuildwheel.linux.environment]
