@@ -2,7 +2,12 @@
 //! plugins as rust crates.
 //!
 //! See `selene-simple-runtime-plugin` for a fully worked example.
-use std::{ffi, mem, sync::Arc};
+use anyhow::{Result, anyhow};
+use std::{
+    ffi, mem,
+    panic::{self, UnwindSafe},
+    sync::Arc,
+};
 
 use crate::utils::{convert_cargs_to_strings, result_of_errno_to_errno, result_to_errno};
 
@@ -27,15 +32,18 @@ impl<F: RuntimeInterfaceFactory> Helper<F> {
         unsafe { Box::from_raw(instance as *mut F::Interface) }
     }
 
-    fn with_runtime_instance<T>(
+    fn with_runtime_instance<T: UnwindSafe>(
         instance: RuntimeInstance,
-        mut go: impl FnMut(&mut F::Interface) -> T,
-    ) -> T {
-        assert!(!instance.is_null());
-        let mut r = unsafe { Self::from_runtime_instance(instance) };
-        let t = go(&mut r);
-        mem::forget(r);
-        t
+        mut go: impl FnMut(&mut F::Interface) -> Result<T> + UnwindSafe,
+    ) -> Result<T> {
+        panic::catch_unwind(move || {
+            assert!(!instance.is_null());
+            let mut r = unsafe { Self::from_runtime_instance(instance) };
+            let t = go(&mut r);
+            mem::forget(r);
+            t
+        })
+        .map_err(|_| anyhow!("runtime panicked"))?
     }
 
     fn factory(&self) -> Arc<F> {
