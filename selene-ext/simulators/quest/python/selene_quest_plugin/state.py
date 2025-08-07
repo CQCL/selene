@@ -195,15 +195,15 @@ class SeleneQuestState:
             def simplify_state(
                 tr_st: TracedState[np.ndarray],
             ) -> TracedState:
-                result = ""
+                terms = []
                 max_amplitude = np.max(np.abs(tr_st.state))
                 for i, amplitude in enumerate(tr_st.state):
                     if abs(amplitude) < max_amplitude * zero_threshold:
                         continue
                     ket = f"{amplitude}|{bin(i)[2:]}>"
-                    result += " + " + ket
-                assert result != "", "At least one ket state must have non-zero amplitude"
-                return TracedState(probability=tr_st.probability, state=result)
+                    terms.append(ket)
+                assert len(terms) > 0, "At least one ket state must have non-zero amplitude"
+                return TracedState(probability=tr_st.probability, state=" + ".join(terms))
 
         state_vector = self.get_state_vector_distribution(zero_threshold=zero_threshold)
         result = [simplify_state(tr_st) for tr_st in state_vector]
