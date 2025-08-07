@@ -132,11 +132,11 @@ class SeleneQuestState:
     def get_single_state(self, zero_threshold=1e-12) -> np.ndarray:
         """
         Assume that the state is a pure state and return it.
-        
+
         This is meant to be used when the user is requesting the state on all
         qubits, or on a subset that is not entangled with the rest.
-        
-        This function is a shorthand for ``get_state_vector_distribution`` that checks 
+
+        This function is a shorthand for ``get_state_vector_distribution`` that checks
         that there is a single vector with non-zero probability in the distribution of
         eigenvectors of the reduced density matrix, implying that it is a pure state.
 
@@ -182,7 +182,9 @@ class SeleneQuestState:
                     basis_str = f"{i:0{width}b}"
                     ket = Ket(basis_str)
                     terms.append(coefficient * ket)
-                assert len(terms) > 0, "At least one ket state must have non-zero amplitude"
+                assert len(terms) > 0, (
+                    "At least one ket state must have non-zero amplitude"
+                )
                 return TracedState(probability=probability, state=Add(*terms))
         except ImportError:
             import sys
@@ -202,8 +204,12 @@ class SeleneQuestState:
                         continue
                     ket = f"{amplitude}|{bin(i)[2:]}>"
                     terms.append(ket)
-                assert len(terms) > 0, "At least one ket state must have non-zero amplitude"
-                return TracedState(probability=tr_st.probability, state=" + ".join(terms))
+                assert len(terms) > 0, (
+                    "At least one ket state must have non-zero amplitude"
+                )
+                return TracedState(
+                    probability=tr_st.probability, state=" + ".join(terms)
+                )
 
         state_vector = self.get_state_vector_distribution(zero_threshold=zero_threshold)
         result = [simplify_state(tr_st) for tr_st in state_vector]
