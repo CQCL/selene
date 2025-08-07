@@ -171,7 +171,7 @@ class SeleneQuestState:
 
             width = len(self.specified_qubits)
 
-            def simplify_state(tr_st: TracedState[np.ndarray]) -> TracedState[Ket]:
+            def simplify_state(tr_st: TracedState[np.ndarray]) -> TracedState:
                 terms = []
                 probability = nsimplify(tr_st.probability)
                 max_amplitude = np.max(np.abs(tr_st.state))
@@ -194,7 +194,7 @@ class SeleneQuestState:
 
             def simplify_state(
                 tr_st: TracedState[np.ndarray],
-            ) -> TracedState[str]:
+            ) -> TracedState:
                 result = ""
                 max_amplitude = np.max(np.abs(tr_st.state))
                 for i, amplitude in enumerate(tr_st.state):
