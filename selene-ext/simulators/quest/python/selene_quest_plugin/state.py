@@ -65,7 +65,7 @@ class SeleneQuestState:
         reshaped = permuted.reshape((2**n_unspecified, 2**n_specified))
         # and trace out the unspecified qubits
         result = np.einsum("ai,aj->ij", reshaped, np.conj(reshaped))
-        # the shape is now (2**n_unspecified, 2**n_specified)
+        # the shape is now (2**n_specified, 2**n_specified)
         assert result.shape == (2**n_specified, 2**n_specified)
 
         if zero_threshold > 0:
@@ -98,11 +98,11 @@ class SeleneQuestState:
         if zero_threshold > 0:
             # set small (relative) values to zero for a cleaner output
             max_magnitude = np.max(np.abs(eigenstates))
-            zero_threshold = max_magnitude * zero_threshold
+            zero_threshold_mag = max_magnitude * zero_threshold
             im = eigenstates.imag
             re = eigenstates.real
-            im[np.abs(im) < zero_threshold] = 0
-            re[np.abs(re) < zero_threshold] = 0
+            im[np.abs(im) < zero_threshold_mag] = 0
+            re[np.abs(re) < zero_threshold_mag] = 0
             eigenstates = re + 1j * im
             # apply a global phase shift to make the first
             # non-zero component real and positive
@@ -117,8 +117,9 @@ class SeleneQuestState:
                 # make the first component real and positive
                 eigenstates[:, state_idx] *= np.conj(phase)
 
+        max_eigenvalue = np.max(np.abs(eigenvalues))
         for i, eigenvalue in enumerate(eigenvalues):
-            if abs(eigenvalue) < zero_threshold:
+            if abs(eigenvalue) < max_eigenvalue * zero_threshold:
                 continue
             result.append(
                 TracedState(
@@ -130,8 +131,14 @@ class SeleneQuestState:
 
     def get_single_state(self, zero_threshold=1e-12) -> np.ndarray:
         """
-        Assume that the state is a pure state, i.e. it has only one non-zero component,
-        and return it.
+        Assume that the state is a pure state and return it.
+
+        This is meant to be used when the user is requesting the state on all
+        qubits, or on a subset that is not entangled with the rest.
+
+        This function is a shorthand for ``get_state_vector_distribution`` that checks
+        that there is a single vector with non-zero probability in the distribution of
+        eigenvectors of the reduced density matrix, implying that it is a pure state.
 
         Raises ValueError if the state is not a pure state.
 
@@ -159,25 +166,26 @@ class SeleneQuestState:
 
     def get_dirac_notation(self, zero_threshold=1e-12) -> list[TracedState]:
         try:
-            from sympy import nsimplify
+            from sympy import nsimplify, Add
             from sympy.physics.quantum.state import Ket
 
             width = len(self.specified_qubits)
 
             def simplify_state(tr_st: TracedState[np.ndarray]) -> TracedState:
-                result = None
+                terms = []
                 probability = nsimplify(tr_st.probability)
+                max_amplitude = np.max(np.abs(tr_st.state))
                 for i, amplitude in enumerate(tr_st.state):
-                    if abs(amplitude) < zero_threshold:
+                    if abs(amplitude) < max_amplitude * zero_threshold:
                         continue
                     coefficient = nsimplify(amplitude)
                     basis_str = f"{i:0{width}b}"
                     ket = Ket(basis_str)
-                    if result is None:
-                        result = coefficient * ket
-                    else:
-                        result += coefficient * ket
-                return TracedState(probability=probability, state=result)
+                    terms.append(coefficient * ket)
+                assert len(terms) > 0, (
+                    "At least one ket state must have non-zero amplitude"
+                )
+                return TracedState(probability=probability, state=Add(*terms))
         except ImportError:
             import sys
 
@@ -189,17 +197,19 @@ class SeleneQuestState:
             def simplify_state(
                 tr_st: TracedState[np.ndarray],
             ) -> TracedState:
-                result = None
+                terms = []
+                max_amplitude = np.max(np.abs(tr_st.state))
                 for i, amplitude in enumerate(tr_st.state):
-                    if abs(amplitude) < zero_threshold:
+                    if abs(amplitude) < max_amplitude * zero_threshold:
                         continue
                     ket = f"{amplitude}|{bin(i)[2:]}>"
-                    if result is None:
-                        result = ket
-                    else:
-                        result += " + " + ket
-                result = result or ""
-                return TracedState(probability=tr_st.probability, state=result)
+                    terms.append(ket)
+                assert len(terms) > 0, (
+                    "At least one ket state must have non-zero amplitude"
+                )
+                return TracedState(
+                    probability=tr_st.probability, state=" + ".join(terms)
+                )
 
         state_vector = self.get_state_vector_distribution(zero_threshold=zero_threshold)
         result = [simplify_state(tr_st) for tr_st in state_vector]
