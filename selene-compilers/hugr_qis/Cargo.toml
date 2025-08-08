@@ -20,8 +20,8 @@ anyhow = "1.0"
 pyo3 = { version = "0.24", features = ["abi3-py310", "anyhow"] }
 tracing = "0.1"
 itertools = "0.14.0"
-tket = "0.13.1"
-tket-qsystem = { version = "0.18.0", features = ["llvm"] }
+tket = "0.13.2"
+tket-qsystem = { version = "0.18.1", features = ["llvm"] }
 
 [features]
 default = []
