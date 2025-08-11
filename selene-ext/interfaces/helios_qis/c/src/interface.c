@@ -93,7 +93,9 @@ uint64_t unwrap_future(struct selene_future_result_t result){
     return result.reference;
 }
 struct selene_string_t parse_cl_string(char const* str) {
-    return (struct selene_string_t){str+1, str[0], false};
+    uint8_t length = str[0];
+    char const* contents = str + 1;
+    return (struct selene_string_t){contents, length, false};
 }
 struct selene_string_t parse_c_string(char const* str) {
     if (str == 0) {
