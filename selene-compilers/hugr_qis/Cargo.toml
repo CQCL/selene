@@ -4,7 +4,7 @@
 name = "selene-hugr-qis-compiler"
 authors = ["Seyon Sivarajah <seyon.sivarajah@quantinuum.com>"]
 description = "Compiler for HUGR to LLVM targeting the Helios QIS"
-version = "0.2.0"
+version = "0.2.1"
 readme = "README.md"
 repository = "https://github.com/CQCL/selene/selene-compilers/hugr_qis"
 license = "Apache-2.0"
