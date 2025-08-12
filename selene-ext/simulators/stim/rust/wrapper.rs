@@ -33,6 +33,9 @@ impl TableauSimulator64 {
     pub fn z(&mut self, q: u32) {
         unsafe { bindings::cstim_TableauSimulator64_do_Z(self.ptr, q) }
     }
+    pub fn h(&mut self, q: u32) {
+        unsafe { bindings::cstim_TableauSimulator64_do_H_XZ(self.ptr, q) }
+    }
     pub fn mz(&mut self, q: u32) -> bool {
         unsafe { bindings::cstim_TableauSimulator64_do_MZ(self.ptr, q) }
     }

@@ -6,18 +6,32 @@ mod tests;
 
 use anyhow::{Result, anyhow};
 use clap::Parser;
+use num_enum::{IntoPrimitive, TryFromPrimitive};
 use selene_core::export_simulator_plugin;
 use selene_core::simulator::SimulatorInterface;
 use selene_core::simulator::interface::SimulatorInterfaceFactory;
 use selene_core::utils::MetricValue;
 use wrapper::TableauSimulator64;
 
-enum ApproxAngle {
-    Zero,
-    Frac3Pi2,
-    FracPi2,
-    Pi,
-    NoSuitableApproximation,
+#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
+#[repr(u8)]
+enum Quadrant {
+    Zero = 0,
+    FracPi2 = 1,
+    Pi = 2,
+    Frac3Pi2 = 3,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
+#[repr(u8)]
+enum Octant {
+    Zero = 0,
+    FracPi4 = 1,
+    FracPi2 = 2,
+    Frac3Pi4 = 3,
+    Pi = 4,
+    Frac5Pi4 = 5,
+    Frac3Pi2 = 6,
+    Frac7Pi4 = 7,
 }
 
 #[derive(Parser, Debug)]
@@ -29,23 +43,26 @@ struct Params {
 pub struct StimSimulator {
     simulator: TableauSimulator64,
     n_qubits: u64,
-    angle_threshold: f64,
+    angle_threshold_quad: f64,
 }
 impl StimSimulator {
-    fn get_approximate_angle(&self, theta: f64) -> ApproxAngle {
-        let quadrant_float = theta * 2.0 / std::f64::consts::PI;
-        let quadrant = quadrant_float.round() as i32;
-        let within_threshold = (quadrant_float - quadrant as f64).abs() < self.angle_threshold;
-        match (within_threshold, quadrant % 4) {
-            (true, -3) => ApproxAngle::FracPi2,
-            (true, -2) => ApproxAngle::Pi,
-            (true, -1) => ApproxAngle::Frac3Pi2,
-            (true, 0) => ApproxAngle::Zero,
-            (true, 1) => ApproxAngle::FracPi2,
-            (true, 2) => ApproxAngle::Pi,
-            (true, 3) => ApproxAngle::Frac3Pi2,
-            _ => ApproxAngle::NoSuitableApproximation,
+    fn get_approximate_quadrant(&self, theta: f64) -> Option<Quadrant> {
+        let quadrant_float = theta / std::f64::consts::FRAC_PI_2;
+        let quadrant_rounded = quadrant_float.round();
+        if (quadrant_float - quadrant_rounded).abs() > self.angle_threshold_quad {
+            return None; // Not within the threshold for any quadrant
         }
+        let quadrant = (quadrant_rounded as i64).rem_euclid(4) as u8;
+        Some(Quadrant::try_from(quadrant).unwrap())
+    }
+    fn get_approximate_octant(&self, theta: f64) -> Option<Octant> {
+        let octant_float = theta / std::f64::consts::FRAC_PI_4;
+        let octant_rounded = octant_float.round();
+        if (octant_float - octant_rounded).abs() > self.angle_threshold_quad {
+            return None; // Not within the threshold for any octant
+        }
+        let octant = (octant_rounded as i64).rem_euclid(8) as u8;
+        Some(Octant::try_from(octant).unwrap())
     }
 }
 
@@ -63,74 +80,168 @@ impl SimulatorInterface for StimSimulator {
     }
 
     fn rxy(&mut self, q0: u64, theta: f64, phi: f64) -> Result<()> {
+        // We can represent the rxy gate as a sequence of clifford
+        // operations for certain combinations of theta and phi:
+        //
+        // +===========================+
+        // | Theta | Phi   | Operation | notes
+        // +-------+-------+-----------+
+        // |   0   | [any] |           | identity regardless of phi
+        // +-------+-------+-----------+
+        // | pi/2  |   0   | V         | pi/2 theta section
+        // | pi/2  | pi/2  | H X       |
+        // | pi/2  | pi    | Vdg       |
+        // | pi/2  | 3pi/2 | H Z       |
+        // +-------+-------+-----------+
+        // | pi    |   0   | X         | pi theta, quadrant phi section
+        // | pi    | pi/2  | X Z       |
+        // | pi    | pi    | X         |
+        // | pi    | 3pi/2 | X Z       |
+        // |-------+-------+-----------+
+        // | pi    | pi/4  | X S       | pi theta, non-quadrant phi section
+        // | pi    | 3pi/4 | X Sdg     |
+        // | pi    | 5pi/4 | X S       |
+        // | pi    | 7pi/4 | X Sdg     |
+        // +-------+-------+-----------+
+        // | 3pi/2 |   0   | Vdg       | 3pi/2 theta section
+        // | 3pi/2 | pi/2  | H Z       |
+        // | 3pi/2 | pi    | V         |
+        // | 3pi/2 | 3pi/2 | H X       |
+        // +===========================+
+        //
         if q0 >= self.n_qubits {
             return Err(anyhow!(
-                "RXYGate(q0={q0}, theta={theta}, phi={phi}) is out of bounds. q0 must be less than the number of qubits ({}).",
+                "RXY(q0={q0}, theta={theta}, phi={phi}) is out of bounds. q0 must be less than the number of qubits ({}).",
                 self.n_qubits
             ));
         }
 
-        let approx_theta = self.get_approximate_angle(theta);
-        let approx_phi = self.get_approximate_angle(phi);
         let q0_u32: u32 = q0.try_into().unwrap();
+        let Some(approx_theta) = self.get_approximate_quadrant(theta) else {
+            return Err(anyhow!(
+                "RXY(q0={q0}, theta={theta}, phi={phi}) is not representable in stabiliser form. Theta must be an (approximate) multiple of pi/2 for Clifford operations."
+            ));
+        };
+        if approx_theta == Quadrant::Zero {
+            // If theta is zero, the operation is just the identity, regardless of phi.
+            // Return early to avoid validation on phi.
+            return Ok(());
+        }
 
-        match approx_phi {
-            ApproxAngle::Zero => (),
-            ApproxAngle::FracPi2 => self.simulator.sqrt_z_dag(q0_u32),
-            ApproxAngle::Pi => self.simulator.z(q0_u32),
-            ApproxAngle::Frac3Pi2 => self.simulator.sqrt_z(q0_u32),
-            ApproxAngle::NoSuitableApproximation => {
-                return Err(anyhow!(
-                    "RXYGate(q0={q0}, theta={theta}, phi={phi}) is not representable in stabiliser form. Angles must be (approximate) multiples of pi/2 in order to use Stim."
-                ));
+        let Some(approx_phi) = self.get_approximate_octant(phi) else {
+            return Err(anyhow!(
+                "RXY(q0={q0}, theta={theta}, phi={phi}) is not representable in stabiliser form. When theta is nonzero, phi must be an (approximate) multiple of pi/4 for Clifford operations."
+            ));
+        };
+
+        match (approx_theta, approx_phi) {
+            (Quadrant::Zero, _) => {
+                // Already handled with an early return
+                unreachable!()
             }
-        }
-        match approx_theta {
-            ApproxAngle::Zero => (),
-            ApproxAngle::FracPi2 => self.simulator.sqrt_x(q0_u32),
-            ApproxAngle::Pi => self.simulator.x(q0_u32),
-            ApproxAngle::Frac3Pi2 => self.simulator.sqrt_x_dag(q0_u32),
-            ApproxAngle::NoSuitableApproximation => {
-                return Err(anyhow!(
-                    "RXYGate(q0={q0}, theta={theta}, phi={phi}) is not representable in stabiliser form. Angles must be (approximate) multiples of pi/2 in order to use Stim."
-                ));
+
+            ////////////////////////
+            // pi/2 theta section //
+            ////////////////////////
+            (Quadrant::FracPi2, Octant::Zero) => {
+                self.simulator.sqrt_x(q0_u32);
+                Ok(())
             }
-        }
-        match approx_phi {
-            ApproxAngle::Zero => (),
-            ApproxAngle::FracPi2 => self.simulator.sqrt_z(q0_u32),
-            ApproxAngle::Pi => self.simulator.z(q0_u32),
-            ApproxAngle::Frac3Pi2 => self.simulator.sqrt_z_dag(q0_u32),
-            ApproxAngle::NoSuitableApproximation => {
-                return Err(anyhow!(
-                    "RXYGate(q0={q0}, theta={theta}, phi={phi}) is not representable in stabiliser form. Angles must be (approximate) multiples of pi/2 in order to use Stim."
-                ));
+            (Quadrant::FracPi2, Octant::FracPi2) => {
+                self.simulator.h(q0_u32);
+                self.simulator.x(q0_u32);
+                Ok(())
             }
+            (Quadrant::FracPi2, Octant::Pi) => {
+                self.simulator.sqrt_x_dag(q0_u32);
+                Ok(())
+            }
+            (Quadrant::FracPi2, Octant::Frac3Pi2) => {
+                self.simulator.h(q0_u32);
+                self.simulator.z(q0_u32);
+                Ok(())
+            }
+            (Quadrant::FracPi2, _) => Err(anyhow!(
+                "RXY(q0={q0}, theta={theta}, phi={phi}) is not representable in stabiliser form. When theta is pi/2, phi must be an (approximate) multiple of pi/2."
+            )),
+
+            ////////////////////////////////////
+            // pi theta, quadrant phi section //
+            ////////////////////////////////////
+            (Quadrant::Pi, Octant::Zero | Octant::Pi) => {
+                self.simulator.x(q0_u32);
+                Ok(())
+            }
+            (Quadrant::Pi, Octant::FracPi2 | Octant::Frac3Pi2) => {
+                self.simulator.x(q0_u32);
+                self.simulator.z(q0_u32);
+                Ok(())
+            }
+
+            ////////////////////////////////////////
+            // pi theta, non-quadrant phi section //
+            ////////////////////////////////////////
+            (Quadrant::Pi, Octant::FracPi4 | Octant::Frac5Pi4) => {
+                // phi - pi/4 = 0 mod pi, phi = pi/4 mod pi
+                self.simulator.x(q0_u32);
+                self.simulator.sqrt_z(q0_u32);
+                Ok(())
+            }
+            (Quadrant::Pi, Octant::Frac3Pi4 | Octant::Frac7Pi4) => {
+                // phi - pi/4 = pi/2 mod pi, phi = 3pi/4 mod pi
+                self.simulator.x(q0_u32);
+                self.simulator.sqrt_z_dag(q0_u32);
+                Ok(())
+            }
+
+            /////////////////////////
+            // 3pi/2 theta section //
+            /////////////////////////
+            (Quadrant::Frac3Pi2, Octant::Zero) => {
+                self.simulator.sqrt_x_dag(q0_u32);
+                Ok(())
+            }
+            (Quadrant::Frac3Pi2, Octant::FracPi2) => {
+                self.simulator.h(q0_u32);
+                self.simulator.z(q0_u32);
+                Ok(())
+            }
+            (Quadrant::Frac3Pi2, Octant::Pi) => {
+                self.simulator.sqrt_x(q0_u32);
+                Ok(())
+            }
+            (Quadrant::Frac3Pi2, Octant::Frac3Pi2) => {
+                self.simulator.h(q0_u32);
+                self.simulator.x(q0_u32);
+                Ok(())
+            }
+            (Quadrant::Frac3Pi2, _) => Err(anyhow!(
+                "RXY(q0={q0}, theta={theta}, phi={phi}) is not representable in stabiliser form. When theta is 3pi/2, phi must be an (approximate) multiple of pi/2."
+            )),
         }
-        Ok(())
     }
 
     fn rz(&mut self, q0: u64, theta: f64) -> Result<()> {
         if q0 >= self.n_qubits {
             return Err(anyhow!(
-                "RZGate(q0={q0}, theta={theta}) is out of bounds. q0 must be less than the number of qubits ({}).",
+                "RZ(q0={q0}, theta={theta}) is out of bounds. q0 must be less than the number of qubits ({}).",
                 self.n_qubits
             ));
         }
 
-        let approx = self.get_approximate_angle(theta);
+        let Some(approx) = self.get_approximate_quadrant(theta) else {
+            return Err(anyhow!(
+                "RZ(q0={q0}, theta={theta}) is not representable in stabiliser form. Theta must be an (approximate) multiple of pi/2 for Clifford operations."
+            ));
+        };
+
         let q0_u32: u32 = q0.try_into().unwrap();
 
         match approx {
-            ApproxAngle::Zero => (),
-            ApproxAngle::FracPi2 => self.simulator.sqrt_z(q0_u32),
-            ApproxAngle::Pi => self.simulator.z(q0_u32),
-            ApproxAngle::Frac3Pi2 => self.simulator.sqrt_z_dag(q0_u32),
-            ApproxAngle::NoSuitableApproximation => {
-                return Err(anyhow!(
-                    "RZGate(q0={q0}, theta={theta}) is not representable in stabiliser form. Angles must be (approximate) multiples of pi/2 in order to use Stim."
-                ));
-            }
+            Quadrant::Zero => (),
+            Quadrant::FracPi2 => self.simulator.sqrt_z(q0_u32),
+            Quadrant::Pi => self.simulator.z(q0_u32),
+            Quadrant::Frac3Pi2 => self.simulator.sqrt_z_dag(q0_u32),
         }
         Ok(())
     }
@@ -138,28 +249,27 @@ impl SimulatorInterface for StimSimulator {
     fn rzz(&mut self, q0: u64, q1: u64, theta: f64) -> Result<()> {
         if q0 >= self.n_qubits || q1 >= self.n_qubits {
             return Err(anyhow!(
-                "RZZGate(q0={q0}, q1={q1}, theta={theta}) is out of bounds. q0 and q1 must be less than the number of qubits ({}).",
+                "RZZ(q0={q0}, q1={q1}, theta={theta}) is out of bounds. q0 and q1 must be less than the number of qubits ({}).",
                 self.n_qubits
             ));
         }
 
         let q0_u32: u32 = q0.try_into().unwrap();
         let q1_u32: u32 = q1.try_into().unwrap();
-        let approx = self.get_approximate_angle(theta);
+        let Some(approx) = self.get_approximate_quadrant(theta) else {
+            return Err(anyhow!(
+                "RZZ(q0={q0}, q1={q1}, theta={theta}) is not representable in stabiliser form. Theta must be an (approximate) multiple of pi/2 for Clifford operations."
+            ));
+        };
 
         match approx {
-            ApproxAngle::Zero => (),
-            ApproxAngle::FracPi2 => self.simulator.sqrt_zz(q0_u32, q1_u32),
-            ApproxAngle::Pi => {
+            Quadrant::Zero => (),
+            Quadrant::FracPi2 => self.simulator.sqrt_zz(q0_u32, q1_u32),
+            Quadrant::Pi => {
                 self.simulator.z(q0_u32);
                 self.simulator.z(q1_u32)
             }
-            ApproxAngle::Frac3Pi2 => self.simulator.sqrt_zz_dag(q0_u32, q1_u32),
-            ApproxAngle::NoSuitableApproximation => {
-                return Err(anyhow!(
-                    "RZZGate(q0={q0}, q1={q1}, theta={theta}) is not representable in stabiliser form. Angles must be (approximate) multiples of pi/2 in order to use Stim."
-                ));
-            }
+            Quadrant::Frac3Pi2 => self.simulator.sqrt_zz_dag(q0_u32, q1_u32),
         }
         Ok(())
     }
@@ -229,10 +339,11 @@ impl SimulatorInterfaceFactory for StimSimulatorFactory {
             Err(e) => Err(anyhow!("Error parsing arguments to stim plugin: {}", e)),
             Ok(params) => {
                 let n_u32: u32 = n_qubits.try_into()?;
+                let angle_threshold_quad = params.angle_threshold / std::f64::consts::FRAC_PI_2;
                 Ok(Box::new(StimSimulator {
                     simulator: TableauSimulator64::new(n_u32, 0),
                     n_qubits,
-                    angle_threshold: params.angle_threshold,
+                    angle_threshold_quad,
                 }))
             }
         }

@@ -48,6 +48,11 @@ unsafe extern "C" {
         q: ::std::os::raw::c_uint,
     );
 
+    pub fn cstim_TableauSimulator64_do_H_XZ(
+        rawptr: *mut ::std::os::raw::c_void,
+        q: ::std::os::raw::c_uint,
+    );
+
     pub fn cstim_TableauSimulator64_do_MZ(
         rawptr: *mut ::std::os::raw::c_void,
         q: ::std::os::raw::c_uint,

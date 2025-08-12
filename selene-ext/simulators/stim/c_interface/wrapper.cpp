@@ -51,6 +51,11 @@ extern "C" {
         obj->inv_state.prepend_Z(q);
     }
 
+    void cstim_TableauSimulator64_do_H_XZ(void * rawptr,unsigned int q) {
+        stim::TableauSimulator<64>* obj = (stim::TableauSimulator<64>*) rawptr;
+        obj->inv_state.prepend_H_XZ(q);
+    }
+
     bool cstim_TableauSimulator64_do_MZ(void * rawptr,unsigned int q) {
         stim::TableauSimulator<64>* obj = (stim::TableauSimulator<64>*) rawptr;
         if (!obj->is_deterministic_z(q)) {
