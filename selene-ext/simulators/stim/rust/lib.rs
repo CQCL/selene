@@ -11,6 +11,7 @@ use selene_core::export_simulator_plugin;
 use selene_core::simulator::SimulatorInterface;
 use selene_core::simulator::interface::SimulatorInterfaceFactory;
 use selene_core::utils::MetricValue;
+use std::io::Write;
 use wrapper::TableauSimulator64;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
@@ -320,6 +321,21 @@ impl SimulatorInterface for StimSimulator {
 
     fn get_metric(&mut self, _nth_metric: u8) -> Result<Option<(String, MetricValue)>> {
         Ok(None)
+    }
+
+    fn dump_state(&mut self, file: &std::path::Path, qubits: &[u64]) -> Result<()> {
+        let handle = std::fs::File::create(file)?;
+        let mut writer = std::io::BufWriter::new(handle);
+        writer.write_all(b"selene-stim")?;
+        writer.write_all(self.n_qubits.to_le_bytes().as_slice())?;
+        writer.write_all((qubits.len() as u64).to_le_bytes().as_slice())?;
+        for &q in qubits {
+            writer.write_all(q.to_le_bytes().as_slice())?;
+        }
+        let stab = self.simulator.get_stabilisers();
+        let stab_bytes = stab.as_bytes();
+        writer.write_all(stab_bytes)?;
+        Ok(())
     }
 }
 

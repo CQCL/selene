@@ -14,4 +14,6 @@ extern "C" {
     void cstim_TableauSimulator64_do_H_XZ(void * rawptr,unsigned int q);
     bool cstim_TableauSimulator64_do_MZ(void * rawptr,unsigned int q);
     bool cstim_TableauSimulator64_do_POSTSELECT_Z(void * rawptr,unsigned int q, bool target_result);
+    void cstim_TableauSimulator64_get_stabilizers(void * rawptr, char** write);
+    void cstim_TableauSimulator64_free_stabilizers(char* written);
 }

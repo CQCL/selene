@@ -76,4 +76,21 @@ extern "C" {
             return false;
         }
     }
+
+    void cstim_TableauSimulator64_get_stabilizers(void * rawptr, char** write) {
+        stim::TableauSimulator<64>* obj = (stim::TableauSimulator<64>*) rawptr;
+        std::stringstream ss;
+        for(auto const& pauli_string : obj->inv_state.stabilizers(true)){
+            ss << pauli_string << '\n';
+        }
+        auto str = ss.str();
+        char* cstr = new char[str.size() + 1];
+        std::copy(str.begin(), str.end(), cstr);
+        cstr[str.size()] = '\0';
+        *write = cstr;
+    }
+
+    void cstim_TableauSimulator64_free_stabilizers(char* written) {
+        delete[] written;
+    }
 }

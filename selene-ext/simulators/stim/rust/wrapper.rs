@@ -42,6 +42,21 @@ impl TableauSimulator64 {
     pub fn postselect_z(&mut self, q: u32, target_value: bool) -> bool {
         unsafe { bindings::cstim_TableauSimulator64_do_POSTSELECT_Z(self.ptr, q, target_value) }
     }
+    pub fn get_stabilisers(&mut self) -> String {
+        let mut stringptr = std::ptr::null_mut();
+        unsafe { bindings::cstim_TableauSimulator64_get_stabilizers(self.ptr, &mut stringptr) };
+        let result: String = unsafe {
+            if stringptr.is_null() {
+                String::new()
+            } else {
+                std::ffi::CStr::from_ptr(stringptr)
+                    .to_string_lossy()
+                    .into_owned()
+            }
+        };
+        unsafe { bindings::cstim_TableauSimulator64_free_stabilizers(stringptr) };
+        result
+    }
 }
 
 impl Drop for TableauSimulator64 {
