@@ -29,41 +29,41 @@ entry:
   %2 = bitcast i8* %1 to { i1, i64 }*
   br label %loop_body.i
 
-loop_body.i:                                      ; preds = %cond_291_case_1.i.i, %entry
-  %"20_2.0.i" = phi i64 [ %3, %cond_291_case_1.i.i ], [ 0, %entry ]
-  %exitcond.not.i = icmp eq i64 %"20_2.0.i", 10
-  br i1 %exitcond.not.i, label %loop_out.i, label %cond_25_case_1.i
+loop_body.i:                                      ; preds = %cond_340_case_1.i.i, %entry
+  %"16_2.0.i" = phi i64 [ %3, %cond_340_case_1.i.i ], [ 0, %entry ]
+  %exitcond.not.i = icmp eq i64 %"16_2.0.i", 10
+  br i1 %exitcond.not.i, label %loop_out.i, label %cond_21_case_1.i
 
-cond_25_case_1.i:                                 ; preds = %loop_body.i
-  %3 = add nuw nsw i64 %"20_2.0.i", 1
+cond_21_case_1.i:                                 ; preds = %loop_body.i
+  %3 = add nuw nsw i64 %"16_2.0.i", 1
   %qalloc.i.i = tail call i64 @___qalloc()
   %not_max.not.i.i = icmp eq i64 %qalloc.i.i, -1
   br i1 %not_max.not.i.i, label %id_bb.i.i, label %reset_bb.i.i
 
-reset_bb.i.i:                                     ; preds = %cond_25_case_1.i
+reset_bb.i.i:                                     ; preds = %cond_21_case_1.i
   tail call void @___reset(i64 %qalloc.i.i)
   br label %id_bb.i.i
 
-id_bb.i.i:                                        ; preds = %reset_bb.i.i, %cond_25_case_1.i
+id_bb.i.i:                                        ; preds = %reset_bb.i.i, %cond_21_case_1.i
   %4 = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %qalloc.i.i, 1
   %5 = select i1 %not_max.not.i.i, { i1, i64 } { i1 false, i64 poison }, { i1, i64 } %4
   %.fca.0.extract.i.i = extractvalue { i1, i64 } %5, 0
-  br i1 %.fca.0.extract.i.i, label %cond_291_case_1.i.i, label %cond_266_case_0.i.i
+  br i1 %.fca.0.extract.i.i, label %cond_340_case_1.i.i, label %cond_294_case_0.i.i
 
-cond_266_case_0.i.i:                              ; preds = %id_bb.i.i
+cond_294_case_0.i.i:                              ; preds = %id_bb.i.i
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @"e_No more qu.3B2EEBF0.0", i64 0, i64 0))
   unreachable
 
-cond_291_case_1.i.i:                              ; preds = %id_bb.i.i
+cond_340_case_1.i.i:                              ; preds = %id_bb.i.i
   %.fca.1.extract.i.i = extractvalue { i1, i64 } %5, 1
-  %"288_05.fca.1.insert.i.i" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.1.extract.i.i, 1
-  %6 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %2, i64 %"20_2.0.i"
+  %"337_05.fca.1.insert.i.i" = insertvalue { i1, i64 } { i1 true, i64 poison }, i64 %.fca.1.extract.i.i, 1
+  %6 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %2, i64 %"16_2.0.i"
   %7 = getelementptr inbounds { i1, i64 }, { i1, i64 }* %6, i64 0, i32 0
   %8 = load i1, i1* %7, align 1
-  store { i1, i64 } %"288_05.fca.1.insert.i.i", { i1, i64 }* %6, align 4
-  br i1 %8, label %cond_301_case_1.i.i, label %loop_body.i
+  store { i1, i64 } %"337_05.fca.1.insert.i.i", { i1, i64 }* %6, align 4
+  br i1 %8, label %cond_350_case_1.i.i, label %loop_body.i
 
-cond_301_case_1.i.i:                              ; preds = %cond_291_case_1.i.i
+cond_350_case_1.i.i:                              ; preds = %cond_340_case_1.i.i
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([48 x i8], [48 x i8]* @"e_Linear arr.8A243695.0", i64 0, i64 0))
   unreachable
 
@@ -71,62 +71,62 @@ loop_out.i:                                       ; preds = %loop_body.i
   %9 = load { i1, i64 }, { i1, i64 }* %2, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %1, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.i.i = extractvalue { i1, i64 } %9, 0
-  br i1 %.fca.2.0.extract.i.i.i.i, label %cond_457_case_1.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.i.i, label %cond_506_case_1.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_377_case_0.i.i.i.i:                          ; preds = %cond_457_case_1.8.i.i, %cond_457_case_1.7.i.i, %cond_457_case_1.6.i.i, %cond_457_case_1.5.i.i, %cond_457_case_1.4.i.i, %cond_457_case_1.3.i.i, %cond_457_case_1.2.i.i, %cond_457_case_1.1.i.i, %cond_457_case_1.i.i, %loop_out.i
+cond_426_case_0.i.i.i.i:                          ; preds = %cond_506_case_1.8.i.i, %cond_506_case_1.7.i.i, %cond_506_case_1.6.i.i, %cond_506_case_1.5.i.i, %cond_506_case_1.4.i.i, %cond_506_case_1.3.i.i, %cond_506_case_1.2.i.i, %cond_506_case_1.1.i.i, %cond_506_case_1.i.i, %loop_out.i
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([52 x i8], [52 x i8]* @"e_Linear arr.27F92A51.0", i64 0, i64 0))
   unreachable
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.1.i.i.i": ; preds = %cond_457_case_1.9.i.i
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.1.i.i.i": ; preds = %cond_506_case_1.9.i.i
   %10 = bitcast i8* %28 to i1*
   %11 = load i1, i1* %10, align 1
-  br i1 %11, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.2.i.i.i"
+  br i1 %11, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.2.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.2.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.1.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.2.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.1.i.i.i"
   %12 = bitcast i8* %31 to i1*
   %13 = load i1, i1* %12, align 1
-  br i1 %13, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.3.i.i.i"
+  br i1 %13, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.3.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.3.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.2.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.3.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.2.i.i.i"
   %14 = bitcast i8* %34 to i1*
   %15 = load i1, i1* %14, align 1
-  br i1 %15, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.4.i.i.i"
+  br i1 %15, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.4.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.4.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.3.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.4.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.3.i.i.i"
   %16 = bitcast i8* %37 to i1*
   %17 = load i1, i1* %16, align 1
-  br i1 %17, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.5.i.i.i"
+  br i1 %17, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.5.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.5.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.4.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.5.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.4.i.i.i"
   %18 = bitcast i8* %40 to i1*
   %19 = load i1, i1* %18, align 1
-  br i1 %19, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.6.i.i.i"
+  br i1 %19, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.6.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.6.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.5.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.6.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.5.i.i.i"
   %20 = bitcast i8* %43 to i1*
   %21 = load i1, i1* %20, align 1
-  br i1 %21, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.7.i.i.i"
+  br i1 %21, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.7.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.7.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.6.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.7.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.6.i.i.i"
   %22 = bitcast i8* %46 to i1*
   %23 = load i1, i1* %22, align 1
-  br i1 %23, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.8.i.i.i"
+  br i1 %23, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.8.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.8.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.7.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.8.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.7.i.i.i"
   %24 = bitcast i8* %49 to i1*
   %25 = load i1, i1* %24, align 1
-  br i1 %25, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.9.i.i.i"
+  br i1 %25, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.9.i.i.i"
 
-"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.9.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.8.i.i.i"
+"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.9.i.i.i": ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.8.i.i.i"
   %26 = bitcast i8* %52 to i1*
   %27 = load i1, i1* %26, align 1
-  br i1 %27, label %cond_402_case_1.i.i.i.i, label %__hugr__.main.1.exit
+  br i1 %27, label %cond_451_case_1.i.i.i.i, label %__hugr__.main.1.exit
 
-cond_402_case_1.i.i.i.i:                          ; preds = %cond_457_case_1.9.i.i, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.9.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.8.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.7.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.6.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.5.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.4.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.3.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.2.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.1.i.i.i"
+cond_451_case_1.i.i.i.i:                          ; preds = %cond_506_case_1.9.i.i, %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.9.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.8.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.7.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.6.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.5.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.4.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.3.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.2.i.i.i", %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.1.i.i.i"
   tail call void @panic(i32 1001, i8* getelementptr inbounds ([69 x i8], [69 x i8]* @e_ArrayIter..ED8B8605.0, i64 0, i64 0))
   unreachable
 
-cond_457_case_1.i.i:                              ; preds = %loop_out.i
+cond_506_case_1.i.i:                              ; preds = %loop_out.i
   %.fca.2.1.extract.i.i.i.i = extractvalue { i1, i64 } %9, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.i.i)
   %28 = getelementptr inbounds i8, i8* %1, i64 16
@@ -134,9 +134,9 @@ cond_457_case_1.i.i:                              ; preds = %loop_out.i
   %30 = load { i1, i64 }, { i1, i64 }* %29, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %28, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.1.i.i = extractvalue { i1, i64 } %30, 0
-  br i1 %.fca.2.0.extract.i.i.1.i.i, label %cond_457_case_1.1.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.1.i.i, label %cond_506_case_1.1.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.1.i.i:                            ; preds = %cond_457_case_1.i.i
+cond_506_case_1.1.i.i:                            ; preds = %cond_506_case_1.i.i
   %.fca.2.1.extract.i.i.1.i.i = extractvalue { i1, i64 } %30, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.1.i.i)
   %31 = getelementptr inbounds i8, i8* %1, i64 32
@@ -144,9 +144,9 @@ cond_457_case_1.1.i.i:                            ; preds = %cond_457_case_1.i.i
   %33 = load { i1, i64 }, { i1, i64 }* %32, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %31, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.2.i.i = extractvalue { i1, i64 } %33, 0
-  br i1 %.fca.2.0.extract.i.i.2.i.i, label %cond_457_case_1.2.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.2.i.i, label %cond_506_case_1.2.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.2.i.i:                            ; preds = %cond_457_case_1.1.i.i
+cond_506_case_1.2.i.i:                            ; preds = %cond_506_case_1.1.i.i
   %.fca.2.1.extract.i.i.2.i.i = extractvalue { i1, i64 } %33, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.2.i.i)
   %34 = getelementptr inbounds i8, i8* %1, i64 48
@@ -154,9 +154,9 @@ cond_457_case_1.2.i.i:                            ; preds = %cond_457_case_1.1.i
   %36 = load { i1, i64 }, { i1, i64 }* %35, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %34, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.3.i.i = extractvalue { i1, i64 } %36, 0
-  br i1 %.fca.2.0.extract.i.i.3.i.i, label %cond_457_case_1.3.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.3.i.i, label %cond_506_case_1.3.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.3.i.i:                            ; preds = %cond_457_case_1.2.i.i
+cond_506_case_1.3.i.i:                            ; preds = %cond_506_case_1.2.i.i
   %.fca.2.1.extract.i.i.3.i.i = extractvalue { i1, i64 } %36, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.3.i.i)
   %37 = getelementptr inbounds i8, i8* %1, i64 64
@@ -164,9 +164,9 @@ cond_457_case_1.3.i.i:                            ; preds = %cond_457_case_1.2.i
   %39 = load { i1, i64 }, { i1, i64 }* %38, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %37, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.4.i.i = extractvalue { i1, i64 } %39, 0
-  br i1 %.fca.2.0.extract.i.i.4.i.i, label %cond_457_case_1.4.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.4.i.i, label %cond_506_case_1.4.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.4.i.i:                            ; preds = %cond_457_case_1.3.i.i
+cond_506_case_1.4.i.i:                            ; preds = %cond_506_case_1.3.i.i
   %.fca.2.1.extract.i.i.4.i.i = extractvalue { i1, i64 } %39, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.4.i.i)
   %40 = getelementptr inbounds i8, i8* %1, i64 80
@@ -174,9 +174,9 @@ cond_457_case_1.4.i.i:                            ; preds = %cond_457_case_1.3.i
   %42 = load { i1, i64 }, { i1, i64 }* %41, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %40, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.5.i.i = extractvalue { i1, i64 } %42, 0
-  br i1 %.fca.2.0.extract.i.i.5.i.i, label %cond_457_case_1.5.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.5.i.i, label %cond_506_case_1.5.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.5.i.i:                            ; preds = %cond_457_case_1.4.i.i
+cond_506_case_1.5.i.i:                            ; preds = %cond_506_case_1.4.i.i
   %.fca.2.1.extract.i.i.5.i.i = extractvalue { i1, i64 } %42, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.5.i.i)
   %43 = getelementptr inbounds i8, i8* %1, i64 96
@@ -184,9 +184,9 @@ cond_457_case_1.5.i.i:                            ; preds = %cond_457_case_1.4.i
   %45 = load { i1, i64 }, { i1, i64 }* %44, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %43, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.6.i.i = extractvalue { i1, i64 } %45, 0
-  br i1 %.fca.2.0.extract.i.i.6.i.i, label %cond_457_case_1.6.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.6.i.i, label %cond_506_case_1.6.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.6.i.i:                            ; preds = %cond_457_case_1.5.i.i
+cond_506_case_1.6.i.i:                            ; preds = %cond_506_case_1.5.i.i
   %.fca.2.1.extract.i.i.6.i.i = extractvalue { i1, i64 } %45, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.6.i.i)
   %46 = getelementptr inbounds i8, i8* %1, i64 112
@@ -194,9 +194,9 @@ cond_457_case_1.6.i.i:                            ; preds = %cond_457_case_1.5.i
   %48 = load { i1, i64 }, { i1, i64 }* %47, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %46, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.7.i.i = extractvalue { i1, i64 } %48, 0
-  br i1 %.fca.2.0.extract.i.i.7.i.i, label %cond_457_case_1.7.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.7.i.i, label %cond_506_case_1.7.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.7.i.i:                            ; preds = %cond_457_case_1.6.i.i
+cond_506_case_1.7.i.i:                            ; preds = %cond_506_case_1.6.i.i
   %.fca.2.1.extract.i.i.7.i.i = extractvalue { i1, i64 } %48, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.7.i.i)
   %49 = getelementptr inbounds i8, i8* %1, i64 128
@@ -204,9 +204,9 @@ cond_457_case_1.7.i.i:                            ; preds = %cond_457_case_1.6.i
   %51 = load { i1, i64 }, { i1, i64 }* %50, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %49, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.8.i.i = extractvalue { i1, i64 } %51, 0
-  br i1 %.fca.2.0.extract.i.i.8.i.i, label %cond_457_case_1.8.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.8.i.i, label %cond_506_case_1.8.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.8.i.i:                            ; preds = %cond_457_case_1.7.i.i
+cond_506_case_1.8.i.i:                            ; preds = %cond_506_case_1.7.i.i
   %.fca.2.1.extract.i.i.8.i.i = extractvalue { i1, i64 } %51, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.8.i.i)
   %52 = getelementptr inbounds i8, i8* %1, i64 144
@@ -214,17 +214,17 @@ cond_457_case_1.8.i.i:                            ; preds = %cond_457_case_1.7.i
   %54 = load { i1, i64 }, { i1, i64 }* %53, align 4
   tail call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 4 dereferenceable(16) %52, i8 0, i64 16, i1 false)
   %.fca.2.0.extract.i.i.9.i.i = extractvalue { i1, i64 } %54, 0
-  br i1 %.fca.2.0.extract.i.i.9.i.i, label %cond_457_case_1.9.i.i, label %cond_377_case_0.i.i.i.i
+  br i1 %.fca.2.0.extract.i.i.9.i.i, label %cond_506_case_1.9.i.i, label %cond_426_case_0.i.i.i.i
 
-cond_457_case_1.9.i.i:                            ; preds = %cond_457_case_1.8.i.i
+cond_506_case_1.9.i.i:                            ; preds = %cond_506_case_1.8.i.i
   %.fca.2.1.extract.i.i.9.i.i = extractvalue { i1, i64 } %54, 1
   tail call void @___qfree(i64 %.fca.2.1.extract.i.i.9.i.i)
   %55 = tail call i8* @heap_alloc(i64 0)
   %56 = bitcast i8* %1 to i1*
   %57 = load i1, i1* %56, align 1
-  br i1 %57, label %cond_402_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.1.i.i.i"
+  br i1 %57, label %cond_451_case_1.i.i.i.i, label %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.1.i.i.i"
 
-__hugr__.main.1.exit:                             ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).399.exit.9.i.i.i"
+__hugr__.main.1.exit:                             ; preds = %"__hugr__.$ArrayIter._assert_all_used.helper.5$$t(qubit).448.exit.9.i.i.i"
   tail call void @heap_free(i8* nonnull %1)
   tail call void @heap_free(i8* %55)
   %58 = tail call i64 @teardown()
