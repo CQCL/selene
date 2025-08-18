@@ -383,7 +383,7 @@ def test_rng_advance(snapshot):
     shots = list(
         dict(shot) for shot in runner.run_shots(Quest(), 1, n_shots=10, verbose=True)
     )
-    for shot in shots[1:]:
+    for shot in shots:
         assert shot["rint"] == shot["rint2"], (
             f"Expected rint to be the same after advancing, got {shot['rint']} and {shot['rint2']}"
         )
