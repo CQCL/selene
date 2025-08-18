@@ -323,6 +323,11 @@ void random_seed(uint64_t seed) {
     unwrap(selene_random_seed(selene_instance, seed));
     DIAGNOSTIC("   [done]\n");
 }
+void random_advance(uint64_t delta) {
+    DIAGNOSTIC("random_advance(%" PRIu64 ")\n", delta);
+    unwrap(selene_random_advance(selene_instance, delta));
+    DIAGNOSTIC("   [done]\n");
+}
 uint32_t random_int() {
     DIAGNOSTIC("random_int()\n");
     uint32_t result = unwrap(selene_random_u32(selene_instance));

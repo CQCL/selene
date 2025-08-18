@@ -468,6 +468,20 @@ pub unsafe extern "C" fn selene_random_seed(
     })
 }
 
+/// Advance the PRNG with a user-provided delta. As this
+/// is cyclic, i64s with negative values have well defined
+/// rewinding behaviour.
+///
+/// Requires the PRNG to be seeded with random_seed,
+/// otherwise an error will be returned.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn selene_random_advance(
+    instance: *mut SeleneInstance,
+    delta: u64,
+) -> VoidResult {
+    with_instance_void(instance, |instance| instance.random_advance(delta))
+}
+
 /// Produces a random 32-bit unsigned integer.
 ///
 /// Requires the PRNG to be seeded with random_seed,
