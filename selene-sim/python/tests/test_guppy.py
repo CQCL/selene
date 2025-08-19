@@ -361,6 +361,37 @@ def test_rng(snapshot):
     snapshot.assert_match(yaml.dump(shots[0]), "rng")
 
 
+@pytest.mark.skipif(
+    not hasattr(RNG, "random_advance"),
+    reason="RNG advance is not implemented in guppy yet",
+)
+def test_rng_advance(snapshot):
+    @guppy
+    def main() -> None:
+        rng = RNG(get_current_shot() + 42)
+        rint = rng.random_int()
+        rfloat = rng.random_float()
+        rng.advance(-2)
+        rint2 = rng.random_int()
+        rfloat2 = rng.random_float()
+        result("rint", rint)
+        result("rint2", rint2)
+        result("rfloat", rfloat)
+        result("rfloat2", rfloat2)
+
+    runner = build(main.compile(), "rng_advance")
+    shots = list(
+        dict(shot) for shot in runner.run_shots(Quest(), 1, n_shots=10, verbose=True)
+    )
+    for shot in shots:
+        assert shot["rint"] == shot["rint2"], (
+            f"Expected rint to be the same after advancing, got {shot['rint']} and {shot['rint2']}"
+        )
+        assert shot["rfloat"] == shot["rfloat2"], (
+            f"Expected rfloat to be the same after advancing, got {shot['rfloat']} and {shot['rfloat2']}"
+        )
+
+
 def test_sim_restriction():
     """
     Demonstrate the propagation of panic-inducing messages from

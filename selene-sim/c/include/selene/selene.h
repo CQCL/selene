@@ -149,6 +149,16 @@ struct selene_bool_result_t selene_qubit_measure(struct SeleneInstance *instance
 struct selene_void_result_t selene_qubit_reset(struct SeleneInstance *instance, uint64_t q);
 
 /**
+ * Advance the PRNG with a user-provided delta. As this
+ * is cyclic, i64s with negative values have well defined
+ * rewinding behaviour.
+ *
+ * Requires the PRNG to be seeded with random_seed,
+ * otherwise an error will be returned.
+ */
+struct selene_void_result_t selene_random_advance(struct SeleneInstance *instance, uint64_t delta);
+
+/**
  * Produces a random 32-bit float.
  *
  * Requires the PRNG to be seeded with random_seed,
