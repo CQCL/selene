@@ -17,32 +17,32 @@
             "extra-files": [
                 {
                     "type": "toml",
-                    "path": "selene-core/Cargo.toml",
+                    "path": "Cargo.toml",
                     "jsonpath": "$.package.version"
                 },
                 {
                     "type": "toml",
-                    "path": "Cargo.lock",
+                    "path": "/Cargo.lock",
                     "jsonpath": "$.package[?(@.name.value=='selene-core')].version"
                 },
                 {
                     "type": "toml",
-                    "path": "uv.lock",
+                    "path": "/uv.lock",
                     "jsonpath": "$.package[?(@.name.value=='selene-core')].version"
                 },
                 {
                     "type": "toml",
-                    "path": "selene-core/examples/error_model/Cargo.lock",
+                    "path": "examples/error_model/Cargo.lock",
                     "jsonpath": "$.package[?(@.name.value=='selene-core')].version"
                 },
                 {
                     "type": "toml",
-                    "path": "selene-core/examples/simulator/Cargo.lock",
+                    "path": "examples/simulator/Cargo.lock",
                     "jsonpath": "$.package[?(@.name.value=='selene-core')].version"
                 },
                 {
                     "type": "toml",
-                    "path": "selene-core/examples/runtime/Cargo.lock",
+                    "path": "examples/runtime/Cargo.lock",
                     "jsonpath": "$.package[?(@.name.value=='selene-core')].version"
                 }
             ]
