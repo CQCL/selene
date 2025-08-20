@@ -352,7 +352,7 @@ jobs:
 
       - name: Upload to jfrog
         run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_hugr-qis-compiler-*.whl
+          twine upload --verbose --non-interactive wheelhouse/selene_hugr_qis_compiler-*.whl
         env:
           TWINE_REPOSITORY_URL: ${{ secrets.JFROG_URL }}
           TWINE_USERNAME: ${{ secrets.JFROG_USER }}
@@ -360,7 +360,7 @@ jobs:
 
       - name: Upload to pypi
         run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_hugr-qis-compiler-*.whl
+          twine upload --verbose --non-interactive wheelhouse/selene_hugr_qis_compiler-*.whl
  
   release-selene-sim:
     name: Release selene-sim
