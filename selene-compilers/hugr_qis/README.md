@@ -38,6 +38,7 @@ bitcode = compile_to_bitcode(hugr_envelope)
 If you wish to target a specific architecture or platform,
 you can pass the triple as an argument to the compilation functions:
 
+
 ```python
 # Compile to LLVM IR for Apple Silicon
 ir_apple_silicon = compile_to_llvm_ir(
