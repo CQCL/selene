@@ -18,6 +18,7 @@ To access the C headers in the build stage of a python package, depend on selene
 as a build dependency and call `selene_core.get_include_directory()`. The resulting
 path can be provided to a build system for C or C++ and the plugin APIs can be included
 through:
+
 ```c
 #include <selene/simulator.h>   # for the simulator API
 #include <selene/error_model.h> # for the error model API
