@@ -281,41 +281,66 @@ jobs:
           if-no-files-found: error
   
   release:
-    name: Release
+    strategy:
+      matrix:
+        target:
+          - name: selene-core
+            upload: wheelhouse/selene_core-*.whl
+          - name: selene-hugr-qis-compiler
+            upload: wheelhouse/selene_hugr_qis_compiler-*.whl
+          - name: selene-sim
+            upload: wheelhouse/selene_sim-*.whl
+    name: Release ${{ matrix.target.name }}
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    needs: [build_selene_core, build_platform_specific_wheels]
+    # always do a full build and test before release of any package
+    needs: [build_selene_core, build_platform_specific_wheels] 
     permissions:
       contents: write
       id-token: write
     steps:
+      # note: we can't use if: on the entire job, as if statements are evaluated
+      # before matrix expansion, so we follow the convention of guppylang and
+      # use a step to check if we should run the release job
+      - name: Check tag
+        id: check-tag
+        run: |
+          echo "run=$SHOULD_RUN" >> $GITHUB_OUTPUT
+        env:
+          SHOULD_RUN: startsWith(github.ref, format('refs/tags/{0}-', matrix.target.name))
+
       - uses: actions/download-artifact@v4
+        if: ${{ steps.check-tag.outputs.run == 'true' }}
         with:
           path: wheelhouse
           merge-multiple: true
 
       - name: GH Release
+        if: ${{ steps.check-tag.outputs.run == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-          files: wheelhouse/*.whl
+          files: ${{ matrix.target.upload }}
           generate_release_notes: true
 
       - name: Setup Python
+        if: ${{ steps.check-tag.outputs.run == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
 
       - name: Install twine
+        if: ${{ steps.check-tag.outputs.run == 'true' }}
         run: python -m pip install twine
 
       - name: Upload to jfrog
+        if: ${{ steps.check-tag.outputs.run == 'true' }}
         run: |
-          twine upload --verbose --non-interactive wheelhouse/*.whl
+          twine upload --verbose --non-interactive ${{ matrix.target.upload }}
         env:
           TWINE_REPOSITORY_URL: ${{ secrets.JFROG_URL }}
           TWINE_USERNAME: ${{ secrets.JFROG_USER }}
           TWINE_PASSWORD: ${{ secrets.JFROG_TOKEN }}
 
       - name: Upload to pypi
+        if: ${{ steps.check-tag.outputs.run == 'true' }}
         run: |
-          twine upload --verbose --non-interactive wheelhouse/*.whl
+          twine upload --verbose --non-interactive ${{ matrix.target.upload }}
