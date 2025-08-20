@@ -15,7 +15,7 @@ jobs:
     name: Create release PR
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@update-rp
         with:
           target-branch: ${{ github.ref_name }}
           token: ${{ secrets.HUGRBOT_PAT }}
