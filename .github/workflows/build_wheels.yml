@@ -306,7 +306,7 @@ jobs:
         run: |
           echo "run=$SHOULD_RUN" >> $GITHUB_OUTPUT
         env:
-          SHOULD_RUN: startsWith(github.ref, format('refs/tags/{0}-', matrix.target.name))
+          SHOULD_RUN: ${{ github.ref_type == 'tag' && startsWith(github.ref, format('refs/tags/{0}-v', matrix.target.name)) }}
 
       - uses: actions/download-artifact@v4
         if: ${{ steps.check-tag.outputs.run == 'true' }}
