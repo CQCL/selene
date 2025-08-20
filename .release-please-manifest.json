@@ -1,5 +1,5 @@
 {
     "selene-core": "0.2.1",
-    "selene-compilers/hugr_qis": "0.2.1",
+    "selene-compilers/hugr_qis": "0.2.2",
     ".": "0.2.1"
 }
