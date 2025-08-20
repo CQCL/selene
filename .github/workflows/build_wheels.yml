@@ -280,11 +280,20 @@ jobs:
           path: wheelhouse/*.whl
           if-no-files-found: error
   
-  release-selene-core:
-    name: Release selene-core
+  release:
+    strategy:
+      matrix:
+        target:
+          - name: selene-core
+            upload: wheelhouse/selene_core-*.whl
+          - name: selene-hugr-qis-compiler
+            upload: wheelhouse/selene_hugr_qis_compiler-*.whl
+          - name: selene-sim
+            upload: wheelhouse/selene_sim-*.whl
+    name: Release ${{ matrix.target.name }}
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/selene-core-')
-    # selene-core impacts selene-sim, so for now we still run selene-sim through testing before releasing
+    if: startsWith(github.ref, format('refs/tags/{0}-', matrix.target.name))
+    # always do a full build and test before release of any package
     needs: [build_selene_core, build_platform_specific_wheels] 
     permissions:
       contents: write
@@ -298,7 +307,7 @@ jobs:
       - name: GH Release
         uses: softprops/action-gh-release@v2
         with:
-          files: wheelhouse/*.whl
+          files: ${{ matrix.target.upload }}
           generate_release_notes: true
 
       - name: Setup Python
@@ -311,7 +320,7 @@ jobs:
 
       - name: Upload to jfrog
         run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_core-*.whl
+          twine upload --verbose --non-interactive ${{ matrix.target.upload }}
         env:
           TWINE_REPOSITORY_URL: ${{ secrets.JFROG_URL }}
           TWINE_USERNAME: ${{ secrets.JFROG_USER }}
@@ -319,85 +328,4 @@ jobs:
 
       - name: Upload to pypi
         run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_core-*.whl
- 
-  release-selene-hugr-qis-compiler:
-    name: Release selene-hugr-qis-compiler
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/selene-hugr-qis-compiler-')
-    # selene-hugr-qis-compiler impacts selene-sim, so for now we still run selene-sim through testing before releasing
-    needs: [build_selene_core, build_platform_specific_wheels] 
-    permissions:
-      contents: write
-      id-token: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: wheelhouse
-          merge-multiple: true
-
-      - name: GH Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: wheelhouse/*.whl
-          generate_release_notes: true
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-
-      - name: Install twine
-        run: python -m pip install twine
-
-      - name: Upload to jfrog
-        run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_hugr_qis_compiler-*.whl
-        env:
-          TWINE_REPOSITORY_URL: ${{ secrets.JFROG_URL }}
-          TWINE_USERNAME: ${{ secrets.JFROG_USER }}
-          TWINE_PASSWORD: ${{ secrets.JFROG_TOKEN }}
-
-      - name: Upload to pypi
-        run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_hugr_qis_compiler-*.whl
- 
-  release-selene-sim:
-    name: Release selene-sim
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/selene-sim-')
-    needs: [build_selene_core, build_platform_specific_wheels]
-    permissions:
-      contents: write
-      id-token: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: wheelhouse
-          merge-multiple: true
-
-      - name: GH Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: wheelhouse/*.whl
-          generate_release_notes: true
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-
-      - name: Install twine
-        run: python -m pip install twine
-
-      - name: Upload to jfrog
-        run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_sim-*.whl
-        env:
-          TWINE_REPOSITORY_URL: ${{ secrets.JFROG_URL }}
-          TWINE_USERNAME: ${{ secrets.JFROG_USER }}
-          TWINE_PASSWORD: ${{ secrets.JFROG_TOKEN }}
-
-      - name: Upload to pypi
-        run: |
-          twine upload --verbose --non-interactive wheelhouse/selene_sim-*.whl
+          twine upload --verbose --non-interactive ${{ matrix.target.upload }}
