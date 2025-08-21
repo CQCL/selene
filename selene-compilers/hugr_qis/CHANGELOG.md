@@ -1,0 +1,8 @@
+# Changelog
+
+## [0.2.2](https://github.com/CQCL/selene/compare/selene-hugr-qis-compiler-v0.2.1...selene-hugr-qis-compiler-v0.2.2) (2025-08-21)
+
+
+### Features
+
+* update to tket-qsystem 0.20 ([#66](https://github.com/CQCL/selene/issues/66)) ([7191b07](https://github.com/CQCL/selene/commit/7191b07c00571c0298b3cfc334058d3e649fe377))
