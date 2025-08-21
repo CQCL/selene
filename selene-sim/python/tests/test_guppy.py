@@ -11,6 +11,7 @@ from guppylang.std.qsystem.utils import get_current_shot
 from guppylang.std.qsystem import measure_leaked
 from guppylang.std.quantum import (
     cx,
+    cy,
     discard,
     h,
     measure,
@@ -20,6 +21,7 @@ from guppylang.std.quantum import (
     tdg,
     toffoli,
     x,
+    y,
     z,
 )
 from hugr.qsystem.result import QsysResult
@@ -588,3 +590,44 @@ def test_circuit_output():
     expected_circuit.Rz(1, 0)
     expected_circuit.Measure(0, 0)
     assert user_circuit == expected_circuit
+
+
+def test_cy():
+    """Test CY is implemented correctly."""
+    n_shots = 10
+    two_qb_bases = ["00", "01", "10", "11"]
+
+    @guppy.comptime
+    def foo() -> None:
+        # test every basis state
+        for basis in two_qb_bases:
+            a, b = qubit(), qubit()
+            if basis[0] == "1":
+                x(a)
+            if basis[1] == "1":
+                x(b)
+
+            # if a is |1> the y gate will undo the cy
+            cy(a, b)
+            y(b)
+            ar = array(measure(a), measure(b))
+            result(basis, ar)
+
+    res = QsysResult(
+        build(foo.compile()).run_shots(
+            Quest(),
+            n_qubits=2,
+            n_shots=n_shots,
+        )
+    ).register_counts()
+
+    # map from input state to expected output state
+    # not sensitive to Z errors on qubits just before the measurement
+    expected_map = {
+        "00": "01",
+        "01": "00",
+        "10": "10",
+        "11": "11",
+    }
+    for basis in two_qb_bases:
+        assert dict(res[basis]) == {expected_map[basis]: n_shots}
