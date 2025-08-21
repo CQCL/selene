@@ -21,7 +21,7 @@ pyo3 = { version = "0.24", features = ["abi3-py310", "anyhow"] }
 tracing = "0.1"
 itertools = "0.14.0"
 tket = "0.14.0"
-tket-qsystem = { version = "0.19.0", features = ["llvm"] }
+tket-qsystem = { version = "0.20.0", features = ["llvm"] }
 
 [features]
 default = []
@@ -41,4 +41,3 @@ ignored = ["cbindgen", "pyo3-build-config"]
 
 [patch.crates-io]
 # Uncomment to use unreleased versions of tket2
-# tket-qsystem = { path = "../../../tket2proto/tket-qsystem" }

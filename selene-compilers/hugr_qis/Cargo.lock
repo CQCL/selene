@@ -2145,9 +2145,9 @@ dependencies = [
 
 [[package]]
 name = "tket-qsystem"
-version = "0.19.0"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1670ab716150a22242bba3a03590ecf869e46c8df97d6712cba9545ec6f1b830"
+checksum = "84add647fef3392f4749318a108ff31c1b2e5617d912915fcf478d7f282e6813"
 dependencies = [
  "anyhow",
  "clap",
