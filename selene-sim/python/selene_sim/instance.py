@@ -118,7 +118,7 @@ class SeleneProcess:
         )
         return self.process
 
-    def wait(self):
+    def wait(self, check_return_code: bool = True):
         """
         Wait for the process to finish and return the return code.
         """
@@ -127,7 +127,7 @@ class SeleneProcess:
                 message="Process has not been spawned yet", stdout="", stderr=""
             )
         self.process.wait()
-        if self.process.returncode:
+        if check_return_code and self.process.returncode:
             raise SeleneRuntimeError(
                 message="Error running user program",
                 stdout=self.stdout.read_text(),
@@ -159,9 +159,9 @@ class SeleneProcessList:
                 return process
         return None
 
-    def wait(self):
+    def wait(self, check_return_code: bool = True):
         for process in self.processes:
-            process.wait()
+            process.wait(check_return_code)
 
 
 @dataclass
@@ -388,14 +388,14 @@ class SeleneInstance:
                 relevant_process = processes.find(shot_idx)
                 assert relevant_process is not None
                 yield parse_shot(
-                    result_stream,
-                    event_hook,
-                    parse_results,
-                    relevant_process.stdout,
-                    relevant_process.stderr,
+                    parser=result_stream,
+                    event_hook=event_hook,
+                    full=parse_results,
+                    stdout_file=relevant_process.stdout,
+                    stderr_file=relevant_process.stderr,
                 )
 
-        processes.wait()
+        processes.wait(check_return_code=parse_results)
 
     def run(
         self,

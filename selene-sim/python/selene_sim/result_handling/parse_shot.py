@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Iterator, Iterable
 from pathlib import Path
 
 from ..event_hooks import EventHook
@@ -10,7 +10,7 @@ from ..exceptions import (
     SeleneTimeoutError,
 )
 
-from . import ResultStream, TaggedResult
+from . import ResultStream, TaggedResult, DataValue
 
 
 @dataclass
@@ -112,10 +112,8 @@ def parse_record(
     return None
 
 
-def parse_shot(
+def parse_shot_minimal(
     parser: ResultStream,
-    event_hook: EventHook,
-    parse_results: bool,
     stdout_file: Path,
     stderr_file: Path,
 ) -> Iterator[TaggedResult]:
@@ -129,28 +127,185 @@ def parse_shot(
     """
     try:
         for record in parser:
-            parsed = (
-                parse_record(record, event_hook)
-                if parse_results
-                else parse_record_minimal(record)
-            )
+            parsed = parse_record_minimal(record)
             if parsed is None:
                 pass
             if isinstance(parsed, tuple):  # TaggedResult is a tuple
                 yield parsed
             elif isinstance(parsed, ExitMessage):
-                if parse_results:
-                    if parsed.code >= 1000:
-                        raise SelenePanicError(
-                            message=parsed.message,
-                            code=parsed.code,
-                            stdout=stdout_file.read_text(),
-                            stderr=stderr_file.read_text(),
-                        )
-                    else:
-                        yield (f"exit: {parsed.message}", parsed.code)
+                if parsed.code >= 1000:
+                    raise SelenePanicError(
+                        message=parsed.message,
+                        code=parsed.code,
+                        stdout=stdout_file.read_text(),
+                        stderr=stderr_file.read_text(),
+                    )
                 else:
                     yield (parsed.message, parsed.code)
+            elif isinstance(parsed, ShotBoundary):
+                parser.next_shot()
+                break
+
+    # pass errors through the results stream
+    except SelenePanicError as error:
+        yield (error.message, error.code)
+        yield ("_EXCEPTION:INT:SelenePanicError", 0)
+        yield (f"_STDERR:INT:{stderr_file}", 0)
+        yield (f"_STDOUT:INT:{stdout_file}", 0)
+    except SeleneRuntimeError as error:
+        yield (f"EXIT:INT:{error.message}", 110000)
+        yield ("_EXCEPTION:INT:SeleneRuntimeError", 0)
+        yield (f"_STDERR:INT:{stderr_file}", 0)
+        yield (f"_STDOUT:INT:{stdout_file}", 0)
+    except SeleneStartupError as error:
+        yield (f"EXIT:INT:{error.message}", 110001)
+        yield ("_EXCEPTION:INT:SeleneStartupError", 0)
+        yield (f"_STDERR:INT:{stderr_file}", 0)
+        yield (f"_STDOUT:INT:{stdout_file}", 0)
+    except SeleneTimeoutError as error:
+        yield (f"EXIT:INT:{error.message}", 110002)
+        yield ("_EXCEPTION:INT:SeleneTimeoutError", 0)
+        yield (f"_STDERR:INT:{stderr_file}", 0)
+        yield (f"_STDOUT:INT:{stdout_file}", 0)
+    except Exception as e:
+        yield (f"EXIT:INT:{e}", 110000)
+        yield ("_EXCEPTION:INT:SeleneRuntimeError", 0)
+        yield (f"_STDERR:INT:{stderr_file}", 0)
+        yield (f"_STDOUT:INT:{stdout_file}", 0)
+
+
+def _parse_error_component(
+    shot_results: list[TaggedResult], prefix: str
+) -> tuple[str | None, DataValue | None]:
+    """
+    Parses the error tag from the shot results, looking for a specific prefix.
+    If found, returns the error message; otherwise, returns None.
+    """
+    for tag, value in shot_results:
+        if tag.startswith(prefix):
+            return tag[len(prefix) :], value
+    return None, None
+
+
+def postprocess_unparsed_shot(
+    shot_results: list[TaggedResult],
+) -> tuple[list[TaggedResult], Exception | None]:
+    message, code = _parse_error_component(shot_results, "EXIT:INT:")
+    exception_type, _ = _parse_error_component(shot_results, "_EXCEPTION:INT:")
+    stderr, _ = _parse_error_component(shot_results, "_STDERR:INT:")
+    stdout, _ = _parse_error_component(shot_results, "_STDOUT:INT:")
+    all_none = all(x is None for x in (message, exception_type, stderr, stdout))
+    all_some = all(x is not None for x in (message, exception_type, stderr, stdout))
+    if all_none:
+        return shot_results, None
+    if not all_some:
+        raise RuntimeError(
+            "Incomplete error information in shot results. "
+            "Expected all error tags to be present "
+            f"Message: '{message}', "
+            f"Exception Type: '{exception_type}', "
+            f"Stderr: '{stderr}', "
+            f"Stdout: '{stdout}', "
+            f"Raw results: {shot_results}"
+        )
+    # Satisfy Mypy that the variables are not None
+    assert isinstance(message, str)
+    assert isinstance(code, int)
+    assert isinstance(exception_type, str)
+    assert isinstance(stderr, str)
+    assert isinstance(stdout, str)
+
+    exception: Exception
+
+    match exception_type:
+        case "SelenePanicError":
+            exception = SelenePanicError(
+                message=message,
+                code=code,
+                stdout=Path(stdout).read_text(),
+                stderr=Path(stderr).read_text(),
+            )
+        case "SeleneRuntimeError":
+            exception = SeleneRuntimeError(
+                message=message,
+                stdout=Path(stdout).read_text(),
+                stderr=Path(stderr).read_text(),
+            )
+        case "SeleneStartupError":
+            exception = SeleneStartupError(
+                message=message,
+                stdout=Path(stdout).read_text(),
+                stderr=Path(stderr).read_text(),
+            )
+        case "SeleneTimeoutError":
+            exception = SeleneTimeoutError(
+                message=message,
+                stdout=Path(stdout).read_text(),
+                stderr=Path(stderr).read_text(),
+            )
+        case _:
+            raise RuntimeError(f"Unknown exception type: {exception_type}")
+
+    filtered_results = [
+        (tag, value)
+        for tag, value in shot_results
+        if not tag.startswith(("_EXCEPTION", "_STDERR", "_STDOUT"))
+    ]
+
+    return filtered_results, exception
+
+
+def postprocess_unparsed_stream(
+    shot_results: Iterable[Iterable[TaggedResult]],
+) -> tuple[list[list[TaggedResult]], Exception | None]:
+    """
+    Post-processes a stream of unparsed shots, extracting errors and filtering
+    out error-related tags. Returns a list of results for each shot, along with
+    any exception that occurred during processing.
+    """
+    results = []
+    for shot in shot_results:
+        filtered_shot, exception = postprocess_unparsed_shot(list(shot))
+        if exception is None:
+            results.append(filtered_shot)
+        else:
+            if not isinstance(exception, SeleneStartupError):
+                results.append(filtered_shot)
+            return results, exception
+    return results, None
+
+
+def parse_shot_full(
+    parser: ResultStream,
+    event_hook: EventHook,
+    stdout_file: Path,
+    stderr_file: Path,
+) -> Iterator[TaggedResult]:
+    """
+    Filters the results stream for tagged results within one shot, yielding them
+    them one by one.
+
+    Exits are handled directly and, if the error code is >= 1000, are raised as
+    a SelenePanicError. Any other exceptions that emerge are also raised, with
+    contextual information via the stdout and stderr corresponding to the process
+    that is feeding the results stream.
+    """
+    try:
+        for record in parser:
+            parsed = parse_record(record, event_hook)
+            if parsed is None:
+                pass
+            if isinstance(parsed, tuple):  # TaggedResult is a tuple
+                yield parsed
+            elif isinstance(parsed, ExitMessage):
+                if parsed.code >= 1000:
+                    raise SelenePanicError(
+                        message=parsed.message,
+                        code=parsed.code,
+                        stdout=stdout_file.read_text(),
+                        stderr=stderr_file.read_text(),
+                    )
+                yield (f"exit: {parsed.message}", parsed.code)
             elif isinstance(parsed, ShotBoundary):
                 parser.next_shot()
                 break
@@ -176,3 +331,22 @@ def parse_shot(
             stdout=stdout_file.read_text(),
             stderr=stderr_file.read_text(),
         ) from e
+
+
+def parse_shot(
+    parser: ResultStream,
+    event_hook: EventHook,
+    full: bool,
+    stdout_file: Path,
+    stderr_file: Path,
+) -> Iterator[TaggedResult]:
+    """
+    Parses a shot from the results stream, yielding tagged results one by one.
+    If `full` is True, the results are parsed through `parse_record`.
+    Otherwise, they are parsed through `parse_record_minimal`, which only processes
+    structural entries such as exits and shot boundaries.
+    """
+    if full:
+        yield from parse_shot_full(parser, event_hook, stdout_file, stderr_file)
+    else:
+        yield from parse_shot_minimal(parser, stdout_file, stderr_file)
