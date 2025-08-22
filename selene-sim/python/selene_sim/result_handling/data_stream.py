@@ -254,14 +254,7 @@ class TCPStream(DataStream):
             if timeout is not None and timeout <= 0:
                 # we have already exceeded the timeout of one of the timers.
                 break
-            if not self._sync(timeout=timeout):
-                # _sync returning false implies that we hit the timeout with nothing
-                # received (no connection, no data from existing clients). Break out
-                # to raise an error.
-                break
-            # sync returned true, meaning we have new data or a new connection.
-            # If we have a new connection, it will prevent the next iteration.
-            # If we don't, we iterate until timeout or failure.
+            self._sync(timeout=timeout)
 
         if self.current_shot_client is None:
             raise SeleneStartupError(
