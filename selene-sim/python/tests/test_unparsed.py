@@ -1,4 +1,5 @@
 import yaml
+import datetime
 
 from guppylang import guppy
 from guppylang.std.quantum import qubit, x, h, measure, measure_array
@@ -7,6 +8,8 @@ from guppylang.std.builtins import exit
 from selene_sim.build import build
 from selene_sim import Quest, Stim
 from selene_sim.event_hooks import MetricStore
+from selene_sim.exceptions import SelenePanicError, SeleneStartupError
+from selene_sim.result_handling.parse_shot import postprocess_unparsed_stream
 
 
 def test_flip_some_unparsed():
@@ -203,9 +206,8 @@ def test_panic_unparsed():
         result("c", outcome)
 
     runner = build(main.compile(), "panic")
-    shots = list(
-        list(shot)
-        for shot in runner.run_shots(
+    shots, error = postprocess_unparsed_stream(
+        runner.run_shots(
             Stim(),
             n_qubits=1,
             n_shots=100,
@@ -213,8 +215,40 @@ def test_panic_unparsed():
             parse_results=False,
         )
     )
+    assert error is not None
+    assert isinstance(error, SelenePanicError)
+    assert error.code == 1001
+    assert error.message == "Postselection failed"
+
+    assert len(shots) == 3
     assert shots[0] == [("USER:BOOL:c", 0)]
     assert shots[1] == [("USER:BOOL:c", 0)]
     assert shots[2] == [("EXIT:INT:Postselection failed", 1001)]
-    for subsequent in shots[3:]:
-        assert subsequent == []
+
+
+def test_infinite_loop_unparsed():
+    @guppy
+    def infinite_loop() -> None:
+        while True:
+            q0: qubit = qubit()
+            h(q0)
+            result("r", measure(q0))
+
+    runner = build(infinite_loop.compile(), "infinite_loop")
+
+    shots, error = postprocess_unparsed_stream(
+        runner.run_shots(
+            Quest(random_seed=1234),
+            n_qubits=1,
+            n_shots=100,
+            timeout=datetime.timedelta(seconds=0),
+            n_processes=4,
+            parse_results=False,
+        )
+    )
+
+    assert error is not None
+    assert isinstance(error, SeleneStartupError)
+    assert "Timed out waiting for a client to connect for shot 0" in error.message
+    assert "Expired timers: 'overall'" in error.message
+    assert len(shots) == 0
