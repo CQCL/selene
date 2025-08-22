@@ -3,7 +3,12 @@ from typing import Iterator
 from pathlib import Path
 
 from ..event_hooks import EventHook
-from ..exceptions import SelenePanicError, SeleneRuntimeError, SeleneStartupError
+from ..exceptions import (
+    SelenePanicError,
+    SeleneRuntimeError,
+    SeleneStartupError,
+    SeleneTimeoutError,
+)
 
 from . import ResultStream, TaggedResult
 
@@ -157,6 +162,10 @@ def parse_shot(
         error.stderr = stderr_file.read_text()
         raise error
     except SeleneStartupError as error:
+        error.stdout = stdout_file.read_text()
+        error.stderr = stderr_file.read_text()
+        raise error
+    except SeleneTimeoutError as error:
         error.stdout = stdout_file.read_text()
         error.stderr = stderr_file.read_text()
         raise error

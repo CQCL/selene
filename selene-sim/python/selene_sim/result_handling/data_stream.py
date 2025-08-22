@@ -1,12 +1,12 @@
 import socket
-import datetime
 from pathlib import Path
 from abc import ABC, abstractmethod
 from typing import BinaryIO
 import struct
 from selectors import DefaultSelector, EVENT_READ
 from dataclasses import dataclass
-from selene_sim.exceptions import SeleneStartupError, SeleneRuntimeError
+from selene_sim.exceptions import SeleneStartupError, SeleneTimeoutError
+from selene_sim.timeout import Timeout, Timer
 
 
 class DataStream(ABC):
@@ -94,16 +94,13 @@ class TCPStream(DataStream):
         self,
         host: str = "localhost",
         port: int = 0,
-        connect_wait_limit: datetime.timedelta | None = None,
-        read_wait_limit: datetime.timedelta | None = None,
+        timeout: Timeout = Timeout(),
         logfile: Path | None = None,
         shot_offset: int = 0,
         shot_increment: int = 1,
     ):
         self.host = host
         self.port = port
-        self.connect_wait_limit = connect_wait_limit
-        self.read_wait_limit = read_wait_limit
         self.done = False
         self.selector = DefaultSelector()
         self.server_socket: socket.socket | None = None
@@ -113,6 +110,10 @@ class TCPStream(DataStream):
         self.current_shot = shot_offset
         self.shot_increment = shot_increment
         self.current_shot_client: TCPClient | None = None
+        self.overall_timer = Timer(timeout.overall)
+        self.shot_timer = Timer(timeout.per_shot)
+        self.read_timer = Timer(timeout.per_result)
+        self.connect_timer = Timer(timeout.backend_startup)
 
     def __enter__(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -135,6 +136,26 @@ class TCPStream(DataStream):
         assert self.server_socket is not None, "get_uri called on an unopened stream"
         host, port = self.server_socket.getsockname()
         return f"tcp://{self.host}:{self.port}"
+
+    def read_chunk(self, length: int) -> bytes:
+        if self.done:
+            return b""
+
+        if self.current_shot_client is None:
+            self._wait_for_current_shot_client()
+
+        assert self.current_shot_client is not None
+
+        if not self.current_shot_client.has_bytes(length):
+            self._wait_for_current_shot_bytes(length)
+
+        return self.current_shot_client.take(length)
+
+    def next_shot(self):
+        self.current_shot += self.shot_increment
+        self.current_shot_client = None
+        self._update_current_shot_client()
+        self.shot_timer.reset()
 
     def _update_current_shot_client(self):
         """
@@ -170,14 +191,21 @@ class TCPStream(DataStream):
             TCPClient(client_socket, shot_configuration, client_logfile)
         )
 
-    def _sync(self, timeout: float = 0) -> bool:
+    def _sync(self, timeout: float | None = None) -> bool:
+        """
+        Synchronize the TCP host, pulling in any new connections, disconnections,
+        and data from all clients.
+        """
         events = self.selector.select(timeout=timeout)
         for key, _ in events:
             if key.fileobj == self.server_socket:
                 self._accept_new_connection()
+                # if the new client provides results for the current shot,
+                # update the current shot client to point to it
                 self._update_current_shot_client()
             else:
                 assert isinstance(key.fileobj, socket.socket)
+                # we have an existing client socket that is ready to read
                 client_index = self.clients_by_fileno[key.fileobj.fileno()]
                 client = self.clients[client_index]
                 client.sync()
@@ -185,42 +213,98 @@ class TCPStream(DataStream):
                     self.selector.unregister(key.fileobj)
         return len(events) > 0
 
-    def read_chunk(self, length: int) -> bytes:
-        if self.done:
-            return b""
-        start_time = datetime.datetime.now()
+    def _timer_expiry_str(self) -> str:
+        expired_names = []
+        for name, timer in (
+            ("backend_startup", self.connect_timer),
+            ("per_shot", self.shot_timer),
+            ("per_result", self.read_timer),
+            ("overall", self.overall_timer),
+        ):
+            if timer.has_expired():
+                expired_names.append(f"'{name}'")
+
+        if expired_names:
+            return f"Expired timers: {', '.join(expired_names)}"
+        else:
+            return "No expired timers"
+
+    def _wait_for_current_shot_client(self):
+        """
+        Wait for a client to connect that provides results for the current shot.
+        Typically this should only hit the first shot but on very quick simulations
+        we could see multiple shots being processed before the final client connects.
+
+        If a backend_startup timeout is set, use it to limit the wait time,
+        such that this function will raise an Exception if the timeout is exceeded.
+
+        If no backend_startup timeout is set, this function will block indefinitely
+        until a client connects that provides results for the current shot.
+        """
+
+        self.connect_timer.reset()
+
         while self.current_shot_client is None:
-            timeout = (
-                self.connect_wait_limit.total_seconds()
-                if self.connect_wait_limit
-                else 0
+            # Poll for new connections, passively accepting data through existing
+            # clients to prevent their processes from blocking in the case of a
+            # long startup time of the current shot's backend.
+            timeout = Timer.min_remaining_seconds(
+                [self.connect_timer, self.shot_timer, self.overall_timer]
             )
-            if not self._sync(timeout=timeout) and self.connect_wait_limit is not None:
-                raise SeleneStartupError(
-                    f"Timed out ({self.connect_wait_limit}) waiting for a client to connect for shot {self.current_shot}",
-                    "",  # stdout is injected when this exception is caught
-                    "",  # stderr is injected when this exception is caught
-                )
+            if timeout is not None and timeout <= 0:
+                # we have already exceeded the timeout of one of the timers.
+                break
+            if not self._sync(timeout=timeout):
+                # _sync returning false implies that we hit the timeout with nothing
+                # received (no connection, no data from existing clients). Break out
+                # to raise an error.
+                break
+            # sync returned true, meaning we have new data or a new connection.
+            # If we have a new connection, it will prevent the next iteration.
+            # If we don't, we iterate until timeout or failure.
+
+        if self.current_shot_client is None:
+            raise SeleneStartupError(
+                f"Timed out waiting for a client to connect for shot {self.current_shot}: {self._timer_expiry_str()}",
+                "",  # stdout is injected when this exception is caught
+                "",  # stderr is injected when this exception is caught
+            )
+
+    def _wait_for_current_shot_bytes(self, length: int):
+        """
+        Wait for the current shot client to have at least `length` bytes of data
+        to read from.
+
+        If a per_result timeout is set, use it to limit the wait time.
+        """
+        assert self.current_shot_client is not None
+
+        self.read_timer.reset()
         while (
             self.current_shot_client.is_open
             and not self.current_shot_client.has_bytes(length)
         ):
-            timeout = (
-                self.read_wait_limit.total_seconds() if self.read_wait_limit else 0
+            timeout = Timer.min_remaining_seconds(
+                [
+                    self.read_timer,
+                    self.shot_timer,
+                    self.overall_timer,
+                ]
             )
-            if not self._sync(timeout=timeout) and self.read_wait_limit is not None:
-                if datetime.datetime.now() - start_time > self.read_wait_limit:
-                    raise SeleneRuntimeError(
-                        "Timed out waiting for a client to send data",
-                        "",  # stdout is injected when this exception is caught
-                        "",  # stderr is injected when this exception is caught
-                    )
-        return self.current_shot_client.take(length)
+            if timeout is not None and timeout <= 0:
+                # we have already exceeded the timeout of one of the timers.
+                break
+            if not self._sync(timeout=timeout):
+                break
 
-    def next_shot(self):
-        self.current_shot += self.shot_increment
-        self.current_shot_client = None
-        self._update_current_shot_client()
+        if self.current_shot_client.is_open and not self.current_shot_client.has_bytes(
+            length
+        ):
+            raise SeleneTimeoutError(
+                f"Timed out waiting for shot results: {self._timer_expiry_str()}",
+                "",  # stdout is injected when this exception is caught
+                "",  # stderr is injected when this exception is caught
+            )
 
 
 class FileStream(DataStream):
