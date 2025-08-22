@@ -287,8 +287,7 @@ class TCPStream(DataStream):
             if timeout is not None and timeout <= 0:
                 # we have already exceeded the timeout of one of the timers.
                 break
-            if not self._sync(timeout=timeout):
-                break
+            self._sync(timeout=timeout)
 
         if self.current_shot_client.is_open and not self.current_shot_client.has_bytes(
             length
