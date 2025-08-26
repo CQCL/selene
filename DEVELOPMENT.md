@@ -64,7 +64,7 @@ devenv shell
 ```
 
 This development shell provides the following:
-- A stable rust toolchain (with rustc, cargo, clippy, and rustfmt)
+- A stable rust toolchain (with rustc, cargo, clippy, rustfmt, and cbindgen)
 - A python toolchain (with uv)
 - Just (for running the justfile)
 - gcc and libclang (for build stages)
@@ -74,6 +74,13 @@ Alternatively, you can install the required dependencies manually. The following
 required:
 - uv >= 0.6
 - rust >= 1.85 with the stable toolchain
+- cbindgen ~= 0.28
+
+Note: Cbindgen is used to generate C headers for selene and its extension plugins
+based on rust implementations. These headers are shipped with selene and selene-core
+wheels (in their `_dist/include` directory) respectively, allowing for downstream
+implementations to depend on headers at build time using the python wheels as build
+inputs.
 
 ### Building the rust library
 
@@ -93,6 +100,7 @@ the name of the crate you want to build. Likewise, to test a specific create, yo
 - selene-simple-runtime
 - selene-soft-rz-runtime
 - selene-error-model-depolarizing
+- selene-error-model-simple-leakage
 - selene-error-model-ideal
 
 ### Building wheels
