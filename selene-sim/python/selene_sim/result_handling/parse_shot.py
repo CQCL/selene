@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Iterator, Iterable
 from pathlib import Path
 
 from ..event_hooks import EventHook
@@ -11,6 +11,7 @@ from ..exceptions import (
 )
 
 from . import ResultStream, TaggedResult
+from .exception_encoding import encode_exception, decode_exception
 
 
 @dataclass
@@ -36,8 +37,8 @@ def parse_record_minimal(
     record: tuple,
 ) -> TaggedResult | ExitMessage | ShotBoundary:
     """
-    When the user requests that results from the data stream are unparsed, it is
-    an instruction  to selene to avoid manipulation of the entries of the data itself.
+    When the user requests that results from the data stream are 'unparsed', it is
+    an instruction to selene to avoid manipulation of the entries of the data itself.
     This allows them to perform their own parsing after the selene run.
 
     Nonetheless, we do require some minimal parsing of structural entries within
@@ -112,10 +113,8 @@ def parse_record(
     return None
 
 
-def parse_shot(
+def parse_shot_minimal(
     parser: ResultStream,
-    event_hook: EventHook,
-    parse_results: bool,
     stdout_file: Path,
     stderr_file: Path,
 ) -> Iterator[TaggedResult]:
@@ -123,34 +122,107 @@ def parse_shot(
     Filters the results stream for tagged results within one shot, yielding them
     them one by one.
 
-    If parse_results is True, the results are parsed through `parse_record`.
-    Otherwise, the results are parsed through `parse_record_minimal`, which
+    Each record from the stream is parsed through `parse_record_minimal`, which
     only processes structural entries such as exits and shot boundaries.
+
+    If any exception occurs, it is caught and yielded as the final four entries
+    of the resulting stream. No exception is raised to the caller. This flow allows
+    the caller to process the results up to the point of failure, and then handle
+    the error as they see fit.
     """
     try:
         for record in parser:
-            parsed = (
-                parse_record(record, event_hook)
-                if parse_results
-                else parse_record_minimal(record)
-            )
+            parsed = parse_record_minimal(record)
             if parsed is None:
                 pass
             if isinstance(parsed, tuple):  # TaggedResult is a tuple
                 yield parsed
             elif isinstance(parsed, ExitMessage):
-                if parse_results:
-                    if parsed.code >= 1000:
-                        raise SelenePanicError(
-                            message=parsed.message,
-                            code=parsed.code,
-                            stdout=stdout_file.read_text(),
-                            stderr=stderr_file.read_text(),
-                        )
-                    else:
-                        yield (f"exit: {parsed.message}", parsed.code)
+                if parsed.code >= 1000:
+                    raise SelenePanicError(
+                        message=parsed.message,
+                        code=parsed.code,
+                        stdout=stdout_file.read_text(),
+                        stderr=stderr_file.read_text(),
+                    )
                 else:
                     yield (parsed.message, parsed.code)
+            elif isinstance(parsed, ShotBoundary):
+                parser.next_shot()
+                break
+
+    # pass any errors through the results stream
+    except Exception as e:
+        yield from encode_exception(e, stdout_file, stderr_file)
+
+
+def postprocess_unparsed_shot(
+    shot_results: list[TaggedResult],
+) -> tuple[list[TaggedResult], Exception | None]:
+    """
+    Decode any exception information from a shot's results, filtering out
+    error-related tags if present. Returns the filtered results and, optionally,
+    any exception that was decoded.
+    """
+    decoded_exception = decode_exception(shot_results)
+    if decoded_exception is None:
+        return shot_results, None
+    else:
+        # filter out error metadata except for the exit entry
+        return shot_results[:-3], decoded_exception
+
+
+def postprocess_unparsed_stream(
+    shot_results: Iterable[Iterable[TaggedResult]],
+) -> tuple[list[list[TaggedResult]], Exception | None]:
+    """
+    Post-processes a stream of unparsed shots, extracting errors and filtering
+    out error-related tags. Returns a list of results for each shot, along with
+    any exception that occurred during processing.
+    """
+    results = []
+    for shot in shot_results:
+        filtered_shot, exception = postprocess_unparsed_shot(list(shot))
+        if exception is None:
+            results.append(filtered_shot)
+        else:
+            if not isinstance(exception, SeleneStartupError):
+                results.append(filtered_shot)
+            return results, exception
+    return results, None
+
+
+def parse_shot_full(
+    parser: ResultStream,
+    event_hook: EventHook,
+    stdout_file: Path,
+    stderr_file: Path,
+) -> Iterator[TaggedResult]:
+    """
+    Filters the results stream for tagged results within one shot, yielding them
+    them one by one.
+
+    Exits are handled directly and, if the error code is >= 1000, are raised as
+    a SelenePanicError. Any other exceptions that emerge are also raised, with
+    contextual information via the stdout and stderr corresponding to the process
+    that is feeding the results stream.
+    """
+    try:
+        for record in parser:
+            parsed = parse_record(record, event_hook)
+            if parsed is None:
+                pass
+            if isinstance(parsed, tuple):  # TaggedResult is a tuple
+                yield parsed
+            elif isinstance(parsed, ExitMessage):
+                if parsed.code >= 1000:
+                    raise SelenePanicError(
+                        message=parsed.message,
+                        code=parsed.code,
+                        stdout=stdout_file.read_text(),
+                        stderr=stderr_file.read_text(),
+                    )
+                yield (f"exit: {parsed.message}", parsed.code)
             elif isinstance(parsed, ShotBoundary):
                 parser.next_shot()
                 break
@@ -176,3 +248,22 @@ def parse_shot(
             stdout=stdout_file.read_text(),
             stderr=stderr_file.read_text(),
         ) from e
+
+
+def parse_shot(
+    parser: ResultStream,
+    event_hook: EventHook,
+    full: bool,
+    stdout_file: Path,
+    stderr_file: Path,
+) -> Iterator[TaggedResult]:
+    """
+    Parses a shot from the results stream, yielding tagged results one by one.
+    If `full` is True, the results are parsed through `parse_record`.
+    Otherwise, they are parsed through `parse_record_minimal`, which only processes
+    structural entries such as exits and shot boundaries.
+    """
+    if full:
+        yield from parse_shot_full(parser, event_hook, stdout_file, stderr_file)
+    else:
+        yield from parse_shot_minimal(parser, stdout_file, stderr_file)
