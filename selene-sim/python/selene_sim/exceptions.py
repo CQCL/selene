@@ -95,3 +95,24 @@ class SelenePanicError(Exception):
             + maybe_provide_log("stdout", self.stdout)
             + maybe_provide_log("stderr", self.stderr)
         )
+
+
+class SeleneTimeoutError(Exception):
+    """
+    Raised when the user program times out.
+    """
+
+    def __init__(self, message: str, stdout: str, stderr: str):
+        self.message = message
+        self.stdout = stdout
+        self.stderr = stderr
+
+    def __reduce__(self):
+        return (self.__class__, (self.message, self.stdout, self.stderr))
+
+    def __str__(self):
+        return (
+            f"Timeout: {self.message}"
+            + maybe_provide_log("stdout", self.stdout)
+            + maybe_provide_log("stderr", self.stderr)
+        )

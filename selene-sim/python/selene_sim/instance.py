@@ -1,4 +1,3 @@
-import datetime
 import os
 import platform
 import shutil
@@ -16,6 +15,7 @@ from .result_handling import TaggedResult
 from .event_hooks import EventHook, NoEventHook
 from .exceptions import SeleneRuntimeError
 from .result_handling import ResultStream, TCPStream, parse_shot
+from .timeout import Timeout, TimeoutInput
 
 
 @dataclass
@@ -123,7 +123,9 @@ class SeleneProcess:
         Wait for the process to finish and return the return code.
         """
         if self.process is None:
-            raise SeleneRuntimeError(message="Process has not been spawned yet")
+            raise SeleneRuntimeError(
+                message="Process has not been spawned yet", stdout="", stderr=""
+            )
         self.process.wait()
         if self.process.returncode:
             raise SeleneRuntimeError(
@@ -273,7 +275,7 @@ class SeleneInstance:
         runtime: Runtime = SimpleRuntime(),
         event_hook: EventHook = NoEventHook(),
         verbose: bool = False,
-        timeout: datetime.timedelta | None = None,
+        timeout: TimeoutInput = None,
         results_logfile: Path | None = None,
         random_seed: int | None = None,
         shot_offset: int = 0,
@@ -293,7 +295,12 @@ class SeleneInstance:
                         additional information to the results stream,
                         and handles the output.
             verbose: Whether to print verbose output for diagnostics
-            timeout: The maximum time to wait for the program to complete
+            timeout: Timeout configuration for various aspects of the
+                     emulation run. If a timedelta is provided directly,
+                     it is assumed to be the time limit of the overall
+                     run. If None is provided, no timeout is set. If
+                     a float is provided, it is assumed to be the time limit
+                     in seconds of the overall run.
             results_logfile: The file to write the results to (if any)
             random_seed: The random seed to use for the simulator, error model,
                          and runtime if they have not been set explicitly. On
@@ -324,10 +331,7 @@ class SeleneInstance:
         n_processes = max(1, n_processes)
         n_processes = min(n_processes, n_shots)
 
-        # the connection stream will accept connections for this duration:
-        connect_timeout = datetime.timedelta(seconds=5)
-        # after which, we check the process is ok. If so, we loop and accept
-        # connections again. If not, we raise an error.
+        timeout = Timeout.resolve_input(timeout)
 
         processes = SeleneProcessList()
         library_search_dirs = self.library_search_dirs.copy()
@@ -341,8 +345,7 @@ class SeleneInstance:
             "runtime": self._get_component_config(runtime, random_seed),
         }
         with TCPStream(
-            connect_wait_limit=connect_timeout,
-            read_wait_limit=timeout,
+            timeout=timeout,
             logfile=results_logfile,
             shot_offset=shot_offset,
             shot_increment=shot_increment,
@@ -402,7 +405,7 @@ class SeleneInstance:
         error_model: ErrorModel = IdealErrorModel(),
         event_hook: EventHook = NoEventHook(),
         verbose: bool = False,
-        timeout: datetime.timedelta | None = None,
+        timeout: TimeoutInput = None,
         results_logfile=None,
         random_seed: int | None = None,
         shot_offset: int = 0,
