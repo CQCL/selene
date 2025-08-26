@@ -10,7 +10,8 @@ from ..exceptions import (
     SeleneTimeoutError,
 )
 
-from . import ResultStream, TaggedResult, DataValue
+from . import ResultStream, TaggedResult
+from .exception_encoding import encode_exception, decode_exception
 
 
 @dataclass
@@ -36,8 +37,8 @@ def parse_record_minimal(
     record: tuple,
 ) -> TaggedResult | ExitMessage | ShotBoundary:
     """
-    When the user requests that results from the data stream are unparsed, it is
-    an instruction  to selene to avoid manipulation of the entries of the data itself.
+    When the user requests that results from the data stream are 'unparsed', it is
+    an instruction to selene to avoid manipulation of the entries of the data itself.
     This allows them to perform their own parsing after the selene run.
 
     Nonetheless, we do require some minimal parsing of structural entries within
@@ -121,9 +122,13 @@ def parse_shot_minimal(
     Filters the results stream for tagged results within one shot, yielding them
     them one by one.
 
-    If parse_results is True, the results are parsed through `parse_record`.
-    Otherwise, the results are parsed through `parse_record_minimal`, which
+    Each record from the stream is parsed through `parse_record_minimal`, which
     only processes structural entries such as exits and shot boundaries.
+
+    If any exception occurs, it is caught and yielded as the final four entries
+    of the resulting stream. No exception is raised to the caller. This flow allows
+    the caller to process the results up to the point of failure, and then handle
+    the error as they see fit.
     """
     try:
         for record in parser:
@@ -146,113 +151,25 @@ def parse_shot_minimal(
                 parser.next_shot()
                 break
 
-    # pass errors through the results stream
-    except SelenePanicError as error:
-        yield (error.message, error.code)
-        yield ("_EXCEPTION:INT:SelenePanicError", 0)
-        yield (f"_STDERR:INT:{stderr_file}", 0)
-        yield (f"_STDOUT:INT:{stdout_file}", 0)
-    except SeleneRuntimeError as error:
-        yield (f"EXIT:INT:{error.message}", 110000)
-        yield ("_EXCEPTION:INT:SeleneRuntimeError", 0)
-        yield (f"_STDERR:INT:{stderr_file}", 0)
-        yield (f"_STDOUT:INT:{stdout_file}", 0)
-    except SeleneStartupError as error:
-        yield (f"EXIT:INT:{error.message}", 110001)
-        yield ("_EXCEPTION:INT:SeleneStartupError", 0)
-        yield (f"_STDERR:INT:{stderr_file}", 0)
-        yield (f"_STDOUT:INT:{stdout_file}", 0)
-    except SeleneTimeoutError as error:
-        yield (f"EXIT:INT:{error.message}", 110002)
-        yield ("_EXCEPTION:INT:SeleneTimeoutError", 0)
-        yield (f"_STDERR:INT:{stderr_file}", 0)
-        yield (f"_STDOUT:INT:{stdout_file}", 0)
+    # pass any errors through the results stream
     except Exception as e:
-        yield (f"EXIT:INT:{e}", 110000)
-        yield ("_EXCEPTION:INT:SeleneRuntimeError", 0)
-        yield (f"_STDERR:INT:{stderr_file}", 0)
-        yield (f"_STDOUT:INT:{stdout_file}", 0)
-
-
-def _parse_error_component(
-    shot_results: list[TaggedResult], prefix: str
-) -> tuple[str | None, DataValue | None]:
-    """
-    Parses the error tag from the shot results, looking for a specific prefix.
-    If found, returns the error message; otherwise, returns None.
-    """
-    for tag, value in shot_results:
-        if tag.startswith(prefix):
-            return tag[len(prefix) :], value
-    return None, None
+        yield from encode_exception(e, stdout_file, stderr_file)
 
 
 def postprocess_unparsed_shot(
     shot_results: list[TaggedResult],
 ) -> tuple[list[TaggedResult], Exception | None]:
-    message, code = _parse_error_component(shot_results, "EXIT:INT:")
-    exception_type, _ = _parse_error_component(shot_results, "_EXCEPTION:INT:")
-    stderr, _ = _parse_error_component(shot_results, "_STDERR:INT:")
-    stdout, _ = _parse_error_component(shot_results, "_STDOUT:INT:")
-    all_none = all(x is None for x in (message, exception_type, stderr, stdout))
-    all_some = all(x is not None for x in (message, exception_type, stderr, stdout))
-    if all_none:
+    """
+    Decode any exception information from a shot's results, filtering out
+    error-related tags if present. Returns the filtered results and, optionally,
+    any exception that was decoded.
+    """
+    decoded_exception = decode_exception(shot_results)
+    if decoded_exception is None:
         return shot_results, None
-    if not all_some:
-        raise RuntimeError(
-            "Incomplete error information in shot results. "
-            "Expected all error tags to be present "
-            f"Message: '{message}', "
-            f"Exception Type: '{exception_type}', "
-            f"Stderr: '{stderr}', "
-            f"Stdout: '{stdout}', "
-            f"Raw results: {shot_results}"
-        )
-    # Satisfy Mypy that the variables are not None
-    assert isinstance(message, str)
-    assert isinstance(code, int)
-    assert isinstance(exception_type, str)
-    assert isinstance(stderr, str)
-    assert isinstance(stdout, str)
-
-    exception: Exception
-
-    match exception_type:
-        case "SelenePanicError":
-            exception = SelenePanicError(
-                message=message,
-                code=code,
-                stdout=Path(stdout).read_text(),
-                stderr=Path(stderr).read_text(),
-            )
-        case "SeleneRuntimeError":
-            exception = SeleneRuntimeError(
-                message=message,
-                stdout=Path(stdout).read_text(),
-                stderr=Path(stderr).read_text(),
-            )
-        case "SeleneStartupError":
-            exception = SeleneStartupError(
-                message=message,
-                stdout=Path(stdout).read_text(),
-                stderr=Path(stderr).read_text(),
-            )
-        case "SeleneTimeoutError":
-            exception = SeleneTimeoutError(
-                message=message,
-                stdout=Path(stdout).read_text(),
-                stderr=Path(stderr).read_text(),
-            )
-        case _:
-            raise RuntimeError(f"Unknown exception type: {exception_type}")
-
-    filtered_results = [
-        (tag, value)
-        for tag, value in shot_results
-        if not tag.startswith(("_EXCEPTION", "_STDERR", "_STDOUT"))
-    ]
-
-    return filtered_results, exception
+    else:
+        # filter out error metadata except for the exit entry
+        return shot_results[:-3], decoded_exception
 
 
 def postprocess_unparsed_stream(
