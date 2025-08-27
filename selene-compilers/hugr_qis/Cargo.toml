@@ -18,6 +18,7 @@ crate-type = ["cdylib"]
 [dependencies]
 anyhow = "1.0"
 pyo3 = { version = "0.24", features = ["abi3-py310", "anyhow"] }
+serde_json = "1.0.143"
 tracing = "0.1"
 itertools = "0.14.0"
 tket = "0.14.0"
