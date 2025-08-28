@@ -8,11 +8,11 @@ clean-artifacts:
 build-wheels:
     uv build --all-packages
 
-test-py: develop
-    pytest
+test-py *TEST_ARGS: develop
+    uv run pytest {{TEST_ARGS}}
 
-test-rs:
-    cargo test
+test-rs *TEST_ARGS:
+    uv run cargo test {{TEST_ARGS}}
 
 BIND_BUILD := "/tmp/selene-bindings-build"
 

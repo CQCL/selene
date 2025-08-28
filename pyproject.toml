@@ -58,6 +58,8 @@ dev = [
     "mypy>=1.14.1",
     "ruff>=0.8.0",
     "types-pyyaml>=6.0.12.20250402",
+    "pytket~=2.9.1",
+    "tket~=0.12.5",
 ]
 
 [tool.uv.sources]
@@ -140,7 +142,13 @@ environment-pass = [
     "SELENE_CORE_WHL",
     "SELENE_HUGR_QIS_WHL",
 ]
-test-requires = ["pytest", "pytest-snapshot", "guppylang~=0.21.0"]
+test-requires = [
+    "pytest",
+    "pytest-snapshot",
+    "guppylang~=0.21.0",
+    "pytket~=2.9.1",
+    "tket~=0.12.5",
+]
 test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
 [tool.cibuildwheel.linux]
 environment = { PATH = "$PATH:$HOME/.cargo/bin" }

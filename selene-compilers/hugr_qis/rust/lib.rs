@@ -5,16 +5,15 @@
 
 pub mod array;
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use hugr::envelope::EnvelopeConfig;
-use hugr::llvm::CodegenExtsBuilder;
 use hugr::llvm::custom::CodegenExtsMap;
 use hugr::llvm::emit::{EmitHugr, Namer};
 #[allow(deprecated)]
 use hugr::llvm::extension::int::IntCodegenExtension;
 use hugr::llvm::utils::fat::FatExt as _;
 use hugr::llvm::utils::inline_constant_functions;
-use inkwell::OptimizationLevel;
+use hugr::llvm::CodegenExtsBuilder;
 use inkwell::context::Context;
 use inkwell::module::Module;
 use inkwell::passes::PassBuilderOptions;
@@ -22,6 +21,7 @@ use inkwell::support::LLVMString;
 use inkwell::targets::{
     CodeModel, InitializationConfig, RelocMode, Target, TargetMachine, TargetTriple,
 };
+use inkwell::OptimizationLevel;
 use itertools::Itertools;
 use pyo3::prelude::*;
 
@@ -31,9 +31,9 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::vec::Vec;
 use std::{fs, str, vec};
-use tket::extension::TKET_EXTENSION;
 use tket::extension::rotation::ROTATION_EXTENSION;
-use tket::hugr::extension::{ExtensionRegistry, prelude};
+use tket::extension::{TKET1_EXTENSION, TKET_EXTENSION};
+use tket::hugr::extension::{prelude, ExtensionRegistry};
 use tket::hugr::std_extensions::arithmetic::{
     conversions, float_ops, float_types, int_ops, int_types,
 };
@@ -41,7 +41,6 @@ use tket::hugr::std_extensions::{collections, logic, ptr};
 use tket::hugr::{self, llvm::inkwell};
 use tket::hugr::{Hugr, HugrView, Node};
 use tket::llvm::rotation::RotationCodegenExtension;
-use tket_qsystem::QSystemPass;
 use tket_qsystem::extension::{futures as qsystem_futures, qsystem, result as qsystem_result};
 use tket_qsystem::llvm::array_utils::ArrayLowering;
 pub use tket_qsystem::llvm::futures::FuturesCodegenExtension;
@@ -49,7 +48,8 @@ use tket_qsystem::llvm::{
     debug::DebugCodegenExtension, prelude::QISPreludeCodegen, qsystem::QSystemCodegenExtension,
     random::RandomCodegenExtension, result::ResultsCodegenExtension, utils::UtilsCodegenExtension,
 };
-use tracing::{Level, event, instrument};
+use tket_qsystem::QSystemPass;
+use tracing::{event, instrument, Level};
 use utils::read_hugr_envelope;
 
 mod utils;
@@ -76,6 +76,7 @@ static REGISTRY: std::sync::LazyLock<ExtensionRegistry> = std::sync::LazyLock::n
         qsystem::EXTENSION.to_owned(),
         ROTATION_EXTENSION.to_owned(),
         TKET_EXTENSION.to_owned(),
+        TKET1_EXTENSION.to_owned(),
         tket::extension::bool::BOOL_EXTENSION.to_owned(),
         tket::extension::debug::DEBUG_EXTENSION.to_owned(),
     ])
@@ -408,8 +409,8 @@ mod exceptions {
 #[pymodule]
 mod selene_hugr_qis_compiler {
     use super::{
-        CompileArgs, Context, Hugr, PyResult, compile, get_native_target_machine, get_opt_level,
-        get_target_machine_from_triple, pyfunction, read_hugr_envelope,
+        compile, get_native_target_machine, get_opt_level, get_target_machine_from_triple,
+        pyfunction, read_hugr_envelope, CompileArgs, Context, Hugr, PyResult,
     };
 
     #[pymodule_export]

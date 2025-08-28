@@ -17,6 +17,7 @@ from guppylang.std.quantum import (
     z,
 )
 from hugr.ops import CFG
+from pytket.circuit import Circuit
 from selene_hugr_qis_compiler import HugrReadError, check_hugr, compile_to_llvm_ir
 
 triples = [
@@ -52,6 +53,31 @@ def test_check() -> None:
     hugr.add_node(CFG([], []))
     with pytest.raises(HugrReadError, match="CFG must have children"):
         check_hugr(package.to_str().encode("utf-8"))
+
+
+def test_unsupported_pytket_ops() -> None:
+    """Test the check_hugr function to ensure it flags unsupported pytket ops."""
+
+    # A pytket circuit with an unsupported op.
+    circ = Circuit(2).CSXdg(0, 1)
+
+    guppy_circ = guppy.load_pytket("guppy_circ", circ, use_arrays=False)
+
+    @guppy
+    def foo() -> None:
+        a, b = qubit(), qubit()
+        guppy_circ(a, b)
+        discard(a)
+        discard(b)
+
+    package = foo.compile()
+    hugr_envelope = package.to_bytes()
+
+    with pytest.raises(
+        HugrReadError,
+        match="Pytket op 'CSXdg' is not currently supported by the Selene HUGR-QIS compiler",
+    ):
+        check_hugr(hugr_envelope)
 
 
 @pytest.mark.parametrize("target_triple", triples)
