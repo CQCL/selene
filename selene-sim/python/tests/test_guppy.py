@@ -9,11 +9,14 @@ from guppylang.std.builtins import array, exit, panic, result
 from guppylang.std.qsystem.random import RNG
 from guppylang.std.qsystem.utils import get_current_shot
 from guppylang.std.qsystem import measure_leaked
+from guppylang.std.angles import angle
 from guppylang.std.quantum import (
     cx,
     cy,
+    cz,
     discard,
     h,
+    ry,
     measure,
     measure_array,
     qubit,
@@ -631,3 +634,34 @@ def test_cy():
     }
     for basis in two_qb_bases:
         assert dict(res[basis]) == {expected_map[basis]: n_shots}
+
+
+def test_cz():
+    """Test CZ is implemented correctly."""
+    n_shots = 10
+
+    @guppy
+    def subc(a: qubit, b: qubit) -> None:
+        ry(a, angle(5.535942))
+
+        cz(a, b)
+
+    @guppy
+    def foo() -> None:
+        a, b = qubit(), qubit()
+        subc(a, b)
+        subc(a, b)
+        ar = array(measure(a), measure(b))
+        result("c", ar)
+
+    res = QsysResult(
+        build(foo.compile()).run_shots(
+            Quest(),
+            n_qubits=2,
+            n_shots=n_shots,
+            random_seed=42,
+        )
+    ).register_counts()["c"]
+
+    # mostly 10, small probability of 00, but not hit for 10 shots
+    assert res == {"10": n_shots}
