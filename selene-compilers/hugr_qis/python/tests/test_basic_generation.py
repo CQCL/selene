@@ -74,7 +74,8 @@ def test_unsupported_pytket_ops() -> None:
     hugr_envelope = package.to_bytes()
 
     with pytest.raises(
-        HugrReadError, match="Pytket op 'CSXdg' is not supported by the Selene HUGR-QIS compiler"
+        HugrReadError,
+        match="Pytket op 'CSXdg' is not currently supported by the Selene HUGR-QIS compiler",
     ):
         check_hugr(hugr_envelope)
 
