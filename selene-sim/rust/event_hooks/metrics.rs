@@ -157,7 +157,7 @@ impl PostRuntimeMetrics {
             }
         }
 
-        self.total_duration_ns += std::cmp::max(
+        self.total_duration_ns = std::cmp::max(
             self.total_duration_ns,
             u64::from(batch.start()) + u64::from(batch.duration()),
         );
