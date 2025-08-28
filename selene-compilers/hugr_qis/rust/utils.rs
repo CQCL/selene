@@ -38,7 +38,7 @@ pub fn read_hugr_envelope(bytes: &[u8]) -> Result<Hugr> {
         let op = package.modules[0].get_optype(node);
         if let Some(name) = is_opaque_tket1_op(&op) {
             return Err(anyhow!(
-                "Pytket op '{name}' is not supported by the emulator"
+                "Pytket op '{name}' is not supported by the Selene HUGR-QIS compiler"
             ));
         }
     }
