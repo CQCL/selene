@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/CQCL/selene/compare/selene-sim-v0.2.3...selene-sim-v0.2.4) (2025-08-28)
+
+
+### Bug Fixes
+
+* correct post_runtime duration metric ([#74](https://github.com/CQCL/selene/issues/74)) ([0bef66a](https://github.com/CQCL/selene/commit/0bef66aeaaccbadf08ba38a735a5146382326c2a))
+
 ## [0.2.3](https://github.com/CQCL/selene/compare/selene-sim-v0.2.2...selene-sim-v0.2.3) (2025-08-26)
 
 
