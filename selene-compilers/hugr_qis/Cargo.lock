@@ -312,9 +312,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.5.45"
+version = "4.5.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1fc0e74a703892159f5ae7d3aac52c8e6c392f5ae5f359c70b5881d60aaac318"
+checksum = "7eac00902d9d136acd712710d71823fb8ac8004ca445a89e73a41d45aa712931"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -332,9 +332,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.5.44"
+version = "4.5.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3e7f4214277f3c7aa526a59dd3fbe306a370daee1f8b7b8c987069cd8e888a8"
+checksum = "2ad9bbf750e73b5884fb8a211a9424a1906c1e156724260fdae972f31d70e1d6"
 dependencies = [
  "anstream",
  "anstyle",
@@ -344,9 +344,9 @@ dependencies = [
 
 [[package]]
 name = "clap_derive"
-version = "4.5.45"
+version = "4.5.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14cb31bb0a7d536caef2639baa7fad459e15c3144efefa6dbd1c84562c4739f6"
+checksum = "bbfd7eae0b0f1a6e63d4b13c9c478de77c2eb546fba158ad50b4203dc24b9f9c"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -1255,10 +1255,40 @@ dependencies = [
 ]
 
 [[package]]
+name = "num-bigint"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a5e44f723f1133c9deac646763579fdb3ac745e418f2a7af9cd0c431da1f20b9"
+dependencies = [
+ "num-integer",
+ "num-traits",
+]
+
+[[package]]
 name = "num-conv"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
+
+[[package]]
+name = "num-integer"
+version = "0.1.46"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7969661fd2958a5cb096e56c8e1ad0444ac2bbcd0061bd28660485a44879858f"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
+name = "num-rational"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f83d14da390562dca69fc84082e73e548e1ad308d24accdedd2720017cb37824"
+dependencies = [
+ "num-bigint",
+ "num-integer",
+ "num-traits",
+]
 
 [[package]]
 name = "num-traits"
@@ -1817,6 +1847,7 @@ version = "0.2.4"
 dependencies = [
  "anyhow",
  "cbindgen",
+ "clap",
  "itertools 0.14.0",
  "pyo3",
  "pyo3-build-config",
@@ -2118,8 +2149,7 @@ dependencies = [
 [[package]]
 name = "tket"
 version = "0.14.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ae8e36129b4bc0e28bce450b6204b00353bcb47886c80882b2982c25a4bae0d"
+source = "git+https://github.com/CQCL/tket2?branch=cr%2Fcompute-gpu#343fe28a9b0aa6a50fe20b4d4fb555d5d0c20574"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -2128,13 +2158,14 @@ dependencies = [
  "crossbeam-channel",
  "csv",
  "delegate",
- "derive_more 1.0.0",
+ "derive_more 2.0.1",
  "fxhash",
  "hugr",
  "hugr-core",
  "indexmap 2.11.0",
  "itertools 0.14.0",
  "lazy_static",
+ "num-rational",
  "pest",
  "pest_derive",
  "petgraph 0.8.2",
@@ -2168,13 +2199,12 @@ dependencies = [
 [[package]]
 name = "tket-qsystem"
 version = "0.20.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c573bfea168323318bc77395224e4c331ad68faa39a16e52b306e664a7233843"
+source = "git+https://github.com/CQCL/tket2?branch=cr%2Fcompute-gpu#343fe28a9b0aa6a50fe20b4d4fb555d5d0c20574"
 dependencies = [
  "anyhow",
  "clap",
  "delegate",
- "derive_more 1.0.0",
+ "derive_more 2.0.1",
  "hugr",
  "hugr-cli",
  "indexmap 2.11.0",
