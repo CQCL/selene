@@ -44,5 +44,5 @@ ignored = ["cbindgen", "pyo3-build-config"]
 
 [patch.crates-io]
 # Uncomment to use unreleased versions of tket2
-tket = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-py", branch = "cr/compute-gpu" }
-tket-qsystem = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-qsystem", branch = "cr/compute-gpu" }
+tket = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-py", rev = "6f035f6" }
+tket-qsystem = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-qsystem", rev = "6f035f6" }
