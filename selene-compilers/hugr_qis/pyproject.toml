@@ -104,7 +104,7 @@ test-requires = [
     "pytest-snapshot",
     "guppylang~=0.21.0",
     "pytket~=2.9.1",
-    "tket~=0.12.5",
+    "tket~=0.12.7",
 ]
 test-command = "pytest -vv {package}"
 
