@@ -21,10 +21,9 @@ pyo3 = { version = "0.24", features = ["abi3-py310", "anyhow"] }
 serde_json = "1.0.143"
 tracing = "0.1"
 itertools = "0.14.0"
-tket = "0.14.0"
+tket = "0.15"
+tket-qsystem = "0.21"
 clap = "4.5.46"
-
-tket-qsystem = { version = "0.20.1", features = ["llvm"] }
 
 [features]
 default = []
@@ -44,5 +43,5 @@ ignored = ["cbindgen", "pyo3-build-config"]
 
 [patch.crates-io]
 # Uncomment to use unreleased versions of tket2
-tket = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-py", rev = "6f035f6" }
-tket-qsystem = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-qsystem", rev = "6f035f6" }
+# tket = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-py", branch = "main" }
+# tket-qsystem = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-qsystem", branch = "main" }
