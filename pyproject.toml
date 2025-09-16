@@ -66,6 +66,7 @@ dev = [
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
 selene-hugr-qis-compiler = { workspace = true }
+guppylang = { git = "https://github.com/CQCL/guppylang", subdirectory = "guppylang", branch = "cr/bump-tket" }
 
 [tool.uv.workspace]
 members = ["selene-core", "selene-compilers/hugr_qis"]
