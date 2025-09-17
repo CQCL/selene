@@ -14,7 +14,7 @@ dependencies = [
     "pyyaml>=6.0.2",
     "lief>=0.16.5",
     "numpy>=2.1",
-    "tqdm>=4.66",
+    "tqdm>=4.67.1",
     "pydot>=4.0.0",
     "hugr>=0.13.0",
 ]

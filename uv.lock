@@ -1371,7 +1371,7 @@ requires-dist = [
 dev = [
     { name = "auditwheel", specifier = ">=6.3.0" },
     { name = "cibuildwheel", specifier = ">=2.23.3" },
-    { name = "guppylang", specifier = "~=0.21.0" },
+    { name = "guppylang", git = "https://github.com/CQCL/guppylang?subdirectory=guppylang&branch=accept-any-selene" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "pip", specifier = ">=24.2" },
     { name = "pytest", specifier = ">=8.3.5" },
