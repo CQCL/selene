@@ -77,8 +77,8 @@ static REGISTRY: std::sync::LazyLock<ExtensionRegistry> = std::sync::LazyLock::n
         ROTATION_EXTENSION.to_owned(),
         TKET_EXTENSION.to_owned(),
         TKET1_EXTENSION.to_owned(),
-        tket::extension::bool::BOOL_EXTENSION.to_owned(),
         tket::extension::debug::DEBUG_EXTENSION.to_owned(),
+        tket::extension::bool::BOOL_EXTENSION.to_owned(),
     ])
 });
 
