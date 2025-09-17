@@ -146,7 +146,7 @@ environment-pass = [
 test-requires = [
     "pytest",
     "pytest-snapshot",
-    "guppylang~=0.21.0",
+    "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang",
     "pytket~=2.9.1",
     "tket~=0.12.5",
 ]
