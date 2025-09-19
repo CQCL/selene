@@ -187,6 +187,8 @@ before-all = '''
         cp -r /host/tmp/ci-cache/selene/target {project};
     fi;
 
+    apt install -y libffi-dev
+
     # grab rust and cbindgen
     curl -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y && cargo install cbindgen
 '''

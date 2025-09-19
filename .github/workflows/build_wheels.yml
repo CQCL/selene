@@ -52,7 +52,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      
+
       - name: Install rust toolchain
         if: steps.selene_core_wheel_cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
@@ -83,14 +83,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-14, macos-13, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-14, macos-13, windows-2022]
     name: "Selene wheels (${{matrix.os}})"
     runs-on: ${{ matrix.os }}
     steps:
       # ---------------------------------
       # Bootstrap the build environment
       # ---------------------------------
-      
+
       - uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -118,7 +118,7 @@ jobs:
       # As such, we use a cache to store the compiler wheel,
       # and only build it if the source code has changed.
       # ------------------------------------
-      
+
       # fetch if the hugr_qis compiler has not changed, otherwise
       # set to update the cache.
       - name: Cache selene-hugr-qis-compiler wheel
@@ -158,7 +158,7 @@ jobs:
       # if the hugr_qis compiler has changed, we build it.
       - name: Build selene-hugr-qis-compiler wheel
         if: steps.hugr_qis_cache.outputs.cache-hit != 'true'
-        uses: pypa/cibuildwheel@v2.21.3
+        uses: pypa/cibuildwheel@v3.1.4
         with:
           package-dir: selene-compilers/hugr_qis
 
@@ -257,7 +257,7 @@ jobs:
 
       # Perform the selene-sim build
       - name: Build selene-sim wheels
-        uses: pypa/cibuildwheel@v2.21.3
+        uses: pypa/cibuildwheel@v3.1.4
 
       - name: Remove python ABI tag
         # As we are shipping compiled libraries, Hatch assumes that we
@@ -279,7 +279,7 @@ jobs:
           name: selene-wheels-${{ matrix.os }}
           path: wheelhouse/*.whl
           if-no-files-found: error
-  
+
   release:
     strategy:
       matrix:
@@ -293,7 +293,7 @@ jobs:
     name: Release ${{ matrix.target.name }}
     runs-on: ubuntu-latest
     # always do a full build and test before release of any package
-    needs: [build_selene_core, build_platform_specific_wheels] 
+    needs: [build_selene_core, build_platform_specific_wheels]
     permissions:
       contents: write
       id-token: write
