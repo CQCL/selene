@@ -1363,7 +1363,7 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "selene-core", editable = "selene-core" },
     { name = "selene-hugr-qis-compiler", editable = "selene-compilers/hugr_qis" },
-    { name = "tqdm", specifier = ">=4.66" },
+    { name = "tqdm", specifier = ">=4.67.1" },
     { name = "ziglang", specifier = "~=0.13" },
 ]
 
