@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.5](https://github.com/CQCL/selene/compare/selene-hugr-qis-compiler-v0.2.4...selene-hugr-qis-compiler-v0.2.5) (2025-09-19)
+
+
+### Features
+
+* **compiler:** Bump tket version; add wasm + gpu to the hugr-qis registry ([c69155d](https://github.com/CQCL/selene/commit/c69155d9717e942c6c67065dbf47cdb156542689))
+
 ## [0.2.4](https://github.com/CQCL/selene/compare/selene-hugr-qis-compiler-v0.2.3...selene-hugr-qis-compiler-v0.2.4) (2025-08-28)
 
 
