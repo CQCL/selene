@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Iterable, Sequence, Any
+from typing import Iterable, Sequence, Any, TYPE_CHECKING
 import logging
 import tempfile
 import random
@@ -13,12 +13,14 @@ from selene_core.build_utils import (
     Artifact,
     LibDep,
     BuildCtx,
-    Step,
     DEFAULT_BUILD_PLANNER,
 )
 from selene_core.build_utils.builtins import SeleneExecutableKind
 
 from .instance import SeleneInstance
+
+if TYPE_CHECKING:
+    from selene_core.build_utils import Step
 
 _log = logging.getLogger(__name__)
 
