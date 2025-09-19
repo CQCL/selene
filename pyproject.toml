@@ -14,7 +14,7 @@ dependencies = [
     "pyyaml>=6.0.2",
     "lief>=0.16.5",
     "numpy>=2.1",
-    "tqdm>=4.66",
+    "tqdm>=4.67.1",
     "pydot>=4.0.0",
     "hugr>=0.13.0",
 ]
@@ -66,6 +66,7 @@ dev = [
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
 selene-hugr-qis-compiler = { workspace = true }
+guppylang = { git = "https://github.com/CQCL/guppylang", subdirectory = "guppylang", branch = "accept-any-selene" }
 
 [tool.uv.workspace]
 members = ["selene-core", "selene-compilers/hugr_qis"]
@@ -145,7 +146,8 @@ environment-pass = [
 test-requires = [
     "pytest",
     "pytest-snapshot",
-    "guppylang~=0.21.0",
+    "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang",
+    "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang-internals",
     "pytket~=2.9.1",
     "tket~=0.12.5",
 ]

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Sequence, Any
+from typing import Iterable, Sequence, Any, TYPE_CHECKING
 import logging
 import tempfile
 import random
@@ -18,6 +18,9 @@ from selene_core.build_utils import (
 from selene_core.build_utils.builtins import SeleneExecutableKind
 
 from .instance import SeleneInstance
+
+if TYPE_CHECKING:
+    from selene_core.build_utils import Step
 
 _log = logging.getLogger(__name__)
 
@@ -191,7 +194,7 @@ def build(
     # determine the steps to take to build the selene executable.
     artifacts = [Artifact(src, input_kind)]
     steps = planner.get_optimal_steps_between(input_kind, SeleneExecutableKind, ctx)
-    steps_to_iterate_over = list(steps)
+    steps_to_iterate_over: Iterable[Step] = list(steps)
     if save_planner:
         _log.info("Saving planner with optimal path to %s", instance_root / "build.dot")
         planner.write_dot(instance_root / "build.dot", highlighted_steps=steps)
