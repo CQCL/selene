@@ -1,5 +1,5 @@
 use crate::REGISTRY;
-use anyhow::{anyhow, Error, Result};
+use anyhow::{Error, Result, anyhow};
 use tket::hugr::envelope::get_generator;
 use tket::hugr::ops::OpType;
 use tket::hugr::package::Package;

@@ -283,3 +283,15 @@ def test_llvm_rng(snapshot, target_triple):
     hugr_envelope = main.compile().to_bytes()
     ir = compile_to_llvm_ir(hugr_envelope, target_triple=target_triple)
     snapshot.assert_match(ir, f"rng_{target_triple}")
+
+
+def test_entry_args() -> None:
+    @guppy
+    def foo(a: int) -> None:
+        result("a", a)
+
+    with pytest.raises(
+        RuntimeError,
+        match="Entry point function must have no input parameters",
+    ):
+        _ = compile_to_llvm_ir(foo.compile().to_bytes())

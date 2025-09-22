@@ -5,15 +5,16 @@
 
 pub mod array;
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use hugr::envelope::EnvelopeConfig;
+use hugr::llvm::CodegenExtsBuilder;
 use hugr::llvm::custom::CodegenExtsMap;
 use hugr::llvm::emit::{EmitHugr, Namer};
 #[allow(deprecated)]
 use hugr::llvm::extension::int::IntCodegenExtension;
 use hugr::llvm::utils::fat::FatExt as _;
 use hugr::llvm::utils::inline_constant_functions;
-use hugr::llvm::CodegenExtsBuilder;
+use inkwell::OptimizationLevel;
 use inkwell::context::Context;
 use inkwell::module::Module;
 use inkwell::passes::PassBuilderOptions;
@@ -21,9 +22,9 @@ use inkwell::support::LLVMString;
 use inkwell::targets::{
     CodeModel, InitializationConfig, RelocMode, Target, TargetMachine, TargetTriple,
 };
-use inkwell::OptimizationLevel;
 use itertools::Itertools;
 use pyo3::prelude::*;
+use tket::hugr::ops::DataflowParent;
 
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
@@ -32,8 +33,8 @@ use std::rc::Rc;
 use std::vec::Vec;
 use std::{fs, str, vec};
 use tket::extension::rotation::ROTATION_EXTENSION;
-use tket::extension::{TKET1_EXTENSION, TKET_EXTENSION};
-use tket::hugr::extension::{prelude, ExtensionRegistry};
+use tket::extension::{TKET_EXTENSION, TKET1_EXTENSION};
+use tket::hugr::extension::{ExtensionRegistry, prelude};
 use tket::hugr::std_extensions::arithmetic::{
     conversions, float_ops, float_types, int_ops, int_types,
 };
@@ -41,6 +42,7 @@ use tket::hugr::std_extensions::{collections, logic, ptr};
 use tket::hugr::{self, llvm::inkwell};
 use tket::hugr::{Hugr, HugrView, Node};
 use tket::llvm::rotation::RotationCodegenExtension;
+use tket_qsystem::QSystemPass;
 use tket_qsystem::extension::{futures as qsystem_futures, qsystem, result as qsystem_result};
 use tket_qsystem::llvm::array_utils::ArrayLowering;
 pub use tket_qsystem::llvm::futures::FuturesCodegenExtension;
@@ -48,8 +50,7 @@ use tket_qsystem::llvm::{
     debug::DebugCodegenExtension, prelude::QISPreludeCodegen, qsystem::QSystemCodegenExtension,
     random::RandomCodegenExtension, result::ResultsCodegenExtension, utils::UtilsCodegenExtension,
 };
-use tket_qsystem::QSystemPass;
-use tracing::{event, instrument, Level};
+use tracing::{Level, event, instrument};
 use utils::read_hugr_envelope;
 
 mod utils;
@@ -207,11 +208,11 @@ fn optimize_module(module: &Module, args: &CompileArgs) -> Result<()> {
     Ok(())
 }
 
-fn find_entry_point(namer: &Namer, hugr: &impl HugrView<Node = Node>) -> Result<String> {
+fn get_entry_point_name(namer: &Namer, hugr: &impl HugrView<Node = Node>) -> Result<String> {
     const HUGR_MAIN: &str = "main";
     let (name, entry_point_node) = if hugr.entrypoint_optype().is_module() {
-        // backwards compatibility with old Guppy versions: assume entrypoint is "main"
-        // function in module.
+        // for backwards compatibility with old Guppy versions:
+        // assume entrypoint is "main" function in module.
 
         let node = hugr
             .children(hugr.module_root())
@@ -226,13 +227,17 @@ fn find_entry_point(namer: &Namer, hugr: &impl HugrView<Node = Node>) -> Result<
             })?;
         (HUGR_MAIN, node)
     } else {
-        let name = {
-            hugr.entrypoint_optype()
-                .as_func_defn()
-                .ok_or_else(|| anyhow!("Entry point node is not a function definition"))?
-                .func_name()
-        };
-        (name.as_ref(), hugr.entrypoint())
+        let func_defn = hugr
+            .entrypoint_optype()
+            .as_func_defn()
+            .ok_or_else(|| anyhow!("Entry point node is not a function definition"))?;
+        if func_defn.inner_signature().input_count() != 0 {
+            return Err(anyhow!(
+                "Entry point function must have no input parameters (found {})",
+                func_defn.inner_signature().input_count()
+            ));
+        }
+        (func_defn.func_name().as_ref(), hugr.entrypoint())
     };
 
     Ok(namer.name_func(name, entry_point_node))
@@ -314,7 +319,7 @@ fn compile<'c, 'hugr: 'c>(
 
     // Find the name of the LLVM function that corresponds to the entry point in
     // the HUGR.
-    let hugr_entry = find_entry_point(&namer, hugr)?;
+    let hugr_entry = get_entry_point_name(&namer, hugr)?;
 
     // The name of the entry point in the LLVM module.
     // The function will wrap `hugr_entry`.
@@ -411,8 +416,8 @@ mod exceptions {
 #[pymodule]
 mod selene_hugr_qis_compiler {
     use super::{
-        compile, get_native_target_machine, get_opt_level, get_target_machine_from_triple,
-        pyfunction, read_hugr_envelope, CompileArgs, Context, Hugr, PyResult,
+        CompileArgs, Context, Hugr, PyResult, compile, get_native_target_machine, get_opt_level,
+        get_target_machine_from_triple, pyfunction, read_hugr_envelope,
     };
 
     #[pymodule_export]
