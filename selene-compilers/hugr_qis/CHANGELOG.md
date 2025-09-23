@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.6](https://github.com/CQCL/selene/compare/selene-hugr-qis-compiler-v0.2.5...selene-hugr-qis-compiler-v0.2.6) (2025-09-22)
+
+
+### Bug Fixes
+
+* **compiler:** error when entrypoint has arguments ([#84](https://github.com/CQCL/selene/issues/84)) ([604b131](https://github.com/CQCL/selene/commit/604b1311b96593609e699a6bb8251ad3c952ebdb))
+
 ## [0.2.5](https://github.com/CQCL/selene/compare/selene-hugr-qis-compiler-v0.2.4...selene-hugr-qis-compiler-v0.2.5) (2025-09-19)
 
 
