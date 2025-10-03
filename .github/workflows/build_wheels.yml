@@ -204,7 +204,7 @@ jobs:
     name: Release ${{ matrix.target.name }}
     runs-on: ubuntu-latest
     # always do a full build and test before release of any package
-    needs: [build_selene_core, build_platform_specific_wheels]
+    needs: [build_selene_core, build_selene_sim]
     permissions:
       contents: write
       id-token: write
