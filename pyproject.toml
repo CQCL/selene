@@ -9,7 +9,7 @@ version = "0.2.4"
 requires-python = ">=3.10"
 dependencies = [
     "selene-core~=0.2.1",
-    "selene-hugr-qis-compiler~=0.2.1",
+    "selene-hugr-qis-compiler~=0.2.6",
     "ziglang~=0.13",
     "pyyaml>=6.0.2",
     "lief>=0.16.5",
@@ -65,11 +65,10 @@ dev = [
 [tool.uv.sources]
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
-selene-hugr-qis-compiler = { workspace = true }
 guppylang = { git = "https://github.com/CQCL/guppylang", subdirectory = "guppylang", branch = "accept-any-selene" }
 
 [tool.uv.workspace]
-members = ["selene-core", "selene-compilers/hugr_qis"]
+members = ["selene-core"]
 
 [tool.hatch.build.hooks.custom]
 path = "hatch_build.py"
@@ -119,7 +118,6 @@ extend-exclude = [
 ignore_missing_imports = true
 exclude = [
     "test_.*.py$",
-    "selene-compilers/.*/python/tests/test_.*.py$",
     ".*upstream.*$",
     "^selene-core/.*$",
     "^scratch/.*$",
@@ -141,7 +139,6 @@ environment-pass = [
     "PIP_EXTRA_INDEX_URL",
     "CACHE_CARGO",
     "SELENE_CORE_WHL",
-    "SELENE_HUGR_QIS_WHL",
 ]
 test-requires = [
     "pytest",
@@ -163,16 +160,8 @@ before-all = '''
         echo "SELENE_CORE_WHL is not set - it is needed for testing selene-sim."
         exit 1;
     fi;
-    if [ !-n "${SELENE_HUGR_QIS_WHL}" ]; then
-        echo "SELENE_HUGR_QIS_WHL is not set - it is needed for testing selene-sim.";
-        exit 1;
-    fi;
     if [ ! -f "/host/${SELENE_CORE_WHL}" ]; then
         echo "SELENE_CORE_WHL is set but does not point to an existing file: ${SELENE_CORE_WHL}";
-        exit 1;
-    fi;
-    if [ ! -f "/host/${SELENE_HUGR_QIS_WHL}" ]; then
-        echo "SELENE_HUGR_QIS_WHL is set but does not point to an existing file: ${SELENE_HUGR_QIS_WHL}";
         exit 1;
     fi;
 
@@ -214,9 +203,6 @@ before-test = '''
 
     # install selene-core.
     uv pip install "/host/${SELENE_CORE_WHL}";
-
-    # install selene-hugr-qis-compiler.
-    uv pip install "/host/${SELENE_HUGR_QIS_WHL}";
 '''
 [tool.cibuildwheel.macos]
 environment = { PATH = "$PATH:$HOME/.cargo/bin", MACOSX_DEPLOYMENT_TARGET = "11.0" }
@@ -229,16 +215,8 @@ before-all = '''
         echo "SELENE_CORE_WHL is not set - it is needed for testing selene-sim."
         exit 1;
     fi;
-    if [ ! -n "${SELENE_HUGR_QIS_WHL}" ]; then
-        echo "SELENE_HUGR_QIS_WHL is not set - it is needed for testing selene-sim.";
-        exit 1;
-    fi;
     if [ ! -f "/${SELENE_CORE_WHL}" ]; then
         echo "SELENE_CORE_WHL is set but does not point to an existing file: ${SELENE_CORE_WHL}";
-        exit 1;
-    fi;
-    if [ ! -f "/${SELENE_HUGR_QIS_WHL}" ]; then
-        echo "SELENE_HUGR_QIS_WHL is set but does not point to an existing file: ${SELENE_HUGR_QIS_WHL}";
         exit 1;
     fi;
     curl -sSf https://sh.rustup.rs | sh -s -- -y && cargo install cbindgen
@@ -246,22 +224,16 @@ before-all = '''
 before-test = '''
     # install selene-core.
     uv pip install "${SELENE_CORE_WHL}";
-
-    # install selene-hugr-qis-compiler.
-    uv pip install "${SELENE_HUGR_QIS_WHL}";
 '''
 [tool.cibuildwheel.windows]
 before-all = [
     # during testing, we need to ensure that dependencies built in prior
     # steps are passed in correctly, otherwise we should fail fast.
     'IF NOT DEFINED SELENE_CORE_WHL (ECHO SELENE_CORE_WHL is not set - it is needed for testing selene-sim. && EXIT /B 1)',
-    'IF NOT DEFINED SELENE_HUGR_QIS_WHL (ECHO SELENE_HUGR_QIS_WHL is not set - it is needed for testing selene-sim. && EXIT /B 1)',
     'curl -sSf https://sh.rustup.rs | sh -s -- -y',
     'cargo install cbindgen',
 ]
 before-test = [
     # install selene-core.
     'uv pip install "%SELENE_CORE_WHL%"',
-    # install selene-hugr-qis-compiler.
-    'uv pip install "%SELENE_HUGR_QIS_WHL%"',
 ]
