@@ -47,13 +47,6 @@ jobs:
         with:
             enable-cache: true
             version: "0.6.6"
-      - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v2
-        with:
-          version: "14.0"
-          directory: /tmp/llvm
-      - name: Set LLVM_SYS_140_PREFIX
-        run: echo "LLVM_SYS_140_PREFIX=${{ env.LLVM_PATH }}" >> $GITHUB_ENV
       - name: Rust format check
         run: cargo fmt --all -- --check
       - name: Rust lint

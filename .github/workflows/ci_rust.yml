@@ -25,12 +25,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Install LLVM
-        uses: KyleMayes/install-llvm-action@v2
-        with:
-          version: "14.0"
-      - name: Set LLVM_SYS_140_PREFIX
-        run: echo "LLVM_SYS_140_PREFIX=${{ env.LLVM_PATH }}" >> $GITHUB_ENV
       - uses: actions/cache@v4
         with:
           path: |

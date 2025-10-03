@@ -21,7 +21,6 @@
 
     env = {
       LIBCLANG_PATH = "${pkgs.libclang.lib}";
-      LLVM_SYS_140_PREFIX = "${pkgs.llvmPackages_14.libllvm.dev}";
     };
 
 
@@ -67,7 +66,7 @@
         extraPackages = with pkgs.python3Packages; [
           types-pyyaml
         ];
-        excludes = ["selene-sim/python/tests" "selene-compilers/hugr_qis/python/tests"];
+        excludes = ["selene-sim/python/tests"];
       };
     };
   };

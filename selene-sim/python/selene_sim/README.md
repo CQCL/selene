@@ -9,7 +9,7 @@ Selene is built with flexibility in mind. This includes:
 
 ## What's included
 
-Out of the box, Selene provides first-class support for the [HUGR](https://github.com/CQCL/hugr) ecosystem, including execution of [Guppy](https://github.com/CQCL/guppy) programs in an emulation environment, making use of our [open-source compiler](https://github.com/CQCL/selene/tree/main/selene-compilers/hugr_qis). You can find many examples of guppy usage in our [unit tests](https://github.com/CQCL/selene/tree/main/selene-sim/python/tests/test_guppy.py).
+Out of the box, Selene provides first-class support for the [HUGR](https://github.com/CQCL/hugr) ecosystem, including execution of [Guppy](https://github.com/CQCL/guppy) programs in an emulation environment, making use of our [open-source compiler](https://github.com/CQCL/tket2/tree/main/qis-compiler/). You can find many examples of guppy usage in our [unit tests](https://github.com/CQCL/selene/tree/main/selene-sim/python/tests/test_guppy.py).
 
 Selene provides a range of simulators, including:
 - Statevector simulation using [QuEST](https://github.com/QuEST-Kit/QuEST) and the [quest-sys crate](https://crates.io/crates/quest-sys).

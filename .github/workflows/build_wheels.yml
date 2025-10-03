@@ -78,7 +78,7 @@ jobs:
           path: wheelhouse/selene_core-*.whl
           if-no-files-found: error
 
-  build_platform_specific_wheels:
+  build_selene_sim:
     needs: build_selene_core
     strategy:
       fail-fast: false
@@ -108,88 +108,6 @@ jobs:
           mkdir /tmp/ci-cache
           chmod 755 /tmp/ci-cache
 
-      # ------------------------------------
-      # Build or fetch the hugr_qis compiler
-      # ------------------------------------
-      # Building the hugr_qis compiler takes approximately 10
-      # minutes at the time of writing. This can lead to slow
-      # CI times if the compiler is built every time.
-      #
-      # As such, we use a cache to store the compiler wheel,
-      # and only build it if the source code has changed.
-      # ------------------------------------
-
-      # fetch if the hugr_qis compiler has not changed, otherwise
-      # set to update the cache.
-      - name: Cache selene-hugr-qis-compiler wheel
-        id: hugr_qis_cache
-        uses: actions/cache@v4
-        with:
-          path: wheelhouse/selene_hugr_qis_compiler-*.whl
-          key: selene-hugr-qis-compiler--wheel--${{ matrix.os }}--${{ hashFiles('selene-compilers/hugr_qis/**') }}
-
-      # Note that we are using CIBuildWheel to build the wheels.
-      # This treats linux differently to macos and windows.
-      #
-      # On linux, building on the host platform adds an implicit
-      # requirement on the host platform's glibc version and other
-      # system libraries that happen to be available. To mitigate
-      # this, builds are performed within a docker container that
-      # is compatible with manylinux (in our case, manylinux_2_28).
-      #
-      # See https://github.com/pypa/manylinux for more information
-      # about the manylinux project.
-      #
-      # This is an important aspect of wheel building, as it means
-      # that wheels are built in an isolated environment. We use
-      # /tmp/ci-cache for caching, which is then accessed as
-      # /host/tmp/ci-cache within the container.
-      - uses: actions/cache@v4
-        if: steps.hugr_qis_cache.outputs.cache-hit != 'true'
-        with:
-          path: |
-            /tmp/ci-cache/hugr-qis
-            selene-compilers/hugr_qis/target/
-          key: selene-hugr-qis-compiler--build-env--${{ matrix.os }}--${{ hashFiles('selene-compilers/hugr_qis/Cargo.lock') }}
-          restore-keys: |
-            selene-hugr-qis-compiler--build-env--${{ matrix.os }}--
-
-
-      # if the hugr_qis compiler has changed, we build it.
-      - name: Build selene-hugr-qis-compiler wheel
-        if: steps.hugr_qis_cache.outputs.cache-hit != 'true'
-        uses: pypa/cibuildwheel@v3.1.4
-        with:
-          package-dir: selene-compilers/hugr_qis
-
-      # --------------------------------
-      # Find the hugr_qis compiler wheel
-      # --------------------------------
-      # We need to pass the path to the compiler wheel to CIBuildWheel
-      # so that it can be pip installed within the CIBuildWheel environment
-      # prior to testing selene-sim.
-      #
-      # We need the absolute path to the complete wheel name.
-      # --------------------------------
-      - name: Set compiler wheel path in environment
-        shell: bash
-        run: |
-          wheel_files=$(ls wheelhouse/selene_hugr_qis_compiler-*.whl)
-          wheel_file_abs=$(readlink -f "${wheel_files[0]}")
-
-          # On Windows (GitHub runners), convert /c/... to C:/...
-          case "$(uname -s)" in
-            MINGW*|MSYS*|CYGWIN*)
-              drive_letter=$(echo "$wheel_file_abs" | cut -d '/' -f 2)
-              rest=$(echo "$wheel_file_abs" | cut -d '/' -f 3-)
-              wheel_file_abs="${drive_letter^^}:/${rest}"
-              ;;
-          esac
-
-          echo "Found compiler wheel: ${wheel_file_abs}"
-          echo "SELENE_HUGR_QIS_WHL=${wheel_file_abs}" >> $GITHUB_ENV
-
-
       # ---------------------------------
       # Download and find selene-core wheel
       # ---------------------------------
@@ -200,10 +118,6 @@ jobs:
       # Selene-core is python-only, but isn't cheap to build
       # now that we're running cbindgen to extract the C API.
       # As such, we provide it as input to the selene-sim build.
-      #
-      # At present, selene_hugr_qis_compiler does not depend
-      # on selene-core, so we don't need to provide selene-core
-      # as input to it.
 
       - name: Download selene-core wheel
         uses: actions/download-artifact@v4
@@ -232,9 +146,8 @@ jobs:
       # --------------------------------
       # Build selene-sim wheel
       # --------------------------------
-      # If selene-core has changed, or selene-hugr-qis-compiler has changed,
-      # we will likely want to rebuild and test selene-sim. As such, no wheel
-      # caching here.
+      # If selene-core has changed, we will likely want to rebuild and test
+      # selene-sim. As such, no wheel caching here.
       #
       # A later change may be to consider guppy->hugr->QIS->selene tests as
       # integration tests performed outside of the CIBuildWheel environment.
@@ -286,14 +199,12 @@ jobs:
         target:
           - name: selene-core
             upload: wheelhouse/selene_core-*.whl
-          - name: selene-hugr-qis-compiler
-            upload: wheelhouse/selene_hugr_qis_compiler-*.whl
           - name: selene-sim
             upload: wheelhouse/selene_sim-*.whl
     name: Release ${{ matrix.target.name }}
     runs-on: ubuntu-latest
     # always do a full build and test before release of any package
-    needs: [build_selene_core, build_platform_specific_wheels]
+    needs: [build_selene_core, build_selene_sim]
     permissions:
       contents: write
       id-token: write

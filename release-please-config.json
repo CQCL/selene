@@ -47,26 +47,6 @@
                 }
             ]
         },
-        "selene-compilers/hugr_qis": {
-            "release-type": "python",
-            "package-name": "selene-hugr-qis-compiler",
-            "component": "selene-hugr-qis-compiler",
-            "draft": false,
-            "prerelease": false,
-            "draft-pull-request": true,
-            "extra-files": [
-                {
-                    "type": "toml",
-                    "path": "Cargo.toml",
-                    "jsonpath": "$.package.version"
-                },
-                {
-                    "type": "toml",
-                    "path": "Cargo.lock",
-                    "jsonpath": "$.package[?(@.name.value=='selene-hugr-qis-compiler')].version"
-                }
-            ]
-        },
         ".": {
             "release-type": "python",
             "package-name": "selene-sim",
