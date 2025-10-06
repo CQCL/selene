@@ -71,7 +71,7 @@ static REGISTRY: std::sync::LazyLock<ExtensionRegistry> = std::sync::LazyLock::n
         collections::list::EXTENSION.to_owned(),
         collections::array::EXTENSION.to_owned(),
         collections::static_array::EXTENSION.to_owned(),
-        collections::value_array::EXTENSION.to_owned(),
+        collections::borrow_array::EXTENSION.to_owned(),
         qsystem_futures::EXTENSION.to_owned(),
         qsystem_result::EXTENSION.to_owned(),
         qsystem::EXTENSION.to_owned(),
@@ -166,9 +166,10 @@ fn codegen_extensions() -> CodegenExtsMap<'static, Hugr> {
         .add_extension(ResultsCodegenExtension::new(
             SeleneHeapArrayCodegen::LOWERING,
         ))
-        .add_extension(RotationCodegenExtension::new(pcg))
+        .add_extension(RotationCodegenExtension::new(pcg.clone()))
         .add_extension(UtilsCodegenExtension)
         .add_extension(DebugCodegenExtension::new(SeleneHeapArrayCodegen::LOWERING))
+        .add_borrow_array_extensions(array::SeleneHeapBorrowArrayCodegen(pcg))
         .finish()
 }
 

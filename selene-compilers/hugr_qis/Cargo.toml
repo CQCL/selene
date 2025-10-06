@@ -42,5 +42,10 @@ ignored = ["cbindgen", "pyo3-build-config"]
 
 [patch.crates-io]
 # Uncomment to use unreleased versions of tket2
-# tket = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-py", branch = "main" }
-# tket-qsystem = { git = "https://github.com/CQCL/tket2", subdirectory = "tket-qsystem", branch = "main" }
+tket = { git = "https://github.com/CQCL/tket2", branch = "ba-test" }
+tket-qsystem = { git = "https://github.com/CQCL/tket2", branch = "ba-test"}
+hugr = { git = "https://github.com/CQCL/hugr", "branch" = "ts/ba-copy-discard" }
+hugr-core = { git = "https://github.com/CQCL/hugr", "branch" = "ts/ba-copy-discard" }
+hugr-cli = { git = "https://github.com/CQCL/hugr", "branch" = "ts/ba-copy-discard" }
+hugr-passes = { git = "https://github.com/CQCL/hugr", "branch" = "ts/ba-copy-discard" }
+hugr-llvm = { git = "https://github.com/CQCL/hugr", "branch" = "ts/ba-copy-discard" }
