@@ -34,7 +34,4 @@ build-ci:
     uv build --package selene-core --out-dir wheelhouse
     export SELENE_CORE_WHL=$(ls -t wheelhouse/selene_core-*.whl | xargs readlink -f | head -n1)
 
-    cibuildwheel selene-compilers/hugr_qis
-    export SELENE_HUGR_QIS_WHL=$(ls -t wheelhouse/selene_hugr_qis_compiler-*.whl | xargs readlink -f | head -n1)
-
     cibuildwheel .
