@@ -242,15 +242,6 @@ jobs:
         if: ${{ steps.check-tag.outputs.run == 'true' }}
         run: python -m pip install twine
 
-      - name: Upload to jfrog
-        if: ${{ steps.check-tag.outputs.run == 'true' }}
-        run: |
-          twine upload --verbose --non-interactive ${{ matrix.target.upload }}
-        env:
-          TWINE_REPOSITORY_URL: ${{ secrets.JFROG_URL }}
-          TWINE_USERNAME: ${{ secrets.JFROG_USER }}
-          TWINE_PASSWORD: ${{ secrets.JFROG_TOKEN }}
-
       - name: Upload to pypi
         if: ${{ steps.check-tag.outputs.run == 'true' }}
         run: |
