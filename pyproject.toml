@@ -16,7 +16,7 @@ dependencies = [
     "numpy>=2.1",
     "tqdm>=4.67.1",
     "pydot>=4.0.0",
-    "hugr>=0.13.0",
+    "hugr~=0.14.0",
 ]
 authors = [
     { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
@@ -65,7 +65,7 @@ dev = [
 [tool.uv.sources]
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
-guppylang = { git = "https://github.com/CQCL/guppylang", subdirectory = "guppylang", branch = "accept-any-selene" }
+guppylang = { git = "https://github.com/CQCL/guppylang", subdirectory = "guppylang", rev = "e5f1e95" }
 
 [tool.uv.workspace]
 members = ["selene-core"]
@@ -143,8 +143,8 @@ environment-pass = [
 test-requires = [
     "pytest",
     "pytest-snapshot",
-    "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang",
-    "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang-internals",
+    # "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang",
+    # "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang-internals",
     "pytket~=2.9.1",
     "tket~=0.12.5",
 ]
