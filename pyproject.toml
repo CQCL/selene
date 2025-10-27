@@ -8,15 +8,15 @@ description = "Quantinuum's open source emulator for hybrid quantum computation"
 version = "0.2.4"
 requires-python = ">=3.10"
 dependencies = [
-    "selene-core~=0.2.1",
-    "selene-hugr-qis-compiler~=0.2.6",
-    "ziglang~=0.13",
-    "pyyaml>=6.0.2",
+    "hugr>=0.13.0",
     "lief>=0.16.5",
     "numpy>=2.1",
-    "tqdm>=4.67.1",
     "pydot>=4.0.0",
-    "hugr~=0.14.0",
+    "pyyaml>=6.0.2",
+    "selene-core~=0.2.1",
+    "selene-hugr-qis-compiler~=0.2.6",
+    "tqdm>=4.67.1",
+    "ziglang~=0.13",
 ]
 authors = [
     { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },

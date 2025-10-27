@@ -1366,7 +1366,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hugr", specifier = "~=0.14.0" },
+    { name = "hugr", specifier = ">=0.13.0" },
     { name = "lief", specifier = ">=0.16.5" },
     { name = "numpy", specifier = ">=2.1" },
     { name = "pydot", specifier = ">=4.0.0" },
