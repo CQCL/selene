@@ -65,7 +65,9 @@ def encode_exception(
             yield (f"{STDOUT_PREFIX}{stdout_file}", 0)
 
 
-def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
+def decode_exception(
+    shot_results: list[TaggedResult],
+) -> tuple[list[TaggedResult], Exception | None]:
     """
     Given a list of shot results, check if the last four entries correspond
     to an encoded exception. If so, decode it and return the exception object.
@@ -80,29 +82,43 @@ def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
         STDERR_PREFIX,
         STDOUT_PREFIX,
     ]
-    if not any(tag.startswith("EXIT:INT:") for tag, _ in reversed(shot_results)):
-        return None
-
     error_message: str | None = None
     error_code: int | None = None
     exception_type: str | None = None
     stdout_path: str | None = None
     stderr_path: str | None = None
-    for tag, value in reversed(shot_results):
+    has_exception: bool = False
+    indices_to_remove = []
+    for i, (tag, value) in enumerate(shot_results):
         if tag.startswith(expected_prefixes[0]):
             error_message = tag.removeprefix(expected_prefixes[0])
             assert isinstance(value, int)
             error_code = value
+            has_exception = error_code < 1000
+            # don't remove the index - this should be preserved
             continue
         if tag.startswith(expected_prefixes[1]):
             exception_type = tag.removeprefix(expected_prefixes[1])
+            indices_to_remove.append(i)
+            has_exception = True
             continue
         if tag.startswith(expected_prefixes[2]):
             stderr_path = tag.removeprefix(expected_prefixes[2])
+            indices_to_remove.append(i)
+            has_exception = True
             continue
         if tag.startswith(expected_prefixes[3]):
             stdout_path = tag.removeprefix(expected_prefixes[3])
+            indices_to_remove.append(i)
+            has_exception = True
             continue
+
+    if not has_exception:
+        # No exception encoded
+        return shot_results, None
+
+    for index in sorted(indices_to_remove, reverse=True):
+        del shot_results[index]
 
     if not all([error_message, error_code, exception_type, stderr_path, stdout_path]):
         additional_error_message = "Incomplete exception encoding in shot results"
@@ -112,7 +128,7 @@ def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
             additional_error_message += f": error message: {error_message}"
         stdout = Path(stdout_path).read_text() if stdout_path else "Corrupted stdout."
         stderr = Path(stderr_path).read_text() if stderr_path else "Corrupted stderr."
-        return SeleneRuntimeError(
+        return shot_results, SeleneRuntimeError(
             message=additional_error_message,
             stdout=stdout,
             stderr=stderr,
@@ -127,26 +143,26 @@ def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
 
     match exception_type:
         case "SelenePanicError":
-            return SelenePanicError(
+            return shot_results, SelenePanicError(
                 message=error_message,
                 code=error_code,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),
             )
         case "SeleneRuntimeError":
-            return SeleneRuntimeError(
+            return shot_results, SeleneRuntimeError(
                 message=error_message,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),
             )
         case "SeleneStartupError":
-            return SeleneStartupError(
+            return shot_results, SeleneStartupError(
                 message=error_message,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),
             )
         case "SeleneTimeoutError":
-            return SeleneTimeoutError(
+            return shot_results, SeleneTimeoutError(
                 message=error_message,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),

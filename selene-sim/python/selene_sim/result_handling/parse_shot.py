@@ -98,12 +98,6 @@ def parse_record(
 
     if tag.startswith("EXIT:"):
         stripped_message = ":".join(tag.split(":")[2:])
-        # if the tag namespace gets duplicated, strip it out
-        if any(
-            stripped_message.startswith(x)
-            for x in ["EXIT:INT:", "L3:INT:", "USER:INT:"]
-        ):
-            stripped_message = ":".join(stripped_message.split(":")[2:])
         code = data[0]
         return ExitMessage(message=stripped_message, code=code)
 
@@ -160,22 +154,6 @@ def parse_shot_minimal(
         yield from encode_exception(e, stdout_file, stderr_file)
 
 
-def postprocess_unparsed_shot(
-    shot_results: list[TaggedResult],
-) -> tuple[list[TaggedResult], Exception | None]:
-    """
-    Decode any exception information from a shot's results, filtering out
-    error-related tags if present. Returns the filtered results and, optionally,
-    any exception that was decoded.
-    """
-    decoded_exception = decode_exception(shot_results)
-    if decoded_exception is None:
-        return shot_results, None
-    else:
-        # filter out error metadata except for the exit entry
-        return shot_results[:-3], decoded_exception
-
-
 def postprocess_unparsed_stream(
     shot_results: Iterable[Iterable[TaggedResult]],
 ) -> tuple[list[list[TaggedResult]], Exception | None]:
@@ -186,7 +164,7 @@ def postprocess_unparsed_stream(
     """
     results = []
     for shot in shot_results:
-        filtered_shot, exception = postprocess_unparsed_shot(list(shot))
+        filtered_shot, exception = decode_exception(list(shot))
         if exception is None:
             results.append(filtered_shot)
         else:
