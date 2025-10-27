@@ -139,11 +139,15 @@ def parse_shot_minimal(
                 yield parsed
             elif isinstance(parsed, ExitMessage):
                 if parsed.code >= 1000:
-                    raise SelenePanicError(
-                        message=parsed.message,
-                        code=parsed.code,
-                        stdout=stdout_file.read_text(),
-                        stderr=stderr_file.read_text(),
+                    yield from encode_exception(
+                        SelenePanicError(
+                            message=parsed.message,
+                            code=parsed.code,
+                            stdout="",
+                            stderr="",
+                        ),
+                        stdout_file,
+                        stderr_file,
                     )
                 else:
                     yield (parsed.message, parsed.code)

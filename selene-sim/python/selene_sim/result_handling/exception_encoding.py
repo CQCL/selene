@@ -80,18 +80,43 @@ def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
         STDERR_PREFIX,
         STDOUT_PREFIX,
     ]
-    if len(shot_results) < 4:
+    if not any(tag.startswith("EXIT:INT:") for tag, _ in reversed(shot_results)):
         return None
 
-    last_four_tags = list(map(lambda x: x[0], shot_results[-4:]))
-    if not all(last_four_tags[i].startswith(expected_prefixes[i]) for i in range(4)):
-        return None
+    error_message: str | None = None
+    error_code: int | None = None
+    exception_type: str | None = None
+    stdout_path: str | None = None
+    stderr_path: str | None = None
+    for tag, value in reversed(shot_results):
+        if tag.startswith(expected_prefixes[0]):
+            error_message = tag.removeprefix(expected_prefixes[0])
+            assert isinstance(value, int)
+            error_code = value
+            continue
+        if tag.startswith(expected_prefixes[1]):
+            exception_type = tag.removeprefix(expected_prefixes[1])
+            continue
+        if tag.startswith(expected_prefixes[2]):
+            stderr_path = tag.removeprefix(expected_prefixes[2])
+            continue
+        if tag.startswith(expected_prefixes[3]):
+            stdout_path = tag.removeprefix(expected_prefixes[3])
+            continue
 
-    error_message = last_four_tags[0].removeprefix("EXIT:INT:")
-    error_code = shot_results[-4][1]
-    exception_type = last_four_tags[1].removeprefix(EXCEPTION_TYPE_PREFIX)
-    stderr_path = last_four_tags[2].removeprefix(STDERR_PREFIX)
-    stdout_path = last_four_tags[3].removeprefix(STDOUT_PREFIX)
+    if not all([error_message, error_code, exception_type, stderr_path, stdout_path]):
+        additional_error_message = "Incomplete exception encoding in shot results"
+        if error_message is None:
+            additional_error_message += ": missing error message"
+        else:
+            additional_error_message += f": error message: {error_message}"
+        stdout = Path(stdout_path).read_text() if stdout_path else "Corrupted stdout."
+        stderr = Path(stderr_path).read_text() if stderr_path else "Corrupted stderr."
+        return SeleneRuntimeError(
+            message=additional_error_message,
+            stdout=stdout,
+            stderr=stderr,
+        )
 
     # Satisfy Mypy that the variables are not None
     assert isinstance(error_message, str)

@@ -103,15 +103,30 @@ impl SeleneInstance {
         Ok(())
     }
     pub fn shot_end(&mut self) -> Result<()> {
-        self.write_metadata()?;
+        // Emit any metrics before plugins are invoked with shot_end.
+        // This ensures that metrics reflect the state of the shot
+        // up to this point.
         if self.config.event_hooks.provide_metrics {
             self.write_metrics()?;
         }
-        self.print_shot_boundary()?;
-        self.emulator.event_hooks.on_shot_end();
+        // Tell the runtime that it's time to shut down.
+        // This may flush additional operations as part of
+        // the shutdown process.
         self.emulator.runtime.shot_end()?;
-        self.emulator.error_model.shot_end()?;
+        // Handle any operations that resulted from the runtime's shot
+        // end process
         self.emulator.poke()?;
+        // Tell the error model, having already processed anything from
+        // the current runtime shot, that the shot is ending. The error model
+        // must also end the shot on its internal simulator.
+        self.emulator.error_model.shot_end()?;
+        // Finally, write out any stored metadata e.g. instruction logs
+        // and inform event hooks that the shot has ended.
+        self.write_metadata()?;
+        self.emulator.event_hooks.on_shot_end();
+        // Print shot boundary information so that the result stream
+        // is properly delimited.
+        self.print_shot_boundary()?;
         Ok(())
     }
 }
