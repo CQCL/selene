@@ -65,7 +65,9 @@ def encode_exception(
             yield (f"{STDOUT_PREFIX}{stdout_file}", 0)
 
 
-def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
+def decode_exception(
+    shot_results: list[TaggedResult],
+) -> tuple[list[TaggedResult], Exception | None]:
     """
     Given a list of shot results, check if the last four entries correspond
     to an encoded exception. If so, decode it and return the exception object.
@@ -80,18 +82,57 @@ def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
         STDERR_PREFIX,
         STDOUT_PREFIX,
     ]
-    if len(shot_results) < 4:
-        return None
+    error_message: str | None = None
+    error_code: int | None = None
+    exception_type: str | None = None
+    stdout_path: str | None = None
+    stderr_path: str | None = None
+    has_exception: bool = False
+    indices_to_remove = []
+    for i, (tag, value) in enumerate(shot_results):
+        if tag.startswith(expected_prefixes[0]):
+            error_message = tag.removeprefix(expected_prefixes[0])
+            assert isinstance(value, int)
+            error_code = value
+            has_exception = error_code < 1000
+            # don't remove the index - this should be preserved
+            continue
+        if tag.startswith(expected_prefixes[1]):
+            exception_type = tag.removeprefix(expected_prefixes[1])
+            indices_to_remove.append(i)
+            has_exception = True
+            continue
+        if tag.startswith(expected_prefixes[2]):
+            stderr_path = tag.removeprefix(expected_prefixes[2])
+            indices_to_remove.append(i)
+            has_exception = True
+            continue
+        if tag.startswith(expected_prefixes[3]):
+            stdout_path = tag.removeprefix(expected_prefixes[3])
+            indices_to_remove.append(i)
+            has_exception = True
+            continue
 
-    last_four_tags = list(map(lambda x: x[0], shot_results[-4:]))
-    if not all(last_four_tags[i].startswith(expected_prefixes[i]) for i in range(4)):
-        return None
+    if not has_exception:
+        # No exception encoded
+        return shot_results, None
 
-    error_message = last_four_tags[0].removeprefix("EXIT:INT:")
-    error_code = shot_results[-4][1]
-    exception_type = last_four_tags[1].removeprefix(EXCEPTION_TYPE_PREFIX)
-    stderr_path = last_four_tags[2].removeprefix(STDERR_PREFIX)
-    stdout_path = last_four_tags[3].removeprefix(STDOUT_PREFIX)
+    for index in sorted(indices_to_remove, reverse=True):
+        del shot_results[index]
+
+    if not all([error_message, error_code, exception_type, stderr_path, stdout_path]):
+        additional_error_message = "Incomplete exception encoding in shot results"
+        if error_message is None:
+            additional_error_message += ": missing error message"
+        else:
+            additional_error_message += f": error message: {error_message}"
+        stdout = Path(stdout_path).read_text() if stdout_path else "Corrupted stdout."
+        stderr = Path(stderr_path).read_text() if stderr_path else "Corrupted stderr."
+        return shot_results, SeleneRuntimeError(
+            message=additional_error_message,
+            stdout=stdout,
+            stderr=stderr,
+        )
 
     # Satisfy Mypy that the variables are not None
     assert isinstance(error_message, str)
@@ -102,26 +143,26 @@ def decode_exception(shot_results: list[TaggedResult]) -> Exception | None:
 
     match exception_type:
         case "SelenePanicError":
-            return SelenePanicError(
+            return shot_results, SelenePanicError(
                 message=error_message,
                 code=error_code,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),
             )
         case "SeleneRuntimeError":
-            return SeleneRuntimeError(
+            return shot_results, SeleneRuntimeError(
                 message=error_message,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),
             )
         case "SeleneStartupError":
-            return SeleneStartupError(
+            return shot_results, SeleneStartupError(
                 message=error_message,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),
             )
         case "SeleneTimeoutError":
-            return SeleneTimeoutError(
+            return shot_results, SeleneTimeoutError(
                 message=error_message,
                 stdout=Path(stdout_path).read_text(),
                 stderr=Path(stderr_path).read_text(),

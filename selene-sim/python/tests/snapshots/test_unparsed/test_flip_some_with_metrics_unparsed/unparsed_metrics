@@ -11,6 +11,12 @@
   - USER:BOOL:c3
   - 1
 - !!python/tuple
+  - METRICS:INT:emulator:shot_number
+  - 0
+- !!python/tuple
+  - METRICS:FLOAT:simulator:cumulative_postselect_probability
+  - 1.0
+- !!python/tuple
   - METRICS:INT:user_program:qalloc_count
   - 4
 - !!python/tuple
@@ -94,9 +100,3 @@
 - !!python/tuple
   - METRICS:INT:post_runtime:total_duration_ns
   - 0
-- !!python/tuple
-  - METRICS:INT:emulator:shot_number
-  - 0
-- !!python/tuple
-  - METRICS:FLOAT:simulator:cumulative_postselect_probability
-  - 1.0
