@@ -8,15 +8,15 @@ description = "Quantinuum's open source emulator for hybrid quantum computation"
 version = "0.2.4"
 requires-python = ">=3.10"
 dependencies = [
-    "selene-core~=0.2.1",
-    "selene-hugr-qis-compiler~=0.2.6",
-    "ziglang~=0.13",
-    "pyyaml>=6.0.2",
+    "hugr>=0.13.0",
     "lief>=0.16.5",
     "numpy>=2.1",
-    "tqdm>=4.67.1",
     "pydot>=4.0.0",
-    "hugr>=0.13.0",
+    "pyyaml>=6.0.2",
+    "selene-core~=0.2.1",
+    "selene-hugr-qis-compiler~=0.2.6",
+    "tqdm>=4.67.1",
+    "ziglang~=0.13",
 ]
 authors = [
     { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
@@ -49,7 +49,7 @@ repository = "https://github.com/CQCL/selene"
 [dependency-groups]
 dev = [
     "cibuildwheel>=2.23.3",
-    "guppylang~=0.21.0",
+    "guppylang~=0.21.6",
     "pip>=24.2",
     "pytest>=8.3.5",
     "pytest-snapshot~=0.9.0",
@@ -65,7 +65,6 @@ dev = [
 [tool.uv.sources]
 selene-sim = { workspace = true }
 selene-core = { workspace = true }
-guppylang = { git = "https://github.com/CQCL/guppylang", subdirectory = "guppylang", branch = "accept-any-selene" }
 
 [tool.uv.workspace]
 members = ["selene-core"]
@@ -143,8 +142,7 @@ environment-pass = [
 test-requires = [
     "pytest",
     "pytest-snapshot",
-    "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang",
-    "git+https://github.com/CQCL/guppylang@accept-any-selene#subdirectory=guppylang-internals",
+    "guppylang~=0.21.6",
     "pytket~=2.9.1",
     "tket~=0.12.5",
 ]

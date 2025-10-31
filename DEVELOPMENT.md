@@ -14,14 +14,14 @@ This allows developers, internally and externally, to create and distribute thei
 We bundle some implementations of different components with selene for convenience, but
 stress that these are not designed to cover all use cases.
 
-Directories are stuctured as follows:
+Directories are structured as follows:
 
-- ./selene-core: Defining interfaces common to Selene itself and its plugins. This allows for
+- `./selene-core`: Defining interfaces common to Selene itself and its plugins. This allows for
              plugins to depend on Selene related types without having to depend on Selene
              itself.
-- ./selene-sim : The main Selene library, providing the emulation library and the main entry
+- `./selene-sim`: The main Selene library, providing the emulation library and the main entry
              point for the emulator.
-- ./selene-ext : Plugins to be bundled into selene, such as simulators, error models, etc.
+- `./selene-ext`: Plugins to be bundled into selene, such as simulators, error models, etc.
 
 Each library has a compiled component and a python component. Contrary to typical projects
 which mix compiled code and python code, selene does *not* compile libraries as python
@@ -51,8 +51,8 @@ git submodule update --init --recursive
 
 ## Building the project
 
-
 ### Build environment
+
 We provide an optional devenv shell to get you setup for development. Devenv is based
 around nix and provides reproducible environments, including dependencies and tools,
 for MacOS and Linux users. To install devenv, head to devenv's
@@ -64,6 +64,7 @@ devenv shell
 ```
 
 This development shell provides the following:
+
 - A stable rust toolchain (with rustc, cargo, clippy, rustfmt, and cbindgen)
 - A python toolchain (with uv)
 - Just (for running the justfile)
@@ -72,9 +73,12 @@ This development shell provides the following:
 
 Alternatively, you can install the required dependencies manually. The following are
 required:
+
 - uv >= 0.6
 - rust >= 1.85 with the stable toolchain
 - cbindgen ~= 0.28
+- cargo-expand ~= 1.0
+- cmake
 
 Note: Cbindgen is used to generate C headers for selene and its extension plugins
 based on rust implementations. These headers are shipped with selene and selene-core
@@ -90,6 +94,7 @@ using `cargo test --workspace`.
 To build a specific crate, you can use `cargo build -p <crate_name>`, where `<crate_name>` is
 the name of the crate you want to build. Likewise, to test a specific create, you can use
 `cargo test -p <crate_name>`. At the time of writing, the crates in the project are:
+
 - selene-core
 - selene-sim
 - selene-simulator-stim
@@ -119,6 +124,7 @@ into a `_dist` directory for each python package.
 ### Python development environment
 
 To enter a python development environment with all plugins initialised, run
+
 ```bash
 uv run just develop
 ```
@@ -131,6 +137,7 @@ either as installed in the python environment or locally by activating the pytho
 environment.
 
 Python tests can be invoked using:
+
 ```bash
 uv run pytest
 ```
