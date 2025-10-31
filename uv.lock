@@ -178,8 +178,8 @@ wheels = [
 
 [[package]]
 name = "guppylang"
-version = "0.21.5"
-source = { git = "https://github.com/CQCL/guppylang?subdirectory=guppylang&rev=e5f1e95#e5f1e957f8ecf0ebb4b53005845e5a54929b121c" }
+version = "0.21.6"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "guppylang-internals" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -189,15 +189,23 @@ dependencies = [
     { name = "tqdm" },
     { name = "types-tqdm" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/45/0c4cb644d10682fdf9de492911ef55ddc571469270487058655fe9e233b4/guppylang-0.21.6.tar.gz", hash = "sha256:57cdfa0c2fe7ffd80c193c830505285e0a8c779a6f817016cb8e295eaa1cae19", size = 60477, upload-time = "2025-10-30T17:37:21.435Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f3/81/3c0fffa0c28bd2bcaf37dd053d50017f8afc3794de13d9e60b7f5b9a5dab/guppylang-0.21.6-py3-none-any.whl", hash = "sha256:ecc03bf0c1f2d1146a3fdcc2e75a9a775eb11fd37b128a1febf319ab6b709619", size = 58427, upload-time = "2025-10-30T17:37:20.212Z" },
+]
 
 [[package]]
 name = "guppylang-internals"
-version = "0.24.0"
-source = { git = "https://github.com/CQCL/guppylang?subdirectory=guppylang-internals&rev=e5f1e95#e5f1e957f8ecf0ebb4b53005845e5a54929b121c" }
+version = "0.25.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "hugr" },
     { name = "tket-exts" },
     { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/56/d1/1d71187602922cc70a4880137d65ea742a3f3a37be9519e23c4c5f28bc14/guppylang_internals-0.25.0.tar.gz", hash = "sha256:abbcbccb44f3404adff52046907c8c1ee993b8d779fcbef259b7bd8840c450d1", size = 180215, upload-time = "2025-10-29T15:13:20.78Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2e/d1/48129590b4eb5e99deff8e3ddf3a039a66d96523dfb68592a6267b779b30/guppylang_internals-0.25.0-py3-none-any.whl", hash = "sha256:95473e5ef93329fc6a764fce82e0ef3931b691407a10a21520c522080405565b", size = 233971, upload-time = "2025-10-29T15:13:19.214Z" },
 ]
 
 [[package]]
@@ -1381,7 +1389,7 @@ requires-dist = [
 dev = [
     { name = "auditwheel", specifier = ">=6.3.0" },
     { name = "cibuildwheel", specifier = ">=2.23.3" },
-    { name = "guppylang", git = "https://github.com/CQCL/guppylang?subdirectory=guppylang&rev=e5f1e95" },
+    { name = "guppylang", specifier = "~=0.21.6" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "pip", specifier = ">=24.2" },
     { name = "pytest", specifier = ">=8.3.5" },
