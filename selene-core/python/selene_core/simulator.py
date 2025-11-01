@@ -26,7 +26,7 @@ class Simulator(SeleneComponent):
 
     @property
     @abstractmethod
-    def library_file(self):
+    def library_file(self) -> Path:
         """
         The simulator is provided to selene via a shared object file,
         loaded at runtime. Implement this function to provide the path
@@ -50,7 +50,7 @@ class Simulator(SeleneComponent):
         return []
 
     @abstractmethod
-    def get_init_args(self):
+    def get_init_args(self) -> list[str]:
         """
         Error model plugins must implement a selene_error_model_init function
         which, among other parameters, takes an (argc, argv) style pair of

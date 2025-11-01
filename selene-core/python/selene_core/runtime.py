@@ -43,7 +43,7 @@ class Runtime(SeleneComponent):
 
     @property
     @abstractmethod
-    def library_file(self):
+    def library_file(self) -> Path:
         """
         The quantum runtime is provided to selene via a shared object file,
         loaded at runtime. Implement this function to provide the path
@@ -67,7 +67,7 @@ class Runtime(SeleneComponent):
         return []
 
     @abstractmethod
-    def get_init_args(self):
+    def get_init_args(self) -> list[str]:
         """
         Runtime plugins must implement a selene_runtime_init function
         which, among other parameters, takes an (argc, argv) style pair of
