@@ -1,4 +1,4 @@
-from typing import Iterator, Iterable, assert_never
+from typing import Iterator, Iterable
 from pathlib import Path
 
 from ..event_hooks import EventHook
@@ -98,8 +98,6 @@ def parsed_interface(
                     event_hook.try_invoke(name, [value])
                 case InstructionLogEntry(tag=tag, values=values) as entry:
                     event_hook.try_invoke(tag, values)
-                case _ as unreachable:
-                    assert_never(unreachable)
     except Exception as error:
         # taint the stream to prevent further reading
         stream.taint()
@@ -163,8 +161,6 @@ def unparsed_interface(
                     raise SeleneRuntimeError(
                         "Instruction log entries are not compatible with selene's unparsed interface"
                     )
-                case _ as unreachable:
-                    assert_never(unreachable)
     except Exception as e:
         # taint the stream to prevent further reading
         stream.taint()
