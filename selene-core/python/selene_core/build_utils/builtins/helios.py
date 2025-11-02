@@ -31,7 +31,9 @@ class HeliosLLVMIRStringKind(ArtifactKind):
         if not isinstance(resource, str):
             return False
         undefined_symbols = get_undefined_symbols_from_llvm_ir_string(resource)
-        return "teardown" in undefined_symbols
+        if not all(f in undefined_symbols for f in HELIOS_REQUIRED_CALLS):
+            return False
+        return True
 
 
 class HeliosLLVMIRFileKind(ArtifactKind):
@@ -57,12 +59,12 @@ class HeliosLLVMBitcodeStringKind(ArtifactKind):
             resource = resource.bitcode
         if not isinstance(resource, bytes):
             return False
-        if len(resource) < 4:
+        magic_numbers = [
+            b"BC\xc0\xde",  # modern bitcode stream, observed on linux and windows runs
+            b"\xde\xc0\x17\x0b",  # legacy bitcode wrapper, observed on macOS runs
+        ]
+        if not any(resource.startswith(magic) for magic in magic_numbers):
             return False
-        magic_number = resource[:4]
-        if magic_number != b"BC\xc0\xde":  # llvm bitcode magic number
-            return False
-        # All Helios QIS inputs have these functions
         if not all(f.encode("UTF-8") in resource for f in HELIOS_REQUIRED_CALLS):
             return False
         return True
