@@ -50,8 +50,6 @@ class HeliosLLVMIRFileKind(ArtifactKind):
 
 
 class HeliosLLVMBitcodeStringKind(ArtifactKind):
-    priority = 1000
-
     @classmethod
     def matches(cls, resource: Any) -> bool:
         # we accept normal bytes, and also a BitcodeWrapper type that has a bitcode attribute
