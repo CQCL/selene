@@ -41,6 +41,59 @@ class SeleneObjectFileKind(ArtifactKind[Path]):
         return "selene_load_config" in undefined_symbols
 
 
+class SeleneObjectStringKind(ArtifactKind):
+    @classmethod
+    def matches(cls, resource: Any) -> bool:
+        if not isinstance(resource, bytes):
+            return False
+        magic_numbers = [
+            b"\x7fELF",  # ELF
+            b"MZ",  # PE
+            b"\xcf\xfa\xed\xfe",  # Mach-O Little Endian 64-bit
+        ]
+        if not any(resource.startswith(magic) for magic in magic_numbers):
+            return False
+        try:
+            undefined_symbols = get_undefined_symbols_from_object(resource)
+        except Exception:
+            # unable to parse object file
+            return False
+        return "selene_load_config" in undefined_symbols
+
+
+class SeleneObjectStringToSeleneObjectFileStep(Step):
+    """
+    Convert Selene object bytes to a Selene object file (.o)
+    """
+
+    input_kind = SeleneObjectStringKind
+    output_kind = SeleneObjectFileKind
+
+    @classmethod
+    def apply(cls, build_ctx: BuildCtx, input_artifact: Artifact) -> Artifact:
+        out_path = build_ctx.artifact_dir / "program.helios.o"
+        if build_ctx.verbose:
+            print(f"Writing Selene object file: {out_path}")
+        out_path.write_bytes(input_artifact.resource)
+        return cls._make_artifact(out_path)
+
+
+class SeleneObjectFileToSeleneObjectStringStep(Step):
+    """
+    Convert Selene object file (.o) to Selene object bytes
+    """
+
+    input_kind = SeleneObjectFileKind
+    output_kind = SeleneObjectStringKind
+
+    @classmethod
+    def apply(cls, build_ctx: BuildCtx, input_artifact: Artifact) -> Artifact:
+        if build_ctx.verbose:
+            print(f"Reading Selene object file: {input_artifact.resource}")
+        content = input_artifact.resource.read_bytes()
+        return cls._make_artifact(content)
+
+
 class SeleneObjectToSeleneExecutable(Step):
     """
     Link selene object with selene core library to create the final executable.
@@ -93,4 +146,7 @@ def register_selene_builtins(planner: BuildPlanner) -> None:
     """
     planner.add_kind(SeleneExecutableKind)
     planner.add_kind(SeleneObjectFileKind)
+    planner.add_kind(SeleneObjectStringKind)
+    planner.add_step(SeleneObjectStringToSeleneObjectFileStep)
+    planner.add_step(SeleneObjectFileToSeleneObjectStringStep)
     planner.add_step(SeleneObjectToSeleneExecutable)

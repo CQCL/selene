@@ -24,7 +24,7 @@ from selene_sim import Quest
         {"name": "llvm_bc", "kwargs": {"build_method": "via-llvm-bitcode"}},
     ],
 )
-def test_strict_builds(build_config, snapshot):
+def test_strict_builds(build_config):
     """
     Selene sim builds are multi-step processes that
     are described by a build graph, with artifacts
@@ -63,3 +63,20 @@ def test_strict_builds(build_config, snapshot):
     runner = build(main.compile(), strict=True, **build_config["kwargs"])
     got = list(runner.run(Quest(), n_qubits=1))
     assert len(got) == 0
+
+    # now try mutating intermediates to other types and see how they fair
+    # when strict mode is on.
+    for artifact in runner.artifacts.iterdir():
+        match artifact.suffix:
+            case ".o":
+                # read as bytes and build from that
+                contents = artifact.read_bytes()
+                build(contents, strict=True)
+            case ".ll":
+                # read as string and build from that
+                contents = artifact.read_text()
+                build(contents, strict=True)
+            case ".bc":
+                # read as bytes and build from that
+                contents = artifact.read_bytes()
+                build(contents, strict=True)

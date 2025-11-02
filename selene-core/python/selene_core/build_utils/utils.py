@@ -69,16 +69,21 @@ def invoke_zig(*args, handle_triple=True, verbose=False) -> str:
     return handle.stdout
 
 
-def get_undefined_symbols_from_object(path: Path) -> list[str]:
+def get_undefined_symbols_from_object(object: Path | bytes) -> list[str]:
     """
-    Extract undefined symbols from an object file, with help from the `lief` library.
+    Extract undefined symbols from an object file or bytes, with help from
+    the `lief` library.
 
     This function is useful for inspection of object files, such as in the `matches`
     methods of ArtifactKind specialisations.
     """
     import lief
 
-    binary = lief.parse(path)
+    # lief.parse() can take a path or the bytes in the form of a list[int].
+    # It can take a bytes type directly, but this is assumed to be a file path
+    # rather than raw bytes.
+    lief_input: Path | list[int] = list(object) if isinstance(object, bytes) else object
+    binary = lief.parse(lief_input)
     if isinstance(binary, lief.ELF.Binary):
         # ELF: undefined symbols have shndx == 0 (SHN_UNDEF)
         return [
@@ -107,7 +112,7 @@ def get_undefined_symbols_from_object(path: Path) -> list[str]:
         # lief.parse() returned None, which means the binary format is not supported (yet),
         # and we can't add support in Selene unless it does (or we find another approach).
         raise RuntimeError(
-            f"The binary format of {path} is not yet supported by Lief, which is used by Selene for identifying undefined symbols."
+            "The provided binary format of is not yet supported by Lief, which is used by Selene for identifying undefined symbols."
         )
 
     else:
@@ -123,7 +128,7 @@ def get_undefined_symbols_from_object(path: Path) -> list[str]:
         #
         # Until then, we wait.
         raise NotImplementedError(
-            f"Unsupported binary format {type(binary)} for undefined symbol extraction: {path}"
+            f"Unsupported binary format {type(object)} for undefined symbol extraction"
         )
 
 
