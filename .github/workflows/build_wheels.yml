@@ -172,20 +172,6 @@ jobs:
       - name: Build selene-sim wheels
         uses: pypa/cibuildwheel@v3.1.4
 
-      - name: Remove python ABI tag
-        # As we are shipping compiled libraries, Hatch assumes that we
-        # depend on the python ABI (in this case, cpython 3.10).
-        #
-        # This is not the case: the libraries we ship are for system use.
-        # As such, the cp310-cp310 restriction is unnecessary, and we can
-        # rename to just py3-none for wider compatibility.
-        shell: bash
-        run: |
-          for f in wheelhouse/selene_sim*.whl; do
-            echo "Renaming $f"
-            mv "$f" "${f/cp310-cp310/py3-none}"
-          done
-
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
