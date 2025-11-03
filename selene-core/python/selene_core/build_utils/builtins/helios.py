@@ -17,6 +17,11 @@ from ..planner import BuildPlanner
 
 from .selene import SeleneObjectFileKind, SeleneExecutableKind
 
+HELIOS_REQUIRED_CALLS = [
+    "setup",
+    "teardown",
+]
+
 # Artifact Kinds:
 
 
@@ -26,7 +31,9 @@ class HeliosLLVMIRStringKind(ArtifactKind):
         if not isinstance(resource, str):
             return False
         undefined_symbols = get_undefined_symbols_from_llvm_ir_string(resource)
-        return "teardown" in undefined_symbols
+        if not all(f in undefined_symbols for f in HELIOS_REQUIRED_CALLS):
+            return False
+        return True
 
 
 class HeliosLLVMIRFileKind(ArtifactKind):
@@ -39,15 +46,28 @@ class HeliosLLVMIRFileKind(ArtifactKind):
         if resource.suffix != ".ll":
             return False
         undefined_symbols = get_undefined_symbols_from_llvm_ir_file(resource)
-        return "teardown" in undefined_symbols
+        if not all(f in undefined_symbols for f in HELIOS_REQUIRED_CALLS):
+            return False
+        return True
 
 
 class HeliosLLVMBitcodeStringKind(ArtifactKind):
     @classmethod
     def matches(cls, resource: Any) -> bool:
+        # we accept normal bytes, and also a BitcodeWrapper type that has a bitcode attribute
         if hasattr(resource, "bitcode"):
             resource = resource.bitcode
-        return isinstance(resource, bytes) and b"teardown" in resource
+        if not isinstance(resource, bytes):
+            return False
+        magic_numbers = [
+            b"BC\xc0\xde",  # modern bitcode stream, observed on linux and windows runs
+            b"\xde\xc0\x17\x0b",  # legacy bitcode wrapper, observed on macOS runs
+        ]
+        if not any(resource.startswith(magic) for magic in magic_numbers):
+            return False
+        if not all(f.encode("UTF-8") in resource for f in HELIOS_REQUIRED_CALLS):
+            return False
+        return True
 
 
 class HeliosLLVMBitcodeFileKind(ArtifactKind):
@@ -59,7 +79,10 @@ class HeliosLLVMBitcodeFileKind(ArtifactKind):
             return False
         if resource.suffix != ".bc":
             return False
-        return b"teardown" in resource.read_bytes()
+        content = resource.read_bytes()
+        if not all(f.encode("UTF-8") in content for f in HELIOS_REQUIRED_CALLS):
+            return False
+        return True
 
 
 class HeliosObjectFileKind(ArtifactKind):
@@ -69,8 +92,36 @@ class HeliosObjectFileKind(ArtifactKind):
             return False
         if resource.suffix not in [".o", ".obj"]:
             return False
-        undefined_symbols = get_undefined_symbols_from_object(resource)
-        return any(f in undefined_symbols for f in ["get_tc", "teardown"])
+        try:
+            undefined_symbols = get_undefined_symbols_from_object(resource)
+        except Exception:
+            # unable to parse object file
+            return False
+        if not all(f in undefined_symbols for f in HELIOS_REQUIRED_CALLS):
+            return False
+        return True
+
+
+class HeliosObjectStringKind(ArtifactKind):
+    @classmethod
+    def matches(cls, resource: Any) -> bool:
+        if not isinstance(resource, bytes):
+            return False
+        magic_numbers = [
+            b"\x7fELF",  # ELF
+            b"MZ",  # PE
+            b"\xcf\xfa\xed\xfe",  # Mach-O Little Endian 64-bit
+        ]
+        if not any(resource.startswith(magic) for magic in magic_numbers):
+            return False
+        try:
+            undefined_symbols = get_undefined_symbols_from_object(resource)
+        except RuntimeError:
+            # unable to parse object file
+            return False
+        if not all(f in undefined_symbols for f in HELIOS_REQUIRED_CALLS):
+            return False
+        return True
 
 
 # Steps
@@ -160,6 +211,39 @@ class HeliosLLVMBitcodeFileToHeliosObjectFileStep(Step):
             print(f"Compiling LLVM Bitcode to Helios-QIS object: {out_path}")
         invoke_zig("cc", "-c", input_artifact.resource, "-o", out_path)
         return cls._make_artifact(out_path)
+
+
+class HeliosObjectStringToHeliosObjectFileStep(Step):
+    """
+    Convert Helios object bytes to a Helios object file (.o)
+    """
+
+    input_kind = HeliosObjectStringKind
+    output_kind = HeliosObjectFileKind
+
+    @classmethod
+    def apply(cls, build_ctx: BuildCtx, input_artifact: Artifact) -> Artifact:
+        out_path = build_ctx.artifact_dir / "program.helios.o"
+        if build_ctx.verbose:
+            print(f"Writing Helios object file: {out_path}")
+        out_path.write_bytes(input_artifact.resource)
+        return cls._make_artifact(out_path)
+
+
+class HeliosObjectFileToHeliosObjectStringStep(Step):
+    """
+    Convert Helios object file (.o) to Helios object bytes
+    """
+
+    input_kind = HeliosObjectFileKind
+    output_kind = HeliosObjectStringKind
+
+    @classmethod
+    def apply(cls, build_ctx: BuildCtx, input_artifact: Artifact) -> Artifact:
+        if build_ctx.verbose:
+            print(f"Reading Helios object file: {input_artifact.resource}")
+        content = input_artifact.resource.read_bytes()
+        return cls._make_artifact(content)
 
 
 class HeliosObjectFileToSeleneObjectFileStep_Linux(Step):
@@ -315,10 +399,13 @@ def register_helios_builtins(planner: BuildPlanner) -> None:
     planner.add_kind(HeliosLLVMBitcodeStringKind)
     planner.add_kind(HeliosLLVMBitcodeFileKind)
     planner.add_kind(HeliosObjectFileKind)
+    planner.add_kind(HeliosObjectStringKind)
     planner.add_step(LLVMBitcodeStringToLLVMBitcodeFileStep)
     planner.add_step(LLVMIRStringToLLVMIRFileStep)
     planner.add_step(HeliosLLVMIRFileToHeliosObjectFileStep)
     planner.add_step(HeliosLLVMBitcodeFileToHeliosObjectFileStep)
+    planner.add_step(HeliosObjectStringToHeliosObjectFileStep)
+    planner.add_step(HeliosObjectFileToHeliosObjectStringStep)
     planner.add_step(HeliosObjectFileToSeleneObjectFileStep_Linux)
     planner.add_step(HeliosObjectFileToSeleneExecutableStep_Windows)
     planner.add_step(HeliosObjectFileToSeleneExecutableStep_Darwin)
