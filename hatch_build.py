@@ -168,19 +168,26 @@ class BundleBuildHook(BuildHookInterface):
         build_data["packages"] = packages
         build_data["artifacts"] += artifacts
         # Set platform-specific wheel tags
-        if sys.platform == "darwin":
-            arch = platform.machine()
-            if arch == "arm64":
+        match (sys.platform, platform.machine()):
+            case ("darwin", "arm64"):
                 build_data["tag"] = "py3-none-macosx_13_0_arm64"
-            else:
+            case ("darwin", "x86_64"):
                 build_data["tag"] = "py3-none-macosx_13_0_x86_64"
-        elif sys.platform == "linux":
-            build_data["tag"] = "py3-none-manylinux_2_28_x86_64"
-        elif sys.platform == "win32":
-            build_data["tag"] = "py3-none-win_amd64"
-        else:
-            # Fallback to generic tag
-            build_data["tag"] = "py3-none-any"
+            case ("linux", "aarch64"):
+                build_data["tag"] = "py3-none-linux_aarch64"
+            case ("linux", "x86_64"):
+                build_data["tag"] = "py3-none-linux_x86_64"
+            case ("win32", "AMD64"):
+                build_data["tag"] = "py3-none-win_amd64"
+            case _:
+                self.app.display_warning(
+                    "This platform/machine combination is not explicitly supported. "
+                    "The wheel tag will be inferred - note that any ABI compatibility "
+                    "restriction implied by the wheel name and WHEEL record may be "
+                    "artificial, as selene compiled libraries do not bind to python "
+                    "itself."
+                )
+                build_data["infer_tag"] = True
 
     def find_release_files(self, cdylib_name):
         release_dir = Path(self.root) / "target/release"
