@@ -28,7 +28,7 @@ class ResultStream:
     UINT_TAG = 1
     FLT_TAG = 2
     STR_TAG = 3
-    BOOL_TAG = 4
+    BIT_TAG = 4
     INT_TAG = 5
     BYTE_TAG = 9116
 
@@ -110,10 +110,10 @@ class ResultStream:
                     case (self.FLT_TAG, sz):
                         vals = unpack(f"{sz}d", self.get_chunk(sz * 8))
                         values.append(list(vals))
-                    case (self.BOOL_TAG, 0):
+                    case (self.BIT_TAG, 0):
                         (val,) = unpack("B", self.get_chunk(1))
                         values.append(val)
-                    case (self.BOOL_TAG, sz):
+                    case (self.BIT_TAG, sz):
                         vals = unpack(f"{sz}B", self.get_chunk(sz))
                         values.append(list(vals))
                     case (self.STR_TAG, sz):
