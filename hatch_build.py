@@ -1,7 +1,7 @@
 import subprocess
-import platform
 import shutil
 import sys
+from packaging.tags import sys_tags
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 from pathlib import Path
 import json
@@ -168,26 +168,25 @@ class BundleBuildHook(BuildHookInterface):
         build_data["packages"] = packages
         build_data["artifacts"] += artifacts
         # Set platform-specific wheel tags
-        match (sys.platform, platform.machine()):
-            case ("darwin", "arm64"):
-                build_data["tag"] = "py3-none-macosx_13_0_arm64"
-            case ("darwin", "x86_64"):
-                build_data["tag"] = "py3-none-macosx_13_0_x86_64"
-            case ("linux", "aarch64"):
-                build_data["tag"] = "py3-none-linux_aarch64"
-            case ("linux", "x86_64"):
-                build_data["tag"] = "py3-none-linux_x86_64"
-            case ("win32", "AMD64"):
-                build_data["tag"] = "py3-none-win_amd64"
-            case _:
-                self.app.display_warning(
-                    "This platform/machine combination is not explicitly supported. "
-                    "The wheel tag will be inferred - note that any ABI compatibility "
-                    "restriction implied by the wheel name and WHEEL record may be "
-                    "artificial, as selene compiled libraries do not bind to python "
-                    "itself."
-                )
-                build_data["infer_tag"] = True
+        # the approach is an alternative of
+        # https://github.com/pypa/hatch/blob/9e1fc3472f9f2536e9269cd2009f878e597a6061/backend/src/hatchling/builders/wheel.py#L782
+        # but does not use the interpreter or ABI components, as selene's compiled
+        # libs do not bind to python itself.
+        tag = next(
+            iter(
+                t
+                for t in sys_tags()
+                if "manylinux" not in t.platform and "musllinux" not in t.platform
+            )
+        )
+        target_platform = tag.platform
+        if sys.platform == "darwin":
+            from hatchling.builders.macos import process_macos_plat_tag
+
+            target_platform = process_macos_plat_tag(
+                target_platform, compat=self.config.macos_max_compat
+            )
+        build_data["tag"] = f"py3-none-{target_platform}"
 
     def find_release_files(self, cdylib_name):
         release_dir = Path(self.root) / "target/release"
