@@ -1,4 +1,5 @@
 import subprocess
+import platform
 import shutil
 import sys
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
@@ -166,8 +167,20 @@ class BundleBuildHook(BuildHookInterface):
 
         build_data["packages"] = packages
         build_data["artifacts"] += artifacts
-        build_data["pure_python"] = False
-        build_data["infer_tag"] = True
+        # Set platform-specific wheel tags
+        if sys.platform == "darwin":
+            arch = platform.machine()
+            if arch == "arm64":
+                build_data["tag"] = "py3-none-macosx_13_0_arm64"
+            else:
+                build_data["tag"] = "py3-none-macosx_13_0_x86_64"
+        elif sys.platform == "linux":
+            build_data["tag"] = "py3-none-manylinux_2_28_x86_64"
+        elif sys.platform == "win32":
+            build_data["tag"] = "py3-none-win_amd64"
+        else:
+            # Fallback to generic tag
+            build_data["tag"] = "py3-none-any"
 
     def find_release_files(self, cdylib_name):
         release_dir = Path(self.root) / "target/release"
