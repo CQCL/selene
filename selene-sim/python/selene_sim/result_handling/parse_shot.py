@@ -112,11 +112,8 @@ def parsed_interface(
                 SeleneTimeoutError,
             ),
         ):
-            error = SeleneRuntimeError(
-                message=str(error),
-                stdout=stdout_file.read_text(),
-                stderr=stderr_file.read_text(),
-            )
+            error = SeleneRuntimeError(message=str(error))
+
         # attach stdout and stderr to the exception
         error.stdout = stdout_file.read_text()
         error.stderr = stderr_file.read_text()
