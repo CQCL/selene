@@ -167,6 +167,7 @@ class BundleBuildHook(BuildHookInterface):
 
         build_data["packages"] = packages
         build_data["artifacts"] += artifacts
+        build_data["pure_python"] = False
         # Set platform-specific wheel tags
         # the approach is an alternative of
         # https://github.com/pypa/hatch/blob/9e1fc3472f9f2536e9269cd2009f878e597a6061/backend/src/hatchling/builders/wheel.py#L782
@@ -183,9 +184,7 @@ class BundleBuildHook(BuildHookInterface):
         if sys.platform == "darwin":
             from hatchling.builders.macos import process_macos_plat_tag
 
-            target_platform = process_macos_plat_tag(
-                target_platform, compat=self.config.macos_max_compat
-            )
+            target_platform = process_macos_plat_tag(target_platform, compat=False)
         build_data["tag"] = f"py3-none-{target_platform}"
 
     def find_release_files(self, cdylib_name):
