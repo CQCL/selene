@@ -107,7 +107,7 @@ class InstructionLogEntry:
     users to see exactly what instructions were executed, and in what order, from
     their program as well as from the runtime (which may reorder things).
 
-    This class extends StreamEntry directly, as instruction log entries may have
+    `values` is a list of generic StreamEntryPart, as instruction log entries may have
     arbitrary values depending on the instruction being logged. They are not confined
     to a single data value, for example: they can be very large lists of encoded
     information for the CircuitExtractor to interpret.
