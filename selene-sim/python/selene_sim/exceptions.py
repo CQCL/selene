@@ -13,7 +13,7 @@ class SeleneBuildError(Exception):
     Raised when selene fails to build the user program.
     """
 
-    def __init__(self, message: str, stdout: str, stderr: str):
+    def __init__(self, message: str, stdout: str = "", stderr: str = ""):
         self.message = message
         self.stdout = stdout
         self.stderr = stderr
@@ -36,7 +36,7 @@ class SeleneStartupError(Exception):
     sign of invalid arguments being passed in.
     """
 
-    def __init__(self, message: str, stdout: str, stderr: str):
+    def __init__(self, message: str, stdout: str = "", stderr: str = ""):
         self.message = message
         self.stdout = stdout
         self.stderr = stderr
@@ -58,7 +58,7 @@ class SeleneRuntimeError(Exception):
     without a panic being issued through the results channel.
     """
 
-    def __init__(self, message: str, stdout: str, stderr: str):
+    def __init__(self, message: str, stdout: str = "", stderr: str = ""):
         self.message = message
         self.stdout = stdout
         self.stderr = stderr
@@ -80,7 +80,7 @@ class SelenePanicError(Exception):
     > 1000, i.e. all remaining shots are halted.
     """
 
-    def __init__(self, message: str, code: int, stdout: str, stderr: str):
+    def __init__(self, message: str, code: int, stdout: str = "", stderr: str = ""):
         self.message = message
         self.code = code
         self.stdout = stdout
@@ -102,7 +102,7 @@ class SeleneTimeoutError(Exception):
     Raised when the user program times out.
     """
 
-    def __init__(self, message: str, stdout: str, stderr: str):
+    def __init__(self, message: str, stdout: str = "", stderr: str = ""):
         self.message = message
         self.stdout = stdout
         self.stderr = stderr

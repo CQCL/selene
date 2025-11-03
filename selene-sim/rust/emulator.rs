@@ -1,6 +1,9 @@
 use crate::event_hooks::{EventHook, MultiEventHook, Operation};
+use crate::selene_instance::configuration::Configuration;
 use anyhow::{Result, anyhow};
+use selene_core::error_model::plugin::ErrorModelPluginInterface;
 use selene_core::error_model::{ErrorModel, ErrorModelInterface};
+use selene_core::runtime::plugin::RuntimePluginInterface;
 use selene_core::runtime::{Runtime, RuntimeInterface as _};
 
 pub struct Emulator {
@@ -11,6 +14,44 @@ pub struct Emulator {
 
 // User-issued function calls
 impl Emulator {
+    pub fn from_configuration(config: &Configuration) -> Result<Self> {
+        let n_qubits = config.n_qubits;
+        let error_model_plugin =
+            ErrorModelPluginInterface::new_from_file(&config.error_model.file)?;
+        let error_model = ErrorModel::new(
+            error_model_plugin,
+            n_qubits,
+            config.error_model.args.as_ref(),
+            &config.simulator.file,
+            config.simulator.args.as_ref(),
+        )?;
+
+        let runtime_plugin = RuntimePluginInterface::new_from_file(&config.runtime.file)?;
+        let runtime = Runtime::new(
+            runtime_plugin,
+            n_qubits,
+            selene_core::time::Instant::default(),
+            config.runtime.args.as_ref(),
+        )?;
+
+        // Set up the event hooks
+        let mut event_hooks = MultiEventHook::default();
+        if config.event_hooks.provide_metrics {
+            event_hooks.add_hook(Box::new(
+                crate::event_hooks::metrics::HighLevelMetrics::default(),
+            ));
+        }
+        if config.event_hooks.provide_instruction_log {
+            event_hooks.add_hook(Box::new(
+                crate::event_hooks::instruction_log::InstructionLog::default(),
+            ));
+        }
+        Ok(Self {
+            runtime,
+            error_model,
+            event_hooks,
+        })
+    }
     pub fn poke(&mut self) -> Result<()> {
         self.process_runtime()
     }

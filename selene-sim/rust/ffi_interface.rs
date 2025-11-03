@@ -194,9 +194,7 @@ where
     let instance = unsafe { &mut *instance };
     if let Err(e) = f(instance) {
         let code = 100001;
-        instance
-            .print_panic(format!("{e:#}").as_str(), code)
-            .unwrap();
+        instance.fallible_print_panic(format!("{e:#}").as_str(), code);
         VoidResult::err(code)
     } else {
         VoidResult::ok()
@@ -214,9 +212,7 @@ where
         Ok(value) => BoolResult::ok(value),
         Err(e) => {
             let code = 100001;
-            instance
-                .print_panic(format!("{e:#}").as_str(), code)
-                .unwrap();
+            instance.fallible_print_panic(format!("{e:#}").as_str(), code);
             BoolResult::err(code)
         }
     }
@@ -234,9 +230,7 @@ where
         Ok(value) => U64Result::ok(value),
         Err(e) => {
             let code = 100001;
-            instance
-                .print_panic(format!("{e:#}").as_str(), code)
-                .unwrap();
+            instance.fallible_print_panic(format!("{e:#}").as_str(), code);
             U64Result::err(code)
         }
     }
@@ -253,9 +247,7 @@ where
         Ok(value) => F64Result::ok(value),
         Err(e) => {
             let code = 100001;
-            instance
-                .print_panic(format!("{e:#}").as_str(), code)
-                .unwrap();
+            instance.fallible_print_panic(format!("{e:#}").as_str(), code);
             F64Result::err(code)
         }
     }
@@ -273,9 +265,7 @@ where
         Ok(value) => U32Result::ok(value),
         Err(e) => {
             let code = 100001;
-            instance
-                .print_panic(format!("{e:#}").as_str(), code)
-                .unwrap();
+            instance.fallible_print_panic(format!("{e:#}").as_str(), code);
             U32Result::err(code)
         }
     }
@@ -293,9 +283,7 @@ where
         Ok(value) => FutureResult::ok(value),
         Err(e) => {
             let code = 100001;
-            instance
-                .print_panic(format!("{e:#}").as_str(), code)
-                .unwrap();
+            instance.fallible_print_panic(format!("{e:#}").as_str(), code);
             FutureResult::err(code)
         }
     }

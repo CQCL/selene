@@ -375,6 +375,7 @@ class SeleneInstance:
                 )
 
             processes.spawn()
+            tainted = False
             for i in range(n_shots):
                 shot_idx = shot_offset + (i * shot_increment)
                 if verbose:
@@ -388,14 +389,17 @@ class SeleneInstance:
                 relevant_process = processes.find(shot_idx)
                 assert relevant_process is not None
                 yield parse_shot(
-                    parser=result_stream,
+                    stream=result_stream,
                     event_hook=event_hook,
                     full=parse_results,
                     stdout_file=relevant_process.stdout,
                     stderr_file=relevant_process.stderr,
                 )
+                if result_stream.tainted:
+                    tainted = True
+                    break
 
-        processes.wait(check_return_code=parse_results)
+        processes.wait(check_return_code=not tainted)
 
     def run(
         self,
