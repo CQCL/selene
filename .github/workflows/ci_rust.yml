@@ -50,7 +50,7 @@ jobs:
       - name: Ensure no diff has been generated
         run: |
           diff_output=$(git diff);
-          if [ -n $diff_output ]; then
+          if [ -n "${diff_output}" ]; then
             echo "Current selene bindings are inconsistent with generated bindings.";
             echo "Please run 'just generate-bindings' and commit the changes";
             echo "Diff:";
