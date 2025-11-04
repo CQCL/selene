@@ -8,39 +8,39 @@ description = "Quantinuum's open source emulator for hybrid quantum computation"
 version = "0.2.4"
 requires-python = ">=3.10"
 dependencies = [
-    "hugr>=0.13.0",
-    "lief>=0.16.5",
-    "numpy>=2.1",
-    "pydot>=4.0.0",
-    "pyyaml>=6.0.2",
-    "selene-core~=0.2.1",
-    "selene-hugr-qis-compiler~=0.2.6",
-    "tqdm>=4.67.1",
-    "ziglang~=0.13",
+  "hugr>=0.13.0",
+  "lief>=0.16.5",
+  "numpy>=2.1",
+  "pydot>=4.0.0",
+  "pyyaml>=6.0.2",
+  "selene-core~=0.2.1",
+  "selene-hugr-qis-compiler~=0.2.6",
+  "tqdm>=4.67.1",
+  "ziglang~=0.13",
 ]
 authors = [
-    { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
-    { name = "TKET development team", email = "tket-support@quantinuum.com" },
+  { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
+  { name = "TKET development team", email = "tket-support@quantinuum.com" },
 ]
 maintainers = [
-    { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
-    { name = "TKET development team", email = "tket-support@quantinuum.com" },
+  { name = "Jake Arkinstall", email = "jake.arkinstall@quantinuum.com" },
+  { name = "TKET development team", email = "tket-support@quantinuum.com" },
 ]
 readme = "selene-sim/python/selene_sim/README.md"
 classifiers = [
-    "Development Status :: 4 - Beta",
+  "Development Status :: 4 - Beta",
 
-    "Intended Audience :: Developers",
-    "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
 
-    "Topic :: Scientific/Engineering :: Quantum Computing",
-    "Topic :: System :: Emulators",
+  "Topic :: Scientific/Engineering :: Quantum Computing",
+  "Topic :: System :: Emulators",
 
-    "License :: OSI Approved :: Apache Software License",
+  "License :: OSI Approved :: Apache Software License",
 
-    "Programming Language :: Rust",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+  "Programming Language :: Rust",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
 [project.urls]
@@ -48,18 +48,18 @@ repository = "https://github.com/CQCL/selene"
 
 [dependency-groups]
 dev = [
-    "cibuildwheel>=2.23.3",
-    "guppylang~=0.21.6",
-    "pip>=24.2",
-    "pytest>=8.3.5",
-    "pytest-snapshot~=0.9.0",
-    "pytket>=2.0.1",
-    "auditwheel>=6.3.0",
-    "mypy>=1.14.1",
-    "ruff>=0.8.0",
-    "types-pyyaml>=6.0.12.20250402",
-    "pytket~=2.9.1",
-    "tket~=0.12.5",
+  "cibuildwheel>=2.23.3",
+  "guppylang~=0.21.6",
+  "pip>=24.2",
+  "pytest>=8.3.5",
+  "pytest-snapshot~=0.9.0",
+  "pytket>=2.0.1",
+  "auditwheel>=6.3.0",
+  "mypy>=1.14.1",
+  "ruff>=0.8.0",
+  "types-pyyaml>=6.0.12.20250402",
+  "pytket~=2.9.1",
+  "tket~=0.12.5",
 ]
 
 [tool.uv.sources]
@@ -76,51 +76,46 @@ path = "hatch_build.py"
 [tool.hatch.build.targets.wheel]
 exclude = ["selene-sim/python/selene_sim/README.md"]
 packages = [
-    "selene-sim/python/selene_sim",
-    "selene-ext/error-models/depolarizing/python/selene_depolarizing_error_model_plugin",
-    "selene-ext/error-models/ideal/python/selene_ideal_error_model_plugin",
-    "selene-ext/error-models/simple-leakage/python/selene_simple_leakage_error_model_plugin",
-    "selene-ext/interfaces/helios_qis/python/selene_helios_qis_plugin",
-    "selene-ext/runtimes/simple/python/selene_simple_runtime_plugin",
-    "selene-ext/runtimes/soft_rz/python/selene_soft_rz_runtime_plugin",
-    "selene-ext/simulators/classical-replay/python/selene_classical_replay_plugin",
-    "selene-ext/simulators/coinflip/python/selene_coinflip_plugin",
-    "selene-ext/simulators/quantum-replay/python/selene_quantum_replay_plugin",
-    "selene-ext/simulators/quest/python/selene_quest_plugin",
-    "selene-ext/simulators/stim/python/selene_stim_plugin",
+  "selene-sim/python/selene_sim",
+  "selene-ext/error-models/depolarizing/python/selene_depolarizing_error_model_plugin",
+  "selene-ext/error-models/ideal/python/selene_ideal_error_model_plugin",
+  "selene-ext/error-models/simple-leakage/python/selene_simple_leakage_error_model_plugin",
+  "selene-ext/interfaces/helios_qis/python/selene_helios_qis_plugin",
+  "selene-ext/runtimes/simple/python/selene_simple_runtime_plugin",
+  "selene-ext/runtimes/soft_rz/python/selene_soft_rz_runtime_plugin",
+  "selene-ext/simulators/classical-replay/python/selene_classical_replay_plugin",
+  "selene-ext/simulators/coinflip/python/selene_coinflip_plugin",
+  "selene-ext/simulators/quantum-replay/python/selene_quantum_replay_plugin",
+  "selene-ext/simulators/quest/python/selene_quest_plugin",
+  "selene-ext/simulators/stim/python/selene_stim_plugin",
 ]
 
 [tool.uv]
 cache-keys = [
-    { file = "selene-sim/**/*.c" },
-    { file = "selene-sim/**/*.rs" },
-    { file = "selene-sim/**/CMakeLists.txt" },
-    { file = "selene-sim/**/Cargo.toml" },
-    { file = "selene-sim/**/Cargo.lock" },
-    { file = "selene-ext/**/*.c" },
-    { file = "selene-ext/**/*.rs" },
-    { file = "selene-ext/**/CMakeLists.txt" },
-    { file = "selene-ext/**/Cargo.toml" },
-    { file = "selene-ext/**/Cargo.lock" },
+  { file = "selene-sim/**/*.c" },
+  { file = "selene-sim/**/*.rs" },
+  { file = "selene-sim/**/CMakeLists.txt" },
+  { file = "selene-sim/**/Cargo.toml" },
+  { file = "selene-sim/**/Cargo.lock" },
+  { file = "selene-ext/**/*.c" },
+  { file = "selene-ext/**/*.rs" },
+  { file = "selene-ext/**/CMakeLists.txt" },
+  { file = "selene-ext/**/Cargo.toml" },
+  { file = "selene-ext/**/Cargo.lock" },
 ]
 
 [tool.ruff]
 # exclude upstream code
 extend-exclude = [
-    "selene-ext/simulators/stim/upstream",
-    #    "selene-ext/*/*/python/tests"
+  "selene-ext/simulators/stim/upstream",
+  #    "selene-ext/*/*/python/tests"
 ]
 [tool.ruff.lint.per-file-ignores]
 "**/python/tests/*.py" = ["F821", "F841"] #  ^
 
 [tool.mypy]
 ignore_missing_imports = true
-exclude = [
-    "test_.*.py$",
-    ".*upstream.*$",
-    "^selene-core/.*$",
-    "^scratch/.*$",
-]
+exclude = ["test_.*.py$", ".*upstream.*$", "^selene-core/.*$", "^scratch/.*$"]
 
 
 [tool.pytest.ini_options]
@@ -133,36 +128,18 @@ manylinux-aarch64-image = "quay.io/pypa/manylinux_2_28_aarch64"
 build = "cp310-*"
 skip = "*-win32 *-manylinux_i686 *-musllinux*"
 build-frontend = { name = "build[uv]", args = ["-C--profile=release"] }
-environment-pass = [
-    "UV_EXTRA_INDEX_URL",
-    "PIP_EXTRA_INDEX_URL",
-    "CACHE_CARGO",
-    "SELENE_CORE_WHL",
-]
+environment-pass = ["UV_EXTRA_INDEX_URL", "PIP_EXTRA_INDEX_URL", "CACHE_CARGO"]
 test-requires = [
-    "pytest",
-    "pytest-snapshot",
-    "guppylang~=0.21.6",
-    "pytket~=2.9.1",
-    "tket~=0.12.5",
+  "pytest",
+  "pytest-snapshot",
+  "guppylang~=0.21.6",
+  "pytket~=2.9.1",
+  "tket~=0.12.5",
 ]
 test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
 [tool.cibuildwheel.linux]
 environment = { PATH = "$PATH:$HOME/.cargo/bin" }
 before-all = '''
-    # during testing, we need to ensure that dependencies built in prior
-    # steps are passed in correctly, otherwise we should fail fast.
-    # note: linux builds are in a docker container so we use /host/ to access
-    # files on the host system.
-    if [ !-n "${SELENE_CORE_WHL}" ]; then
-        echo "SELENE_CORE_WHL is not set - it is needed for testing selene-sim."
-        exit 1;
-    fi;
-    if [ ! -f "/host/${SELENE_CORE_WHL}" ]; then
-        echo "SELENE_CORE_WHL is set but does not point to an existing file: ${SELENE_CORE_WHL}";
-        exit 1;
-    fi;
-
     # clean any non-version-controlled files, e.g. when building locally.
     git clean -dfX;
 
@@ -173,11 +150,8 @@ before-all = '''
     if [ -d /host/tmp/ci-cache/selene/target ]; then
         cp -r /host/tmp/ci-cache/selene/target {project};
     fi;
-
-    apt install -y libffi-dev
-
-    # grab rust and cbindgen
-    curl -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y && cargo install cbindgen
+    # grab rust
+    curl -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y
 '''
 before-test = '''
     # if we have caching enabled and it exists, copy caches to the
@@ -198,40 +172,12 @@ before-test = '''
         # make sure the cache is readable by the host
         chmod -R a+rX /host/tmp/ci-cache/selene
     fi;
-
-    # install selene-core.
-    uv pip install "/host/${SELENE_CORE_WHL}";
+    uv pip install ./selene-core
 '''
 [tool.cibuildwheel.macos]
 environment = { PATH = "$PATH:$HOME/.cargo/bin", MACOSX_DEPLOYMENT_TARGET = "11.0" }
-before-all = '''
-    # during testing, we need to ensure that dependencies built in prior
-    # steps are passed in correctly, otherwise we should fail fast.
-    # note: macos builds are NOT in a docker container so we can access the files
-    # from their original path.
-    if [ ! -n "${SELENE_CORE_WHL}" ]; then
-        echo "SELENE_CORE_WHL is not set - it is needed for testing selene-sim."
-        exit 1;
-    fi;
-    if [ ! -f "/${SELENE_CORE_WHL}" ]; then
-        echo "SELENE_CORE_WHL is set but does not point to an existing file: ${SELENE_CORE_WHL}";
-        exit 1;
-    fi;
-    curl -sSf https://sh.rustup.rs | sh -s -- -y && cargo install cbindgen
-'''
-before-test = '''
-    # install selene-core.
-    uv pip install "${SELENE_CORE_WHL}";
-'''
+before-all = ['curl -sSf https://sh.rustup.rs | sh -s -- -y']
+before-test = ['uv pip install ./selene-core']
 [tool.cibuildwheel.windows]
-before-all = [
-    # during testing, we need to ensure that dependencies built in prior
-    # steps are passed in correctly, otherwise we should fail fast.
-    'IF NOT DEFINED SELENE_CORE_WHL (ECHO SELENE_CORE_WHL is not set - it is needed for testing selene-sim. && EXIT /B 1)',
-    'curl -sSf https://sh.rustup.rs | sh -s -- -y',
-    'cargo install cbindgen',
-]
-before-test = [
-    # install selene-core.
-    'uv pip install "%SELENE_CORE_WHL%"',
-]
+before-all = ['curl -sSf https://sh.rustup.rs | sh -s -- -y']
+before-test = ['uv pip install ./selene-core']

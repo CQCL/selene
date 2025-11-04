@@ -57,10 +57,6 @@ jobs:
         if: steps.selene_core_wheel_cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install cbindgen and cargo-expand
-        if: steps.selene_core_wheel_cache.outputs.cache-hit != 'true'
-        run: "cargo install --locked cbindgen cargo-expand"
-
       - name: Build selene-core wheel
         if: steps.selene_core_wheel_cache.outputs.cache-hit != 'true'
         run: |
@@ -79,7 +75,6 @@ jobs:
           if-no-files-found: error
 
   build_selene_sim:
-    needs: build_selene_core
     strategy:
       fail-fast: false
       matrix:
@@ -87,10 +82,6 @@ jobs:
     name: "Selene wheels (${{matrix.os}})"
     runs-on: ${{ matrix.os }}
     steps:
-      # ---------------------------------
-      # Bootstrap the build environment
-      # ---------------------------------
-
       - uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -108,45 +99,11 @@ jobs:
           mkdir /tmp/ci-cache
           chmod 755 /tmp/ci-cache
 
-      # ---------------------------------
-      # Download and find selene-core wheel
-      # ---------------------------------
-      # We need the selene-core wheel to build selene-sim.
-      # This is the selene-core wheel that was built in the
-      # build_selene_core job.
-      #
-      # Selene-core is python-only, but isn't cheap to build
-      # now that we're running cbindgen to extract the C API.
-      # As such, we provide it as input to the selene-sim build.
-
-      - name: Download selene-core wheel
-        uses: actions/download-artifact@v4
-        with:
-          name: selene-core
-          path: wheelhouse
-
-      - name: Set selene-core wheel path in environment
-        shell: bash
-        run: |
-          wheel_files=(wheelhouse/selene_core-*.whl)
-          wheel_file_abs=$(readlink -f "${wheel_files[0]}")
-
-          # On Windows (GitHub runners), convert /c/... to C:/...
-          case "$(uname -s)" in
-            MINGW*|MSYS*|CYGWIN*)
-              drive_letter=$(echo "$wheel_file_abs" | cut -d '/' -f 2)
-              rest=$(echo "$wheel_file_abs" | cut -d '/' -f 3-)
-              wheel_file_abs="${drive_letter^^}:/${rest}"
-              ;;
-          esac
-
-          echo "Found selene-core wheel: ${wheel_file_abs}"
-          echo "SELENE_CORE_WHL=${wheel_file_abs}" >> $GITHUB_ENV
-
       # --------------------------------
       # Build selene-sim wheel
       # --------------------------------
       # If selene-core has changed, we will likely want to rebuild and test
+      # selene-sim. If selene-sim has changed, we will want to rebuild and tests
       # selene-sim. As such, no wheel caching here.
       #
       # A later change may be to consider guppy->hugr->QIS->selene tests as

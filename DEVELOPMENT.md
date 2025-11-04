@@ -79,12 +79,19 @@ required:
 - cbindgen ~= 0.28
 - cargo-expand ~= 1.0
 - cmake
+- just
 
 Note: Cbindgen is used to generate C headers for selene and its extension plugins
 based on rust implementations. These headers are shipped with selene and selene-core
 wheels (in their `_dist/include` directory) respectively, allowing for downstream
 implementations to depend on headers at build time using the python wheels as build
 inputs.
+
+If interacting with the C headers within your branch, ensure that you regenerate bindings
+using `just generate-bindings` after making changes to the rust code. Note that breaking
+changes to public APIs should be avoided unless absolutely necessary, and will require
+a major version bump. Upon a pull request, headers will be generated and checked for
+differences against the committed versions.
 
 ### Building the rust library
 

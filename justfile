@@ -14,24 +14,60 @@ test-py *TEST_ARGS: develop
 test-rs *TEST_ARGS:
     uv run cargo test {{TEST_ARGS}}
 
-BIND_BUILD := "/tmp/selene-bindings-build"
+BIND_BUILD := "target/selene-bindings-build"
+PLUGIN_EXPAND := "target/plugin-expand"
 
-generate-selene-headers:
-    cd selene-sim && cbindgen -o c/include/selene/selene.h
+generate-plugin-header plugin:
+    mkdir -p {{PLUGIN_EXPAND}}
+    cd selene-core/examples/{{plugin}} && cargo expand > ../../../{{PLUGIN_EXPAND}}/{{plugin}}.rs
+    cbindgen \
+      --config selene-core/examples/cbindgen.toml \
+      --lang C \
+      --output selene-core/c/include/selene/{{plugin}}.h \
+      {{PLUGIN_EXPAND}}/{{plugin}}.rs
+    rm -rf target/tmp
 
-generate-selene-bindings: generate-selene-headers
+
+generate-selene-core-headers:
+    cbindgen \
+      --config selene-core/cbindgen.toml \
+      --crate selene-core \
+      --output selene-core/c/include/selene/core_types.h
+
+    just generate-plugin-header error_model
+    just generate-plugin-header simulator
+    just generate-plugin-header runtime
+
+generate-headers:
+    just generate-selene-core-headers
+    just generate-selene-sim-headers
+
+generate-selene-sim-headers:
+    cbindgen \
+      --config selene-sim/cbindgen.toml \
+      --crate selene-sim \
+      --output selene-sim/c/include/selene/selene.h
+
+generate-selene-sim-bindings: generate-selene-sim-headers
     mkdir -p {{BIND_BUILD}}
-    cmake -B{{BIND_BUILD}} -DCMAKE_INSTALL_PREFIX=selene-sim/python/selene_sim/_interface selene-sim/c
-    cmake --build {{BIND_BUILD}} --target install
+
+    cmake \
+      -B{{BIND_BUILD}} \
+      -DCMAKE_INSTALL_PREFIX=selene-sim/python/selene_sim/_dist \
+      selene-sim/c
+
+    cmake \
+      --build {{BIND_BUILD}} \
+      --target install
+
     rm -rf {{BIND_BUILD}}
+
+generate-bindings: generate-selene-core-headers generate-selene-sim-bindings
 
 build-ci: 
     #!/usr/bin/env bash
     set -euo pipefail
     mkdir -p /tmp/ci-cache
     export CACHE_CARGO=true
-
     uv build --package selene-core --out-dir wheelhouse
-    export SELENE_CORE_WHL=$(ls -t wheelhouse/selene_core-*.whl | xargs readlink -f | head -n1)
-
     cibuildwheel .

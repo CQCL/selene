@@ -239,21 +239,6 @@ class BundleBuildHook(BuildHookInterface):
         dist_dir = selene_sim_dir / "python/selene_sim/_dist"
         dist_dir.mkdir(parents=True, exist_ok=True)
 
-        try:
-            subprocess.run(
-                [
-                    "cbindgen",
-                    "-o",
-                    "c/include/selene/selene.h",
-                ],
-                check=True,
-                cwd=selene_sim_dir,
-                capture_output=True,
-            )
-        except subprocess.CalledProcessError as e:
-            self.app.display_error(f"cbindgen failed: {e.stderr.decode()}")
-            sys.exit(1)
-
         cmake_build_dir = selene_sim_dir / "c/build"
         cmake_build_dir.mkdir(parents=True, exist_ok=True)
 
