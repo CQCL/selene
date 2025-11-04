@@ -39,7 +39,7 @@ jobs:
         run: cargo test --all-features
       # ensure that C interfaces are up to date
       - uses: extractions/setup-just@v3
-      - uses: cargo-bins/cargo-binstall@v1.15
+      - uses: cargo-bins/cargo-binstall@v1.15.10
       - name: Install cbindgen and cargo-expand
         run: |
            cargo binstall cbindgen --no-confirm --version 0.28
