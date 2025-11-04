@@ -48,7 +48,6 @@ jobs:
         run: |
            just generate-bindings
       - name: Ensure no diff has been generated
-      - name: Check cbindgen
         run: |
           diff_output=$(git diff);
           if [ -n $diff_output ]; then
