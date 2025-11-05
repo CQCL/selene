@@ -93,11 +93,13 @@ packages = [
 [tool.uv]
 cache-keys = [
   { file = "selene-sim/**/*.c" },
+  { file = "selene-sim/**/*.h" },
   { file = "selene-sim/**/*.rs" },
   { file = "selene-sim/**/CMakeLists.txt" },
   { file = "selene-sim/**/Cargo.toml" },
   { file = "selene-sim/**/Cargo.lock" },
   { file = "selene-ext/**/*.c" },
+  { file = "selene-ext/**/*.h" },
   { file = "selene-ext/**/*.rs" },
   { file = "selene-ext/**/CMakeLists.txt" },
   { file = "selene-ext/**/Cargo.toml" },

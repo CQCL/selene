@@ -31,5 +31,6 @@ cache-keys = [
   { file = "examples/**/*.rs" },
   { file = "examples/**/Cargo.lock" },
   { file = "examples/**/Cargo.toml" },
+  { file = "c/include/selene/*.h" },
   { file = "Cargo.toml" },
 ]

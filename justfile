@@ -22,7 +22,6 @@ generate-plugin-header plugin:
     cd selene-core/examples/{{plugin}} && cargo expand > ../../../{{PLUGIN_EXPAND}}/{{plugin}}.rs
     cbindgen \
       --config selene-core/examples/cbindgen.toml \
-      --lang C \
       --output selene-core/c/include/selene/{{plugin}}.h \
       {{PLUGIN_EXPAND}}/{{plugin}}.rs
     rm -rf target/tmp

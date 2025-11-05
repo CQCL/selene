@@ -1,6 +1,6 @@
 language = "C"
 
-include_version = true
+include_version = false
 namespaces = []
 using_namespaces = []
 sys_includes = []
@@ -15,7 +15,7 @@ tab_width = 2
 documentation = true
 documentation_style = "auto"
 documentation_length = "full"
-line_endings = "LF" # also "CR", "CRLF", "Native"
+line_endings = "LF"           # also "CR", "CRLF", "Native"
 ############################# Codegen Options ##################################
 style = "both"
 sort_by = "None"
@@ -23,18 +23,18 @@ usize_is_size_t = true
 
 [export]
 include = [
-    "ErrorModelAPIVersion",
-    "ErrorModelInstance",
-    "ErrorModelSetResultInterface", 
-    "ErrorModelSetResultInstance", 
-    "SimulatorAPIVersion",
-    "SimulatorInstance",
-    "RuntimeAPIVersion",
-    "RuntimeGetOperationInterface",
-    "RuntimeGetOperationInstance",
-    "RuntimeExtractOperationInterface",
-    "RuntimeExtractOperationInstance",
-    "Errno",
+  "ErrorModelAPIVersion",
+  "ErrorModelInstance",
+  "ErrorModelSetResultInterface",
+  "ErrorModelSetResultInstance",
+  "SimulatorAPIVersion",
+  "SimulatorInstance",
+  "RuntimeAPIVersion",
+  "RuntimeGetOperationInterface",
+  "RuntimeGetOperationInstance",
+  "RuntimeExtractOperationInterface",
+  "RuntimeExtractOperationInstance",
+  "Errno",
 ]
 item_types = ["functions", "structs", "opaque", "enums", "typedefs"]
 renaming_overrides_prefixing = false
@@ -42,8 +42,8 @@ renaming_overrides_prefixing = false
 [export.rename]
 "ErrorModelAPIVersion" = "SeleneErrorModelAPIVersion"
 "ErrorModelInstance" = "SeleneErrorModelInstance"
-"ErrorModelSetResultInterface" = "SeleneErrorModelSetResultInterface" 
-"ErrorModelSetResultInstance" = "SeleneErrorModelSetResultInstance" 
+"ErrorModelSetResultInterface" = "SeleneErrorModelSetResultInterface"
+"ErrorModelSetResultInstance" = "SeleneErrorModelSetResultInstance"
 "SimulatorAPIVersion" = "SeleneSimulatorAPIVersion"
 "SimulatorInstance" = "SeleneSimulatorInstance"
 "RuntimeAPIVersion" = "SeleneRuntimeAPIVersion"
