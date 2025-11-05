@@ -40,8 +40,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-      - name: Install cbindgen
-        run: "cargo install --locked cbindgen"
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:

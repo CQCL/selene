@@ -37,15 +37,26 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Run rust tests
         run: cargo test --all-features
-      - name: Install cbindgen
-        run: "cargo install --locked cbindgen"
-      - name: Check cbindgen
+      # ensure that C interfaces are up to date
+      - uses: extractions/setup-just@v3
+      - uses: cargo-bins/cargo-binstall@v1.15.10
+      - name: Install cbindgen and cargo-expand
         run: |
-          cd selene-sim
-          cbindgen -o c/include/selene/selene.h --verify
-          if [ $? -ne 0 ]; then
-            echo "selene.h is not up to date"
-            echo "Please run 'just generate-selene-bindings' and commit the changes"
-            exit 1
+           cargo binstall cbindgen --no-confirm --version 0.28
+           cargo binstall cargo-expand --no-confirm --version 1.0
+      - name: Generate bindings
+        run: |
+           just generate-bindings
+      - name: Ensure no diff has been generated
+        run: |
+          diff_output=$(git diff);
+          if [ -n "${diff_output}" ]; then
+            echo "Current selene bindings are inconsistent with generated bindings.";
+            echo "Please run 'just generate-bindings' and commit the changes";
+            echo "Diff:";
+            echo "=============================================";
+            echo "${diff_output}";
+            echo "=============================================";
+            exit 1;
           fi
 
