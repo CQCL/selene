@@ -41,6 +41,7 @@ impl SeleneInstance {
                 // outside of the config file and passed in.
                 //
                 // Avoiding an API break for now, we write the error to the stream here before returning.
+                eprintln!("Failed to initialize SeleneInstance: {:?}", e);
                 print::print_directly_to_stream(
                     &mut out_encoder,
                     0,
