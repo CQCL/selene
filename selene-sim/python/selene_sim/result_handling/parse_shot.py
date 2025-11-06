@@ -109,6 +109,8 @@ def parsed_interface(
             ),
         ):
             error = SeleneRuntimeError(message=str(error))
+        if error.message.startswith("EXIT:INT:"):
+            error.message = error.message[len("EXIT:INT:") :]
 
         # attach stdout and stderr to the exception
         process.terminate()
