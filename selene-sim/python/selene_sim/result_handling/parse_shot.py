@@ -1,6 +1,6 @@
 from typing import Iterator, Iterable
-from pathlib import Path
 
+from ..process import SeleneProcess
 from ..event_hooks import EventHook
 from ..exceptions import (
     SelenePanicError,
@@ -28,8 +28,7 @@ def parse_shot(
     stream: ResultStream,
     event_hook: EventHook,
     full: bool,
-    stdout_file: Path,
-    stderr_file: Path,
+    process: SeleneProcess,
 ) -> Iterator[TaggedResult]:
     """
     Parses a shot from the results stream, yielding tagged results one by one.
@@ -42,11 +41,9 @@ def parse_shot(
     """
     shot_entries = extract_shot(stream)
     if full:
-        return parsed_interface(
-            shot_entries, event_hook, stream, stdout_file, stderr_file
-        )
+        return parsed_interface(shot_entries, event_hook, stream, process)
     else:
-        return unparsed_interface(shot_entries, stream, stdout_file, stderr_file)
+        return unparsed_interface(shot_entries, stream, process)
 
 
 # There are two modes of outputting shots. One is "parsed", another is "unparsed",
@@ -56,8 +53,7 @@ def parsed_interface(
     shot_entries: Iterable[ShotEntry],
     event_hook: EventHook,
     stream: ResultStream,
-    stdout_file: Path,
-    stderr_file: Path,
+    process: SeleneProcess,
 ) -> Iterator[TaggedResult]:
     """
     Filters the shot entries for tagged results within one shot, stripping them
@@ -115,8 +111,9 @@ def parsed_interface(
             error = SeleneRuntimeError(message=str(error))
 
         # attach stdout and stderr to the exception
-        error.stdout = stdout_file.read_text()
-        error.stderr = stderr_file.read_text()
+        process.terminate()
+        error.stdout = process.stdout.read_text()
+        error.stderr = process.stderr.read_text()
         raise error from None
 
 
@@ -132,8 +129,7 @@ def parsed_interface(
 def unparsed_interface(
     shot_entries: Iterator[ShotEntry],
     stream: ResultStream,
-    stdout_file: Path,
-    stderr_file: Path,
+    process: SeleneProcess,
 ) -> Iterator[TaggedResult]:
     """
     Filters the shot entries for tagged results within one shot, yielding them
@@ -161,8 +157,10 @@ def unparsed_interface(
     except Exception as e:
         # taint the stream to prevent further reading
         stream.taint()
+        process.terminate()
+        process.wait(check_return_code=False)
         # encode the exception as tagged results
-        yield from encode_exception(e, stdout_file, stderr_file)
+        yield from encode_exception(e, process.stdout, process.stderr)
 
 
 # Post-processing for unparsed streams
