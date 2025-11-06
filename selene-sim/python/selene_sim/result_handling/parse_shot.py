@@ -113,7 +113,11 @@ def parsed_interface(
             error.message = error.message[len("EXIT:INT:") :]
 
         # attach stdout and stderr to the exception
-        process.terminate()
+        process.terminate(
+            expected_natural_exit=isinstance(
+                error, (SeleneStartupError, SelenePanicError)
+            )
+        )
         error.stdout = process.stdout.read_text()
         error.stderr = process.stderr.read_text()
         raise error from None
@@ -159,7 +163,9 @@ def unparsed_interface(
     except Exception as e:
         # taint the stream to prevent further reading
         stream.taint()
-        process.terminate()
+        process.terminate(
+            expected_natural_exit=isinstance(e, (SelenePanicError, SeleneStartupError))
+        )
         process.wait(check_return_code=False)
         # encode the exception as tagged results
         yield from encode_exception(e, process.stdout, process.stderr)

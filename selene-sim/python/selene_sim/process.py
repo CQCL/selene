@@ -63,12 +63,23 @@ class SeleneProcess:
     def __del__(self):
         self.terminate()
 
-    def terminate(self):
+    def terminate(self, expected_natural_exit: bool = False):
         """
         Terminate the process.
+
+        If expected_natural_exit is True, wait briefly (1 second) for the process to
+        exit naturally before forcing termination. This is useful in scenarios
+        where the process is expected to exit on its own, but we want to ensure it
+        does not linger.
         """
         if self.process is None:
             return
+        if expected_natural_exit:
+            try:
+                self.process.wait(timeout=1)
+                return
+            except TimeoutExpired:
+                pass
         self.process.terminate()
         try:
             self.process.wait(timeout=2)
