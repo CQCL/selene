@@ -2,14 +2,18 @@
 //! error model plugins as rust crates.
 //!
 //! See `selene-coinflip-plugin` for an example of how to implement a plugin.
-use std::{ffi, mem, sync::Arc};
-
 use super::{
     SimulatorInterface,
     interface::SimulatorInterfaceFactory,
     plugin::{Errno, SimulatorInstance},
 };
 use crate::utils::{convert_cargs_to_strings, result_of_errno_to_errno, result_to_errno};
+use anyhow::{Result, anyhow};
+use std::{
+    ffi, mem,
+    panic::{self, UnwindSafe},
+    sync::Arc,
+};
 
 #[derive(Default)]
 /// A helper struct used by [crate::export_simulator_plugin] to implement the simulator
@@ -27,14 +31,17 @@ impl<F: SimulatorInterfaceFactory> Helper<F> {
         unsafe { Box::from_raw(instance as *mut F::Interface) }
     }
 
-    fn with_simulator_instance<T>(
+    fn with_simulator_instance<T: UnwindSafe>(
         instance: SimulatorInstance,
-        mut go: impl FnMut(&mut F::Interface) -> T,
-    ) -> T {
-        let mut s = unsafe { Self::from_simulator_instance(instance) };
-        let t = go(&mut s);
-        mem::forget(s);
-        t
+        mut go: impl FnMut(&mut F::Interface) -> Result<T> + UnwindSafe,
+    ) -> Result<T> {
+        panic::catch_unwind(move || {
+            let mut s = unsafe { Self::from_simulator_instance(instance) };
+            let t = go(&mut s);
+            mem::forget(s);
+            t
+        })
+        .map_err(|_| anyhow!("simulator plugin panicked"))?
     }
 
     fn factory(&self) -> Arc<F> {

@@ -43,7 +43,7 @@ impl<F: RuntimeInterfaceFactory> Helper<F> {
             mem::forget(r);
             t
         })
-        .map_err(|_| anyhow!("runtime panicked"))?
+        .map_err(|_| anyhow!("runtime plugin panicked"))?
     }
 
     fn factory(&self) -> Arc<F> {
