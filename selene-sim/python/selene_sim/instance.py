@@ -12,14 +12,7 @@ from .result_handling import TaggedResult
 from .event_hooks import EventHook, NoEventHook
 from .result_handling import ResultStream, TCPStream, parse_shot
 from .timeout import Timeout, TimeoutInput
-
-# previous versions had SeleneProcess and SeleneProcessList defined
-# here - they have been moved to process.py. To maintain compatibility,
-# we re-export them here.
-from .process import (
-    SeleneProcess as SeleneProcess,
-    SeleneProcessList as SeleneProcessList,
-)
+from .process import SeleneProcess, SeleneProcessList
 
 
 @dataclass
