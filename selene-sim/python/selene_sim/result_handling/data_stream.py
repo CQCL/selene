@@ -79,7 +79,7 @@ class TCPClient:
 
     def close(self):
         if self.logfile_handle is not None:
-            self.logfile.close()
+            self.logfile_handle.close()
         self.socket.close()
 
 

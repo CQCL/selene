@@ -173,8 +173,9 @@ pub unsafe extern "C" fn selene_load_config(
 
     let new_instance = match SeleneInstance::new(config) {
         Ok(instance) => Box::into_raw(Box::new(instance)),
-        Err(e) => {
-            eprintln!("Error creating selene instance: {e}");
+        Err(_) => {
+            // The error has already been printed to stderr, before the result stream
+            // was written to.
             return VoidResult::err(1);
         }
     };
