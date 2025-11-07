@@ -2,6 +2,15 @@
 //! error model plugins as rust crates.
 //!
 //! See `selene-ideal-error-model-plugin` for a fully worked example.
+use anyhow::{Result, anyhow};
+use std::{
+    ffi, mem,
+    panic::{self, UnwindSafe},
+    sync::Arc,
+};
+
+use crate::utils::{convert_cargs_to_strings, result_of_errno_to_errno, result_to_errno};
+
 use super::{
     ErrorModelInterface,
     interface::ErrorModelInterfaceFactory,
@@ -12,8 +21,6 @@ use super::{
 use crate::runtime::plugin::{
     BatchBuilder, RuntimeExtractOperationInstance, RuntimeExtractOperationInterface,
 };
-use crate::utils::{convert_cargs_to_strings, result_of_errno_to_errno, result_to_errno};
-use std::{ffi, mem, sync::Arc};
 
 #[derive(Default)]
 /// A helper struct used by [crate::export_error_model_plugin!] to implement the error model
@@ -31,14 +38,18 @@ impl<F: ErrorModelInterfaceFactory> Helper<F> {
         unsafe { Box::from_raw(instance as *mut F::Interface) }
     }
 
-    fn with_error_model_instance<T>(
+    fn with_error_model_instance<T: UnwindSafe>(
         instance: ErrorModelInstance,
-        mut go: impl FnMut(&mut F::Interface) -> T,
-    ) -> T {
-        let mut e = unsafe { Self::from_error_model_instance(instance) };
-        let t = go(&mut e);
-        mem::forget(e);
-        t
+        mut go: impl FnMut(&mut F::Interface) -> Result<T> + UnwindSafe,
+    ) -> Result<T> {
+        panic::catch_unwind(move || {
+            assert!(!instance.is_null());
+            let mut e = unsafe { Self::from_error_model_instance(instance) };
+            let t = go(&mut e);
+            mem::forget(e);
+            t
+        })
+        .map_err(|_| anyhow!("error model plugin panicked"))?
     }
 
     fn factory(&self) -> Arc<F> {
