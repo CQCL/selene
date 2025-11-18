@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.6](https://github.com/CQCL/selene/compare/selene-sim-v0.2.5...selene-sim-v0.2.6) (2025-11-18)
+
+
+### Bug Fixes
+
+* Add ENDING to allowed shot state on receiving meta information ([#100](https://github.com/CQCL/selene/issues/100)) ([fc4d673](https://github.com/CQCL/selene/commit/fc4d673172f907c791713f8d5b0c6cfd920b3d4e))
+
 ## [0.2.5](https://github.com/CQCL/selene/compare/selene-sim-v0.2.4...selene-sim-v0.2.5) (2025-11-07)
 
 
