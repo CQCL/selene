@@ -234,7 +234,7 @@ def extract_shot(
             case other:
                 # all other entries, such as user results, state results, metadata, etc
                 # are expected strictly within shot boundaries.
-                if not shot_status == ShotStatus.IN_PROGRESS:
+                if shot_status not in [ShotStatus.IN_PROGRESS, ShotStatus.ENDING]:
                     raise SeleneRuntimeError(
                         f"User entry received outside of shot boundaries: {other}"
                     )

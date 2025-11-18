@@ -516,6 +516,45 @@ def test_metrics(snapshot):
     snapshot.assert_match(yaml.dump(first_shot_metrics), "metrics")
 
 
+def test_metrics_on_exit(snapshot):
+    @guppy
+    def main() -> None:
+        q0: qubit = qubit()
+        q1: qubit = qubit()
+        q2: qubit = qubit()
+        h(q0)
+        toffoli(q0, q1, q2)
+        result("c0", measure(q0))
+        exit("Testing exit with metrics", 0)
+        result("c1", measure(q1))
+        result("c2", measure(q2))
+
+    runner = build(main.compile())
+    metric_store = MetricStore()
+    shots = QsysResult(
+        runner.run_shots(
+            Quest(),
+            n_qubits=3,
+            n_shots=10,
+            event_hook=metric_store,
+        )
+    )
+    # as there is no control flow in our program, user and runtime
+    # metrics should be identical
+    assert len(metric_store.shots) == 10
+    first_shot_metrics = metric_store.shots[0]
+    for shot_metrics in metric_store.shots[1:]:
+        assert "user_program" in shot_metrics
+        assert "post_runtime" in shot_metrics
+        assert shot_metrics["user_program"] == metric_store.shots[0]["user_program"]
+        assert shot_metrics["post_runtime"] == metric_store.shots[0]["post_runtime"]
+
+    # and check they don't change between commits. They ARE allowed
+    # to change, but must be updated manually to prevent *unintended*
+    # changes.
+    snapshot.assert_match(yaml.dump(first_shot_metrics), "metrics_on_exit")
+
+
 def test_circuit_output():
     try:
         import pytket

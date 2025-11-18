@@ -59,7 +59,6 @@ dev = [
   "ruff>=0.8.0",
   "types-pyyaml>=6.0.12.20250402",
   "pytket~=2.9.1",
-  "tket~=0.12.5",
 ]
 
 [tool.uv.sources]
@@ -136,7 +135,6 @@ test-requires = [
   "pytest-snapshot",
   "guppylang~=0.21.6",
   "pytket~=2.9.1",
-  "tket~=0.12.5",
 ]
 test-command = "pytest {project}/selene-sim {project}/selene-ext {project}/selene-core"
 [tool.cibuildwheel.linux]
@@ -174,7 +172,7 @@ before-test = '''
         # make sure the cache is readable by the host
         chmod -R a+rX /host/tmp/ci-cache/selene
     fi;
-    uv pip install ./selene-core
+    uv pip install ./selene-core;
 '''
 [tool.cibuildwheel.macos]
 environment = { PATH = "$PATH:$HOME/.cargo/bin", MACOSX_DEPLOYMENT_TARGET = "11.0" }
