@@ -59,7 +59,6 @@ dev = [
   "ruff>=0.8.0",
   "types-pyyaml>=6.0.12.20250402",
   "pytket~=2.9.1",
-  "tket~=0.12.5",
 ]
 
 [tool.uv.sources]
@@ -174,18 +173,11 @@ before-test = '''
         chmod -R a+rX /host/tmp/ci-cache/selene
     fi;
     uv pip install ./selene-core;
-    uv pip install tket~=0.12.5 # currently requires a compiler for older environments
 '''
 [tool.cibuildwheel.macos]
 environment = { PATH = "$PATH:$HOME/.cargo/bin", MACOSX_DEPLOYMENT_TARGET = "11.0" }
 before-all = ['curl -sSf https://sh.rustup.rs | sh -s -- -y']
-before-test = [
-  'uv pip install ./selene-core',
-  'uv pip install tket~=0.12.5',  # currently requires a compiler for older environments
-]
+before-test = ['uv pip install ./selene-core']
 [tool.cibuildwheel.windows]
 before-all = ['curl -sSf https://sh.rustup.rs | sh -s -- -y']
-before-test = [
-  'uv pip install ./selene-core',
-  'uv pip install tket~=0.12.5',  # currently requires a compiler for older environments
-]
+before-test = ['uv pip install ./selene-core']
